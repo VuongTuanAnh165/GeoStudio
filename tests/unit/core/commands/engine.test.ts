@@ -118,4 +118,63 @@ describe('CommandEngine & CommandHistory', () => {
     expect(result.error).toBe('Polygon must have at least 3 points');
     expect(engine.currentState.document.objects.length).toBe(0);
   });
+
+  it('Integration: sequence of commands -> undo all -> verify empty state', () => {
+    // 1. Create Point A
+    engine.execute(new CreatePointCommand(0, 0, 'A'));
+    // 2. Create Point B
+    engine.execute(new CreatePointCommand(10, 10, 'B'));
+    
+    // We can't easily import MovePointCommand and DeleteObjectCommand here without importing,
+    // let's do more creates.
+    engine.execute(new CreatePointCommand(20, 20, 'C'));
+    
+    engine.historyManager.beginBatch('triangle');
+    engine.execute(new CreatePointCommand(5, 5, 'D'));
+    engine.execute(new CreatePointCommand(15, 5, 'E'));
+    engine.historyManager.endBatch();
+
+    expect(engine.currentState.document.objects.length).toBe(5);
+    
+    // Undo all
+    let canUndo = engine.undo();
+    let undoCount = 1;
+    while(canUndo && undoCount < 10) {
+      canUndo = engine.undo();
+      if (canUndo) undoCount++;
+    }
+    
+    // We had 3 single commands + 1 batch = 4 steps in history.
+    // So 4 undos should empty the state.
+    expect(engine.currentState.document.objects.length).toBe(0);
+    expect(engine.historyManager.undoStack.length).toBe(0);
+    expect(engine.historyManager.redoStack.length).toBe(4);
+  });
+
+  it('Max history tests: should drop oldest commands when limit exceeded', () => {
+    // Let's artificially set max history limit
+    engine.historyManager.maxHistory = 10;
+    
+    // Execute 15 commands
+    for (let i = 0; i < 15; i++) {
+      engine.execute(new CreatePointCommand(i, i, `p${i}`));
+    }
+    
+    // State should have 15 objects
+    expect(engine.currentState.document.objects.length).toBe(15);
+    
+    // Undo stack should have max 10
+    expect(engine.historyManager.undoStack.length).toBe(10);
+    
+    // Undo all 10
+    for (let i = 0; i < 10; i++) {
+      engine.undo();
+    }
+    
+    // Should still have 5 objects that cannot be undone
+    expect(engine.currentState.document.objects.length).toBe(5);
+    
+    // 11th undo should return false
+    expect(engine.undo()).toBe(false);
+  });
 });
