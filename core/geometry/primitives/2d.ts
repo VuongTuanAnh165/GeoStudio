@@ -1,5 +1,6 @@
 import { BasePrimitive } from './BasePrimitive';
 import type { Coords2D, GeometryObjectDefinition } from '../../types/geometry';
+import { distanceCoords, angleCoords, polygonAreaCoords, polygonPerimeterCoords } from '../measurements';
 
 export interface PointDef extends GeometryObjectDefinition {
   kind: 'point';
@@ -36,9 +37,7 @@ export class Segment extends BasePrimitive {
   }
 
   get length(): number {
-    const dx = this.p2.x - this.p1.x;
-    const dy = this.p2.y - this.p1.y;
-    return Math.sqrt(dx * dx + dy * dy);
+    return distanceCoords(this.p1, this.p2);
   }
 
   get definition(): SegmentDef {
@@ -63,8 +62,8 @@ export class Line extends BasePrimitive {
   constructor(public point: Coords2D, direction: Coords2D, id?: string) {
     super(id);
     // Normalize direction
-    const len = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
-    this.direction = len > 0 ? { x: direction.x / len, y: direction.y / len } : { x: 1, y: 0 };
+    const len = Math.hypot(direction.x, direction.y);
+    this.direction = (len > 1e-150 && isFinite(len)) ? { x: direction.x / len, y: direction.y / len } : { x: 1, y: 0 };
   }
 
   static fromTwoPoints(p1: Coords2D, p2: Coords2D, id?: string): Line {
@@ -92,8 +91,8 @@ export class Ray extends BasePrimitive {
 
   constructor(public origin: Coords2D, direction: Coords2D, id?: string) {
     super(id);
-    const len = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
-    this.direction = len > 0 ? { x: direction.x / len, y: direction.y / len } : { x: 1, y: 0 };
+    const len = Math.hypot(direction.x, direction.y);
+    this.direction = (len > 1e-150 && isFinite(len)) ? { x: direction.x / len, y: direction.y / len } : { x: 1, y: 0 };
   }
 
   static fromTwoPoints(origin: Coords2D, p2: Coords2D, id?: string): Ray {
@@ -182,16 +181,7 @@ export class Angle extends BasePrimitive {
   }
 
   get measure(): number {
-    const v1 = { x: this.p1.x - this.vertex.x, y: this.p1.y - this.vertex.y };
-    const v2 = { x: this.p2.x - this.vertex.x, y: this.p2.y - this.vertex.y };
-    const dot = v1.x * v2.x + v1.y * v2.y;
-    const mag1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y);
-    const mag2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y);
-    if (mag1 === 0 || mag2 === 0) return 0;
-    // ensure within [-1, 1] for acos
-    let cosTheta = dot / (mag1 * mag2);
-    cosTheta = Math.max(-1, Math.min(1, cosTheta));
-    return Math.acos(cosTheta);
+    return angleCoords(this.vertex, this.p1, this.p2);
   }
 
   get definition(): AngleDef {
@@ -217,7 +207,7 @@ export class Vector extends BasePrimitive {
   }
 
   get magnitude(): number {
-    return Math.sqrt(this.x * this.x + this.y * this.y);
+    return Math.hypot(this.x, this.y);
   }
 
   get direction(): number {
@@ -246,27 +236,11 @@ export class Polygon extends BasePrimitive {
   }
 
   get perimeter(): number {
-    if (this.points.length < 2) return 0;
-    let peri = 0;
-    for (let i = 0; i < this.points.length; i++) {
-      const p1 = this.points[i];
-      const p2 = this.points[(i + 1) % this.points.length];
-      const dx = p2.x - p1.x;
-      const dy = p2.y - p1.y;
-      peri += Math.sqrt(dx * dx + dy * dy);
-    }
-    return peri;
+    return polygonPerimeterCoords(this.points);
   }
 
   get area(): number {
-    if (this.points.length < 3) return 0;
-    let a = 0;
-    for (let i = 0; i < this.points.length; i++) {
-      const p1 = this.points[i];
-      const p2 = this.points[(i + 1) % this.points.length];
-      a += p1.x * p2.y - p2.x * p1.y;
-    }
-    return Math.abs(a) / 2;
+    return polygonAreaCoords(this.points);
   }
 
   get definition(): PolygonDef {

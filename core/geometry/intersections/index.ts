@@ -21,7 +21,7 @@ function getPointAndDir(obj: Line | Ray | Segment): { p: Coords2D; d: Coords2D }
     const dx = obj.p2.x - obj.p1.x;
     const dy = obj.p2.y - obj.p1.y;
     const len = obj.length;
-    const d = len > 0 ? { x: dx / len, y: dy / len } : { x: 1, y: 0 };
+    const d = (len > 1e-150 && isFinite(len)) ? { x: dx / len, y: dy / len } : { x: 1, y: 0 };
     return { p: obj.p1, d };
   }
   if (obj.type === 'line') {
@@ -110,7 +110,7 @@ export function intersectRayCircle(r: Ray, c: Circle) { return intersectLinearCi
 export function intersectCircleCircle(c1: Circle, c2: Circle): Coords2D[] {
   const dx = c2.center.x - c1.center.x;
   const dy = c2.center.y - c1.center.y;
-  const d = Math.sqrt(dx * dx + dy * dy);
+  const d = Math.hypot(dx, dy);
 
   const eps = GEOMETRY_TOLERANCE.POINT_COINCIDENCE;
 
