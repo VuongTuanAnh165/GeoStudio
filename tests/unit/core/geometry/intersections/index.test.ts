@@ -7,6 +7,7 @@ import {
   intersectSegmentCircle,
   intersectRayCircle,
   intersectCircleCircle,
+  intersectLinear
 } from '../../../../../core/geometry/intersections';
 import { Line, Ray, Segment, Circle } from '../../../../../core/geometry/primitives/2d';
 
@@ -172,6 +173,90 @@ describe('Intersection Module', () => {
       const c2 = new Circle({ x: 0, y: 0 }, 5);
       const pts = intersectCircleCircle(c1, c2);
       expect(pts).toHaveLength(0);
+    });
+  });
+
+  describe('Degenerate Cases and Edge Conditions', () => {
+    it('Line-Line: collinear opposite direction', () => {
+      const l1 = Line.fromTwoPoints({ x: 0, y: 0 }, { x: 1, y: 1 });
+      const l2 = Line.fromTwoPoints({ x: 5, y: 5 }, { x: 4, y: 4 });
+      expect(intersectLineLine(l1, l2)).toHaveLength(0);
+    });
+    
+    it('Segment-Segment: collinear overlapping', () => {
+      const s1 = new Segment({ x: 0, y: 0 }, { x: 4, y: 4 });
+      const s2 = new Segment({ x: 2, y: 2 }, { x: 6, y: 6 });
+      // Currently intersects return empty for coincident lines by design
+      expect(intersectSegmentSegment(s1, s2)).toHaveLength(0);
+    });
+
+    it('Segment-Segment: collinear disjoint', () => {
+      const s1 = new Segment({ x: 0, y: 0 }, { x: 2, y: 2 });
+      const s2 = new Segment({ x: 4, y: 4 }, { x: 6, y: 6 });
+      expect(intersectSegmentSegment(s1, s2)).toHaveLength(0);
+    });
+
+    it('Segment-Segment: single point touch collinear', () => {
+      const s1 = new Segment({ x: 0, y: 0 }, { x: 2, y: 2 });
+      const s2 = new Segment({ x: 2, y: 2 }, { x: 4, y: 4 });
+      expect(intersectSegmentSegment(s1, s2)).toHaveLength(0); // Collinear check fires first
+    });
+
+    it('Ray-Ray: intersecting exactly at origin', () => {
+      const r1 = Ray.fromTwoPoints({ x: 0, y: 0 }, { x: 1, y: 1 });
+      const r2 = Ray.fromTwoPoints({ x: 0, y: 0 }, { x: -1, y: 1 });
+      const pts = intersectLinear(r1, r2);
+      expect(pts).toHaveLength(1);
+      expect(pts[0].x).toBeCloseTo(0);
+    });
+
+    it('Ray-Ray: parallel disjoint', () => {
+      const r1 = Ray.fromTwoPoints({ x: 0, y: 0 }, { x: 1, y: 0 });
+      const r2 = Ray.fromTwoPoints({ x: 0, y: 1 }, { x: 1, y: 1 });
+      expect(intersectLinear(r1, r2)).toHaveLength(0);
+    });
+
+    it('Line-Circle: line passes exactly through center', () => {
+      const c = new Circle({ x: 0, y: 0 }, 5);
+      const l = Line.fromTwoPoints({ x: 0, y: -10 }, { x: 0, y: 10 });
+      const pts = intersectLineCircle(l, c);
+      expect(pts).toHaveLength(2);
+      pts.sort((a, b) => a.y - b.y);
+      expect(pts[0].y).toBeCloseTo(-5);
+      expect(pts[1].y).toBeCloseTo(5);
+    });
+
+    it('Segment-Circle: segment fully inside circle', () => {
+      const c = new Circle({ x: 0, y: 0 }, 10);
+      const s = new Segment({ x: -2, y: 0 }, { x: 2, y: 0 });
+      expect(intersectSegmentCircle(s, c)).toHaveLength(0);
+    });
+
+    it('Segment-Circle: both endpoints on circle', () => {
+      const c = new Circle({ x: 0, y: 0 }, 5);
+      const s = new Segment({ x: -5, y: 0 }, { x: 5, y: 0 });
+      const pts = intersectSegmentCircle(s, c);
+      expect(pts).toHaveLength(2);
+    });
+
+    it('Ray-Circle: origin inside circle', () => {
+      const c = new Circle({ x: 0, y: 0 }, 5);
+      const r = Ray.fromTwoPoints({ x: 0, y: 0 }, { x: 1, y: 0 });
+      const pts = intersectRayCircle(r, c);
+      expect(pts).toHaveLength(1);
+      expect(pts[0].x).toBeCloseTo(5);
+    });
+
+    it('Ray-Circle: pointing away from circle', () => {
+      const c = new Circle({ x: 0, y: 0 }, 5);
+      const r = Ray.fromTwoPoints({ x: 10, y: 0 }, { x: 11, y: 0 });
+      expect(intersectRayCircle(r, c)).toHaveLength(0);
+    });
+
+    it('Circle-Circle: centers very close but radii different', () => {
+      const c1 = new Circle({ x: 0, y: 0 }, 5);
+      const c2 = new Circle({ x: 1e-12, y: 0 }, 10);
+      expect(intersectCircleCircle(c1, c2)).toHaveLength(0);
     });
   });
 });
