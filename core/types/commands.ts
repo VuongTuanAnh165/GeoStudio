@@ -1,10 +1,15 @@
+import type { GeoDocument } from './document';
+
 export type ValidationResult = {
   valid: boolean;
   error?: string;
 };
 
-// Placeholder for GeometryState for now
-export type GeometryState = Record<string, unknown>;
+export type GeometryState = {
+  document: GeoDocument;
+  selection: string[]; // selected object IDs
+  // Other interactive state can be added here
+};
 
 export interface GeometryCommand {
   id: string; // UUID
