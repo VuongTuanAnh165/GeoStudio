@@ -96,7 +96,7 @@ export class BatchCommand implements GeometryCommand {
     
     // Inherit source from first command if available
     if (commands.length > 0) {
-      this.source = commands[0].source;
+      this.source = commands[0]!.source;
     }
   }
 
@@ -112,7 +112,7 @@ export class BatchCommand implements GeometryCommand {
     let currentState = state;
     // Undo in reverse order
     for (let i = this.commands.length - 1; i >= 0; i--) {
-      currentState = this.commands[i].undo(currentState);
+      currentState = this.commands[i]!.undo(currentState);
     }
     return currentState;
   }

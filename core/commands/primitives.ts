@@ -66,89 +66,89 @@ export abstract class BaseCreateCommand implements GeometryCommand {
 }
 
 export class CreatePointCommand extends BaseCreateCommand {
-  type = 'CREATE_POINT';
+  override type = 'CREATE_POINT';
   
   constructor(public x: number, public y: number, public objectId?: string) {
     super();
     this.args = { x, y, objectId };
   }
 
-  createPrimitive(): GeometryObject {
+  override createPrimitive(): GeometryObject {
     const point = new Point(this.x, this.y, this.objectId);
     return point.toJSON();
   }
 }
 
 export class CreateSegmentCommand extends BaseCreateCommand {
-  type = 'CREATE_SEGMENT';
+  override type = 'CREATE_SEGMENT';
   
   constructor(public p1: Coords2D, public p2: Coords2D, public objectId?: string) {
     super();
     this.args = { p1, p2, objectId };
   }
 
-  createPrimitive(): GeometryObject {
+  override createPrimitive(): GeometryObject {
     const segment = new Segment(this.p1, this.p2, this.objectId);
     return segment.toJSON();
   }
 }
 
 export class CreateLineCommand extends BaseCreateCommand {
-  type = 'CREATE_LINE';
+  override type = 'CREATE_LINE';
   
   constructor(public point: Coords2D, public direction: Coords2D, public objectId?: string) {
     super();
     this.args = { point, direction, objectId };
   }
 
-  createPrimitive(): GeometryObject {
+  override createPrimitive(): GeometryObject {
     const line = new Line(this.point, this.direction, this.objectId);
     return line.toJSON();
   }
 }
 
 export class CreateRayCommand extends BaseCreateCommand {
-  type = 'CREATE_RAY';
+  override type = 'CREATE_RAY';
   
   constructor(public origin: Coords2D, public direction: Coords2D, public objectId?: string) {
     super();
     this.args = { origin, direction, objectId };
   }
 
-  createPrimitive(): GeometryObject {
+  override createPrimitive(): GeometryObject {
     const ray = new Ray(this.origin, this.direction, this.objectId);
     return ray.toJSON();
   }
 }
 
 export class CreateCircleCommand extends BaseCreateCommand {
-  type = 'CREATE_CIRCLE';
+  override type = 'CREATE_CIRCLE';
   
   constructor(public center: Coords2D, public radius: number, public objectId?: string) {
     super();
     this.args = { center, radius, objectId };
   }
 
-  createPrimitive(): GeometryObject {
+  override createPrimitive(): GeometryObject {
     const circle = new Circle(this.center, this.radius, this.objectId);
     return circle.toJSON();
   }
 }
 
 export class CreatePolygonCommand extends BaseCreateCommand {
-  type = 'CREATE_POLYGON';
+  override type = 'CREATE_POLYGON';
   
   constructor(public points: Coords2D[], public objectId?: string) {
     super();
     this.args = { points, objectId };
   }
 
-  createPrimitive(): GeometryObject {
+  override createPrimitive(): GeometryObject {
     const polygon = new Polygon(this.points, this.objectId);
     return polygon.toJSON();
   }
 
-  validate(state: GeometryState): ValidationResult {
+  override validate(state: GeometryState): ValidationResult {
     if (this.points.length < 3) {
       return { valid: false, error: 'Polygon must have at least 3 points' };
     }
@@ -157,14 +157,14 @@ export class CreatePolygonCommand extends BaseCreateCommand {
 }
 
 export class CreateTriangleCommand extends BaseCreateCommand {
-  type = 'CREATE_TRIANGLE';
+  override type = 'CREATE_TRIANGLE';
   
   constructor(public p1: Coords2D, public p2: Coords2D, public p3: Coords2D, public objectId?: string) {
     super();
     this.args = { p1, p2, p3, objectId };
   }
 
-  createPrimitive(): GeometryObject {
+  override createPrimitive(): GeometryObject {
     const polygon = new Polygon([this.p1, this.p2, this.p3], this.objectId);
     return polygon.toJSON();
   }

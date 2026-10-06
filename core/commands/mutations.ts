@@ -70,14 +70,14 @@ export abstract class BaseMutationCommand implements GeometryCommand {
 }
 
 export class MovePointCommand extends BaseMutationCommand {
-  type = 'MOVE_POINT';
+  override type = 'MOVE_POINT';
 
   constructor(objectId: string, public newX: number, public newY: number) {
     super(objectId);
     this.args = { newX, newY };
   }
 
-  mutate(obj: GeometryObject): GeometryObject {
+  override mutate(obj: GeometryObject): GeometryObject {
     if (obj.type !== 'point') {
       throw new Error('Can only move points');
     }
@@ -85,7 +85,7 @@ export class MovePointCommand extends BaseMutationCommand {
     return obj;
   }
 
-  validate(state: GeometryState): ValidationResult {
+  override validate(state: GeometryState): ValidationResult {
     const v = super.validate(state);
     if (!v.valid) return v;
     
@@ -97,23 +97,23 @@ export class MovePointCommand extends BaseMutationCommand {
 }
 
 export class SetStyleCommand extends BaseMutationCommand {
-  type = 'SET_STYLE';
+  override type = 'SET_STYLE';
 
   constructor(objectId: string, public styleConfig: Record<string, unknown>) {
     super(objectId);
     this.args = { styleConfig };
   }
 
-  mutate(obj: GeometryObject): GeometryObject {
+  override mutate(obj: GeometryObject): GeometryObject {
     obj.style = { ...obj.style, ...this.styleConfig };
     return obj;
   }
 }
 
 export class ToggleVisibilityCommand extends BaseMutationCommand {
-  type = 'TOGGLE_VISIBILITY';
+  override type = 'TOGGLE_VISIBILITY';
 
-  mutate(obj: GeometryObject): GeometryObject {
+  override mutate(obj: GeometryObject): GeometryObject {
     obj.style = obj.style || {};
     obj.style.visible = obj.style.visible === false ? true : false;
     this.args = { visible: obj.style.visible };
@@ -122,14 +122,14 @@ export class ToggleVisibilityCommand extends BaseMutationCommand {
 }
 
 export class ShowLabelCommand extends BaseMutationCommand {
-  type = 'SHOW_LABEL';
+  override type = 'SHOW_LABEL';
 
   constructor(objectId: string, public label?: string) {
     super(objectId);
     this.args = { label };
   }
 
-  mutate(obj: GeometryObject): GeometryObject {
+  override mutate(obj: GeometryObject): GeometryObject {
     obj.style = obj.style || {};
     obj.style.showLabel = true;
     if (this.label !== undefined) {
@@ -141,9 +141,9 @@ export class ShowLabelCommand extends BaseMutationCommand {
 }
 
 export class HideLabelCommand extends BaseMutationCommand {
-  type = 'HIDE_LABEL';
+  override type = 'HIDE_LABEL';
 
-  mutate(obj: GeometryObject): GeometryObject {
+  override mutate(obj: GeometryObject): GeometryObject {
     obj.style = obj.style || {};
     obj.style.showLabel = false;
     return obj;

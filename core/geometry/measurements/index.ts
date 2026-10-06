@@ -32,8 +32,8 @@ export function polygonPerimeterCoords(points: Coords2D[]): number {
   if (points.length < 2) return 0;
   let peri = 0;
   for (let i = 0; i < points.length; i++) {
-    const p1 = points[i];
-    const p2 = points[(i + 1) % points.length];
+    const p1 = points[i]!;
+    const p2 = points[(i + 1) % points.length]!;
     peri += distanceCoords(p1, p2);
   }
   return peri;
@@ -43,8 +43,8 @@ export function polygonAreaCoords(points: Coords2D[]): number {
   if (points.length < 3) return 0;
   let a = 0;
   for (let i = 0; i < points.length; i++) {
-    const p1 = points[i];
-    const p2 = points[(i + 1) % points.length];
+    const p1 = points[i]!;
+    const p2 = points[(i + 1) % points.length]!;
     a += p1.x * p2.y - p2.x * p1.y;
   }
   return Math.abs(a) / 2;
