@@ -22,6 +22,7 @@ export interface GeometryCommand {
   execute(state: GeometryState): GeometryState;
   undo(state: GeometryState): GeometryState;
   validate(state: GeometryState): ValidationResult;
+  toJSON(): Record<string, unknown>;
 }
 
 export interface CommandHistory {

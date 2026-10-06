@@ -129,4 +129,16 @@ export class BatchCommand implements GeometryCommand {
     }
     return { valid: true };
   }
+
+  toJSON(): Record<string, unknown> {
+    return {
+      id: this.id,
+      type: this.type,
+      args: this.args,
+      timestamp: this.timestamp,
+      source: this.source,
+      undoable: this.undoable,
+      commands: this.commands.map(cmd => cmd.toJSON())
+    };
+  }
 }

@@ -51,6 +51,18 @@ export abstract class BaseCreateCommand implements GeometryCommand {
     // Basic validation: Check if we are creating something valid. Specific commands can override.
     return { valid: true };
   }
+
+  toJSON(): Record<string, unknown> {
+    return {
+      id: this.id,
+      type: this.type,
+      args: this.args,
+      timestamp: this.timestamp,
+      source: this.source,
+      undoable: this.undoable,
+      createdObjectId: this.createdObjectId
+    };
+  }
 }
 
 export class CreatePointCommand extends BaseCreateCommand {
@@ -143,3 +155,18 @@ export class CreatePolygonCommand extends BaseCreateCommand {
     return super.validate(state);
   }
 }
+
+export class CreateTriangleCommand extends BaseCreateCommand {
+  type = 'CREATE_TRIANGLE';
+  
+  constructor(public p1: Coords2D, public p2: Coords2D, public p3: Coords2D, public objectId?: string) {
+    super();
+    this.args = { p1, p2, p3, objectId };
+  }
+
+  createPrimitive(): GeometryObject {
+    const polygon = new Polygon([this.p1, this.p2, this.p3], this.objectId);
+    return polygon.toJSON();
+  }
+}
+
