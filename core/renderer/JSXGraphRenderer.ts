@@ -220,4 +220,94 @@ export class JSXGraphRenderer implements GeometryRenderer {
     const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [screenPos.x, screenPos.y], this.board);
     return { x: coords.usrCoords[1], y: coords.usrCoords[2] };
   }
+
+  getMathPositionFromEvent(event: any): Coords2D {
+    if (!this.board) return { x: 0, y: 0 };
+    const coords = this.board.getUsrCoordsOfMouse(event);
+    return { x: coords[0], y: coords[1] };
+  }
+
+  setGridVisible(visible: boolean): void {
+    if (!this.board) return;
+    // For JSXGraph, we can toggle the major/minor grids if they exist
+    // Usually board.grids is an array of grid objects
+    if (this.board.grids) {
+      for (const grid of this.board.grids) {
+        if (visible) {
+          grid.show();
+        } else {
+          grid.hide();
+        }
+      }
+      this.board.update();
+    }
+  }
+
+  setAxisVisible(visible: boolean): void {
+    if (!this.board) return;
+    if (this.board.defaultAxes) {
+      const axes = [this.board.defaultAxes.x, this.board.defaultAxes.y];
+      for (const axis of axes) {
+        if (axis) {
+          if (visible) {
+            axis.showElement();
+          } else {
+            axis.hideElement();
+          }
+        }
+      }
+      this.board.update();
+    }
+  }
+
+  fitToView(): void {
+    if (!this.board) return;
+    
+    // Check if we have objects
+    if (this.jxgObjects.size === 0) {
+      this.board.setBoundingBox([-10, 10, 10, -10], true);
+      return;
+    }
+
+    // JSXGraph handles bounding box automatically if we ask or we can compute it
+    // simple way: we can collect all points and set bbox
+    let minX = Infinity, minY = Infinity;
+    let maxX = -Infinity, maxY = -Infinity;
+    
+    for (const el of this.jxgObjects.values()) {
+      if (el.elType === 'point') {
+        const x = el.X();
+        const y = el.Y();
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+    
+    if (minX === Infinity) {
+      this.board.setBoundingBox([-10, 10, 10, -10], true);
+    } else {
+      const paddingX = Math.max((maxX - minX) * 0.1, 1);
+      const paddingY = Math.max((maxY - minY) * 0.1, 1);
+      this.board.setBoundingBox([
+        minX - paddingX,
+        maxY + paddingY,
+        maxX + paddingX,
+        minY - paddingY
+      ], true);
+    }
+  }
+
+  on(eventName: string, callback: (event: any) => void): void {
+    if (this.board) {
+      this.board.on(eventName, callback);
+    }
+  }
+
+  off(eventName: string, callback: (event: any) => void): void {
+    if (this.board) {
+      this.board.off(eventName, callback);
+    }
+  }
 }

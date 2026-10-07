@@ -21,8 +21,11 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "^1.2.140",
+    "@iconify-json/mdi": "^1.2.3",
     "@nuxt/eslint": "^1.17.0",
     "@nuxt/test-utils": "^4.3.3",
+    "@nuxtjs/tailwindcss": "^6.14.0",
     "@playwright/test": "^1.63.0",
     "@vue/test-utils": "^2.5.1",
     "eslint": "^10.12.0",

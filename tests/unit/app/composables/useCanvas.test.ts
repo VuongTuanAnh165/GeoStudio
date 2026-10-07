@@ -16,7 +16,9 @@ vi.mock('jsxgraph', () => {
             return { id: attrs.id, elType: type, hasPoint: vi.fn(), setAttribute: vi.fn(), setPosition: vi.fn() };
           }),
           removeObject: vi.fn(),
-          update: vi.fn()
+          update: vi.fn(),
+          on: vi.fn(),
+          off: vi.fn()
         }),
         freeBoard: vi.fn()
       }

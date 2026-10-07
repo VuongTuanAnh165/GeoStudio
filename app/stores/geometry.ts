@@ -31,9 +31,10 @@ export const useGeometryStore = defineStore('geometry', () => {
 
   // Reactive State
   const objects = ref<Map<string, GeometryObject>>(new Map());
-  const constructionGraph = ref<ConstructionGraph>(new ConstructionGraph());
+  let constructionGraph = new ConstructionGraph();
   const selectedIds = ref<Set<string>>(new Set());
   const activeToolType = ref<string | null>(null);
+  const settings = ref(engine.currentState.document.settings);
 
   const canUndo = ref(false);
   const canRedo = ref(false);
@@ -60,11 +61,12 @@ export const useGeometryStore = defineStore('geometry', () => {
       graph.addNode(obj);
     });
     
-    // Set to ref using shallow ref or trigger deep reactivity. ConstructionGraph is a class.
-    // Assigning to a ref triggers dependency updates for components tracking it.
-    constructionGraph.value = graph;
+    constructionGraph = graph;
 
-    // 4. Sync history flags
+    // 4. Sync settings
+    settings.value = state.document.settings;
+
+    // 5. Sync history flags
     canUndo.value = engine.historyManager.undoStack.length > 0;
     canRedo.value = engine.historyManager.redoStack.length > 0;
   };
@@ -134,9 +136,10 @@ export const useGeometryStore = defineStore('geometry', () => {
   return {
     // State
     objects,
-    constructionGraph,
+    get constructionGraph() { return constructionGraph; },
     selectedIds,
     activeToolType,
+    settings,
     
     // Getters
     selectedObjects,
