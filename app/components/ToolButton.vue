@@ -3,8 +3,8 @@
     class="relative group w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200"
     :class="[
       active
-        ? 'bg-blue-100 text-blue-700 shadow-inner'
-        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400 shadow-inner'
+        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
     ]"
     @click="$emit('click')"
   >

@@ -21,5 +21,6 @@ export default defineNuxtConfig({
     ],
     defaultLocale: 'vi',
     strategy: 'no_prefix'
-  }
+  },
+  css: ['~/assets/css/tailwind.css']
 })

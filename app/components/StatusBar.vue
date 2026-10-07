@@ -1,9 +1,9 @@
 <template>
-  <div class="h-6 shrink-0 bg-slate-800 text-slate-300 text-xs flex items-center justify-between px-3 select-none">
+  <div class="h-8 shrink-0 bg-slate-800/95 dark:bg-slate-950/95 backdrop-blur-md text-slate-300 text-xs flex items-center justify-between px-4 select-none z-20 border-t border-slate-700/50 shadow-[0_-4px_24px_rgba(0,0,0,0.1)]">
     <div class="flex items-center gap-4">
-      <div class="flex items-center gap-1" title="Object Count">
+      <div class="flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity cursor-default" title="Object Count">
         <Icon name="lucide:layers" class="w-3.5 h-3.5" />
-        <span>{{ store.objects.size }} objects</span>
+        <span class="font-medium tracking-wide">{{ store.objects.size }} objects</span>
       </div>
       
       <div v-if="store.activeToolType" class="flex items-center gap-1 text-blue-300" title="Active Tool">
@@ -21,6 +21,18 @@
         <Icon name="lucide:crosshair" class="w-3 h-3" />
         <span>{{ cursorX }}, {{ cursorY }}</span>
       </div>
+      
+      <div class="w-px h-3 bg-slate-600 mx-1" />
+      
+      <button 
+        @click="toggleTheme" 
+        class="flex items-center hover:text-white transition-colors" 
+        :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+      >
+        <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" class="w-3.5 h-3.5" />
+      </button>
+
+      <div class="w-px h-3 bg-slate-600 mx-1" />
       
       <div class="flex items-center bg-slate-700/50 rounded overflow-hidden" title="Zoom">
         <button 
@@ -46,10 +58,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import { useGeometryStore } from '../stores/geometry';
+import { useTheme } from '../composables/useTheme';
 
 const store = useGeometryStore();
+const { toggleTheme, isDark } = useTheme();
 const cursorX = computed(() => store.cursorCoords.x.toFixed(2));
 const cursorY = computed(() => store.cursorCoords.y.toFixed(2));
 

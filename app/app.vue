@@ -1,3 +1,14 @@
+<script setup lang="ts">
+import { onMounted } from 'vue';
+import { useTheme } from './composables/useTheme';
+
+const { initTheme } = useTheme();
+
+onMounted(() => {
+  initTheme();
+});
+</script>
+
 <template>
   <NuxtLayout>
     <NuxtPage />
@@ -5,14 +16,12 @@
 </template>
 
 <style>
-/* Global CSS */
-:root {
-  --primary-color: #0066cc;
-  --bg-color: #f8fafc;
-  --text-color: #1e293b;
-  --text-muted: #64748b;
-  --header-bg: #ffffff;
-  --border-color: #e2e8f0;
+/* Global CSS is managed by Tailwind */
+html, body, #__nuxt {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 * {
@@ -20,9 +29,6 @@
 }
 
 body {
-  margin: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
 }
 </style>

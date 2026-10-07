@@ -1,43 +1,43 @@
 <template>
-  <div class="geo-canvas-wrapper relative w-full h-full bg-slate-50 overflow-hidden">
+  <div class="geo-canvas-wrapper relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-hidden transition-colors">
     <!-- JSXGraph Container -->
     <div id="jxgbox" class="jxgbox w-full h-full" />
     
     <!-- View Controls Overlay (Bottom Right) -->
-    <div class="absolute bottom-4 right-4 flex gap-2 bg-white/90 backdrop-blur shadow-sm rounded-lg p-1 border border-slate-200">
+    <div class="absolute bottom-6 right-6 flex gap-1 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl shadow-lg shadow-black/5 rounded-2xl p-1.5 border border-slate-200/50 dark:border-slate-700/50 transition-colors">
       <button 
-        class="p-2 rounded hover:bg-slate-100 transition-colors tooltip-trigger"
+        class="p-2 rounded transition-colors tooltip-trigger"
         title="Toggle Grid"
-        :class="{ 'text-blue-600 bg-blue-50': store.settings.gridVisible }"
+        :class="store.settings.gridVisible ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/50 dark:text-blue-400' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'"
         @click="toggleGrid"
       >
         <Icon name="mdi:grid" class="w-5 h-5" />
       </button>
       <button 
-        class="p-2 rounded hover:bg-slate-100 transition-colors tooltip-trigger"
+        class="p-2 rounded transition-colors tooltip-trigger"
         title="Toggle Axis"
-        :class="{ 'text-blue-600 bg-blue-50': store.settings.axisVisible }"
+        :class="store.settings.axisVisible ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/50 dark:text-blue-400' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'"
         @click="toggleAxis"
       >
         <Icon name="mdi:axis-arrow" class="w-5 h-5" />
       </button>
-      <div class="w-px bg-slate-200 my-1 mx-1" />
+      <div class="w-px bg-slate-200 dark:bg-slate-700 my-1 mx-1" />
       <button 
-        class="p-2 rounded hover:bg-slate-100 transition-colors text-slate-700 tooltip-trigger"
+        class="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300 tooltip-trigger"
         title="Zoom Out"
         @click="() => renderer.zoomOut && renderer.zoomOut()"
       >
         <Icon name="lucide:zoom-out" class="w-5 h-5" />
       </button>
       <button 
-        class="p-2 rounded hover:bg-slate-100 transition-colors text-slate-700 tooltip-trigger"
+        class="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300 tooltip-trigger"
         title="Zoom In"
         @click="() => renderer.zoomIn && renderer.zoomIn()"
       >
         <Icon name="lucide:zoom-in" class="w-5 h-5" />
       </button>
       <button 
-        class="p-2 rounded hover:bg-slate-100 transition-colors text-slate-700 tooltip-trigger"
+        class="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300 tooltip-trigger"
         title="Fit to View"
         @click="fitToView"
       >

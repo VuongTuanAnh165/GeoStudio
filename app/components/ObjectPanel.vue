@@ -1,15 +1,15 @@
 <template>
-  <div class="h-full bg-white border-l border-slate-200 flex flex-col w-72 shrink-0 shadow-sm z-10">
-    <div class="flex flex-col flex-1 min-h-0 border-b border-slate-200">
-      <div class="px-4 py-2 border-b border-slate-100 bg-slate-50 font-semibold text-sm text-slate-700 shrink-0">
+  <div class="h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-l border-slate-200/50 dark:border-slate-700/50 flex flex-col w-72 shrink-0 z-10 transition-colors shadow-[-4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[-4px_0_24px_rgba(0,0,0,0.2)]">
+    <div class="flex flex-col flex-1 min-h-0 border-b border-slate-200/50 dark:border-slate-700/50">
+      <div class="px-5 py-3 border-b border-slate-200/50 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30 font-semibold text-xs tracking-wider uppercase text-slate-500 dark:text-slate-400 shrink-0">
         Objects
       </div>
-      <div class="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
+      <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-1.5 scrollbar-thin">
         <div 
           v-for="obj in objectList" 
           :key="obj.id"
           class="flex items-center justify-between px-2 py-1.5 rounded cursor-pointer transition-colors"
-          :class="store.selectedIds.has(obj.id) ? 'bg-blue-100 text-blue-800' : 'hover:bg-slate-100'"
+          :class="store.selectedIds.has(obj.id) ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' : 'hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-300'"
           @click="selectObject(obj.id)"
         >
           <div class="flex items-center gap-2 truncate">

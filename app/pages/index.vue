@@ -1,141 +1,136 @@
 <template>
-  <div class="landing-page">
-    <div class="hero">
-      <h2 class="title">Bộ công cụ hình học tương tác chuyên nghiệp</h2>
-      <p class="subtitle">
+  <div class="min-h-screen relative overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors duration-500 font-sans">
+    
+    <!-- Background Decorators -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+      <div class="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] rounded-full bg-blue-400/20 dark:bg-blue-600/20 blur-[120px]" />
+      <div class="absolute top-[20%] -left-[10%] w-[40%] h-[40%] rounded-full bg-purple-400/20 dark:bg-purple-600/20 blur-[120px]" />
+      <div class="absolute -bottom-[10%] left-[20%] w-[60%] h-[60%] rounded-full bg-teal-400/10 dark:bg-teal-600/10 blur-[120px]" />
+      
+      <!-- Grid Pattern Overlay -->
+      <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9InJnYmEoMTQ4LCAxNjMsIDE4NCwgMC4xNSkiLz48L3N2Zz4=')] opacity-50 dark:opacity-20" />
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between relative z-10">
+      <div class="flex items-center gap-3 group cursor-pointer">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform">
+          <Icon name="lucide:compass" class="w-6 h-6" />
+        </div>
+        <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-800 to-slate-600 dark:from-white dark:to-slate-300">
+          GeoStudio
+        </h1>
+      </div>
+      
+      <!-- Theme Toggle -->
+      <button 
+        @click="toggleTheme" 
+        class="w-10 h-10 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all hover:shadow-md"
+        :title="isDark ? 'Light Mode' : 'Dark Mode'"
+      >
+        <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" class="w-5 h-5" />
+      </button>
+    </header>
+
+    <!-- Main Hero Section -->
+    <main class="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-32 flex flex-col items-center text-center">
+      
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-200/50 dark:border-blue-700/50 text-blue-600 dark:text-blue-400 text-sm font-medium mb-8 animate-fade-in-up">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+        </span>
+        GeoStudio v1.0 is now live
+      </div>
+
+      <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-4xl leading-tight mb-8 animate-fade-in-up" style="animation-delay: 0.1s;">
+        Bộ công cụ hình học tương tác <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">chuyên nghiệp</span>
+      </h2>
+      
+      <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mb-12 leading-relaxed animate-fade-in-up" style="animation-delay: 0.2s;">
         Khám phá, giảng dạy và học tập toán học với bảng vẽ thông minh, hỗ trợ đa chiều (2D/3D), 
         công cụ dựng hình tự động và nhận diện cử chỉ.
       </p>
       
-      <div class="actions">
-        <NuxtLink to="/workspace" class="btn-primary">
+      <div class="flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up" style="animation-delay: 0.3s;">
+        <NuxtLink to="/workspace" class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 font-semibold text-white transition-all duration-300 bg-blue-600 rounded-full hover:bg-blue-700 hover:shadow-[0_0_40px_8px_rgba(37,99,235,0.3)] dark:hover:shadow-[0_0_40px_8px_rgba(59,130,246,0.3)] hover:-translate-y-1">
           Bắt đầu ngay
-          <Icon name="lucide:arrow-right" class="btn-icon" />
+          <Icon name="lucide:arrow-right" class="w-5 h-5 transition-transform group-hover:translate-x-1" />
         </NuxtLink>
+        
+        <a href="https://github.com" target="_blank" class="inline-flex items-center justify-center gap-3 px-8 py-4 font-semibold text-slate-700 dark:text-slate-300 transition-all duration-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 hover:-translate-y-1 hover:shadow-lg">
+          <Icon name="lucide:github" class="w-5 h-5" />
+          Mã nguồn mở
+        </a>
       </div>
-    </div>
-    
-    <div class="features">
-      <div class="feature-card">
-        <Icon name="lucide:pen-tool" class="feature-icon" />
-        <h3>Dựng hình mạnh mẽ</h3>
-        <p>Hàng chục công cụ dựng hình tự động, hỗ trợ snap thông minh.</p>
+      
+      <!-- Feature Cards -->
+      <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mt-32 animate-fade-in-up" style="animation-delay: 0.5s;">
+        <!-- Card 1 -->
+        <div class="group relative p-8 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 text-left overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
+          <div class="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-6">
+            <Icon name="lucide:pen-tool" class="w-7 h-7" />
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Dựng hình mạnh mẽ</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+            Hàng chục công cụ dựng hình tự động, kết hợp hệ thống snap thông minh bắt điểm nhanh chóng.
+          </p>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="group relative p-8 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-2 text-left overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
+          <div class="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-6">
+            <Icon name="lucide:move-3d" class="w-7 h-7" />
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Không gian 3D</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+            Hỗ trợ đầy đủ hệ trục tọa độ 3 chiều (3D) và các khối hình học không gian phức tạp.
+          </p>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="group relative p-8 rounded-3xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-300 hover:-translate-y-2 text-left overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110" />
+          <div class="w-14 h-14 rounded-2xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center text-teal-600 dark:text-teal-400 mb-6">
+            <Icon name="lucide:hand" class="w-7 h-7" />
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Nhận diện cử chỉ</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+            Điều khiển canvas và bảng vẽ bằng tay qua AI camera mà không cần dùng đến chuột hay bàn phím.
+          </p>
+        </div>
       </div>
-      <div class="feature-card">
-        <Icon name="lucide:move-3d" class="feature-icon" />
-        <h3>Không gian 3D</h3>
-        <p>Hỗ trợ đầy đủ hệ tọa độ 3D và các khối hình học không gian.</p>
-      </div>
-      <div class="feature-card">
-        <Icon name="lucide:hand" class="feature-icon" />
-        <h3>Nhận diện cử chỉ</h3>
-        <p>Điều khiển canvas bằng tay qua AI camera mà không cần chuột.</p>
-      </div>
-    </div>
+      
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useTheme } from '../composables/useTheme';
+
+const { toggleTheme, isDark } = useTheme();
+
 definePageMeta({
   layout: 'default'
 })
 </script>
 
 <style scoped>
-.landing-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 4rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.hero {
-  text-align: center;
-  max-width: 800px;
-  margin-bottom: 4rem;
-}
-
-.title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--text-color);
-  margin-bottom: 1rem;
-  line-height: 1.2;
-}
-
-.subtitle {
-  font-size: 1.125rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 2.5rem;
-}
-
-.actions {
-  display: flex;
-  justify-content: center;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--primary-color);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 1.125rem;
-  transition: background-color 0.2s, transform 0.2s;
-  box-shadow: 0 4px 6px -1px rgba(0, 102, 204, 0.2), 0 2px 4px -1px rgba(0, 102, 204, 0.1);
-}
-
-.btn-primary:hover {
-  background-color: #0052a3;
-  transform: translateY(-2px);
-}
-
-.btn-icon {
-  font-size: 1.25rem;
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  width: 100%;
-}
-
-.feature-card {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--border-color);
-  text-align: center;
-  transition: transform 0.3s;
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-}
-
-.feature-icon {
-  font-size: 2.5rem;
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-}
-
-.feature-card h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.25rem;
-}
-
-.feature-card p {
-  margin: 0;
-  color: var(--text-muted);
-  line-height: 1.5;
+.animate-fade-in-up {
+  opacity: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 </style>

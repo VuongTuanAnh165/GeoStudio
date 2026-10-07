@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full bg-white border-r border-slate-200 flex flex-col w-14 shrink-0 shadow-sm z-10">
-    <div class="flex-1 overflow-y-auto overflow-x-visible py-3 flex flex-col items-center gap-4 scrollbar-hide">
+  <div class="h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col w-16 shrink-0 z-10 transition-colors shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
+    <div class="flex-1 overflow-y-auto overflow-x-visible py-4 flex flex-col items-center gap-3 scrollbar-hide">
       
       <!-- Basic Tools -->
       <div class="flex flex-col gap-1 w-full items-center">
@@ -20,12 +20,12 @@
         />
       </div>
 
-      <div class="w-8 h-px bg-slate-200" />
+      <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
 
       <!-- Creation Tools -->
       <div class="flex flex-col gap-1 w-full items-center">
         <ToolButton 
-          icon="mdi:circle-small" 
+          icon="lucide:circle-dot" 
           label="Point" 
           shortcut="P"
           :active="store.activeToolType === 'point'"
@@ -33,26 +33,26 @@
         />
       </div>
 
-      <div class="w-8 h-px bg-slate-200" />
+      <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
 
       <!-- Lines -->
       <div class="flex flex-col gap-1 w-full items-center">
         <ToolButton 
-          icon="mdi:vector-line" 
+          icon="lucide:minus" 
           label="Segment" 
           shortcut="S"
           :active="store.activeToolType === 'segment'"
           @click="selectTool('segment')" 
         />
         <ToolButton 
-          icon="lucide:arrow-left-right" 
+          icon="lucide:move-horizontal" 
           label="Line" 
           shortcut="L"
           :active="store.activeToolType === 'line'"
           @click="selectTool('line')" 
         />
         <ToolButton 
-          icon="lucide:move-right" 
+          icon="lucide:arrow-right" 
           label="Ray" 
           shortcut="R"
           :active="store.activeToolType === 'ray'"
@@ -60,7 +60,7 @@
         />
       </div>
 
-      <div class="w-8 h-px bg-slate-200" />
+      <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
 
       <!-- Curves -->
       <div class="flex flex-col gap-1 w-full items-center">
@@ -73,7 +73,7 @@
         />
       </div>
 
-      <div class="w-8 h-px bg-slate-200" />
+      <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
 
       <!-- Polygons -->
       <div class="flex flex-col gap-1 w-full items-center">

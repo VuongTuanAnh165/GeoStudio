@@ -364,11 +364,11 @@ Mỗi command cần:
 - [x] Hiển thị: object count, zoom level, active tool, cursor position
 
 #### 3.7 — Theme System
-- [ ] `useTheme.ts` composable
-- [ ] Light theme (default)
-- [ ] Dark theme
-- [ ] CSS custom properties cho colors
-- [ ] Theme toggle button
+- [x] `useTheme.ts` composable
+- [x] Light theme (default)
+- [x] Dark theme
+- [x] CSS custom properties cho colors
+- [x] Theme toggle button
 
 #### 3.8 — Keyboard Shortcuts
 - [ ] `useKeyboard.ts` composable
