@@ -14,9 +14,15 @@
       </div>
     </header>
 
-    <!-- Canvas Area -->
-    <div class="flex-1 relative w-full h-full overflow-hidden bg-slate-50">
-      <GeoCanvas />
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-row overflow-hidden">
+      <!-- Toolbar (Left) -->
+      <Toolbar />
+
+      <!-- Canvas Area (Center) -->
+      <div class="flex-1 relative h-full overflow-hidden bg-slate-50">
+        <GeoCanvas />
+      </div>
     </div>
   </div>
 </template>
