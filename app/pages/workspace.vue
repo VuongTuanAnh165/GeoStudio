@@ -23,7 +23,13 @@
       <div class="flex-1 relative h-full overflow-hidden bg-slate-50">
         <GeoCanvas />
       </div>
+
+      <!-- Object Panel (Right) -->
+      <ObjectPanel />
     </div>
+
+    <!-- Status Bar (Bottom) -->
+    <StatusBar />
   </div>
 </template>
 

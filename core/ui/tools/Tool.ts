@@ -16,6 +16,7 @@ export interface ToolContext {
   removeTempObject(id: string): void;
   clearTempObjects(): void;
   generateId(prefix: string): string;
+  selectObject(id: string | null): void;
 }
 
 export interface Tool {

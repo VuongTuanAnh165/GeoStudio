@@ -41,7 +41,8 @@ export function useCanvas() {
       executeCommand: (cmd) => store.executeCommand(cmd),
       getObject: (id) => store.objects.get(id),
       getObjects: () => Array.from(store.objects.values()),
-      generateId: (prefix) => `${prefix}_${Date.now()}_${Math.floor(Math.random() * 1000)}`
+      generateId: (prefix) => `${prefix}_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      selectObject: store.selectObject
     });
     
     // Sync active tool from store
@@ -54,6 +55,13 @@ export function useCanvas() {
     
     // Initial full render
     syncToRenderer();
+
+    // Track cursor coordinates
+    renderer.on('move', (e: any) => {
+      const pos = renderer.getMathPositionFromEvent(e);
+      store.cursorCoords.x = pos.x;
+      store.cursorCoords.y = pos.y;
+    });
   };
 
   const clear = () => {

@@ -34,6 +34,7 @@ export const useGeometryStore = defineStore('geometry', () => {
   let constructionGraph = new ConstructionGraph();
   const selectedIds = ref<Set<string>>(new Set());
   const activeToolType = ref<string | null>(null);
+  const cursorCoords = ref<{x: number, y: number}>({ x: 0, y: 0 });
   const settings = ref(engine.currentState.document.settings);
 
   const canUndo = ref(false);
@@ -133,12 +134,23 @@ export const useGeometryStore = defineStore('geometry', () => {
     syncState();
   };
 
+  const selectObject = (id: string | null) => {
+    if (id) {
+      engine.currentState.selection = [id];
+      selectedIds.value = new Set([id]);
+    } else {
+      engine.currentState.selection = [];
+      selectedIds.value.clear();
+    }
+  };
+
   return {
     // State
     objects,
     get constructionGraph() { return constructionGraph; },
     selectedIds,
     activeToolType,
+    cursorCoords,
     settings,
     
     // Getters
@@ -148,6 +160,7 @@ export const useGeometryStore = defineStore('geometry', () => {
     
     // Actions
     executeCommand,
+    selectObject,
     undo,
     redo,
     clearHistory,

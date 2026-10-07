@@ -9,6 +9,7 @@ export interface MouseHandlerContext {
   getObject: (id: string) => GeometryObject | undefined;
   getObjects: () => GeometryObject[];
   generateId: (prefix: string) => string;
+  selectObject: (id: string | null) => void;
 }
 
 export class MouseHandler {
@@ -37,6 +38,7 @@ export class MouseHandler {
       getObject: this.context.getObject,
       getObjects: this.context.getObjects,
       generateId: this.context.generateId,
+      selectObject: this.context.selectObject,
       renderTempObject: (obj: GeometryObject) => {
         this.tempObjects.set(obj.id, obj);
         this.context.renderer.renderObject(obj);

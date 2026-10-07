@@ -9,9 +9,14 @@ export class SelectTool implements Tool {
   onMouseDown(event: ToolEvent, context: ToolContext): void {
     if (event.hitObjectId) {
       const obj = context.getObject(event.hitObjectId);
+      
+      context.selectObject(event.hitObjectId);
+      
       if (obj?.type === 'point') {
         this.draggingObjectId = event.hitObjectId;
       }
+    } else {
+      context.selectObject(null);
     }
   }
 
