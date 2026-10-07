@@ -361,7 +361,7 @@ Mỗi command cần:
   - [ ] Edit: color, label, line width, point size
 
 #### 3.6 — Status Bar
-- [ ] Hiển thị: object count, zoom level, active tool, cursor position
+- [x] Hiển thị: object count, zoom level, active tool, cursor position
 
 #### 3.7 — Theme System
 - [ ] `useTheme.ts` composable

@@ -299,6 +299,24 @@ export class JSXGraphRenderer implements GeometryRenderer {
     }
   }
 
+  zoomIn(): void {
+    if (this.board) this.board.zoomIn();
+  }
+
+  zoomOut(): void {
+    if (this.board) this.board.zoomOut();
+  }
+
+  resetZoom(): void {
+    if (this.board) this.board.zoom100();
+  }
+
+  getZoom(): number {
+    if (!this.board) return 100;
+    // zoomX and zoomY usually store the scale. 1.0 means 100%
+    return Math.round((this.board.zoomX || 1) * 100);
+  }
+
   on(eventName: string, callback: (event: any) => void): void {
     if (this.board) {
       this.board.on(eventName, callback);

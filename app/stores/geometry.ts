@@ -151,6 +151,7 @@ export const useGeometryStore = defineStore('geometry', () => {
     selectedIds,
     activeToolType,
     cursorCoords,
+    zoomLevel: ref(100),
     settings,
     
     // Getters

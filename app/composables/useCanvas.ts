@@ -62,11 +62,34 @@ export function useCanvas() {
       store.cursorCoords.x = pos.x;
       store.cursorCoords.y = pos.y;
     });
+
+    renderer.on('boundingbox', () => {
+      // @ts-ignore - we added getZoom
+      if (typeof renderer.getZoom === 'function') {
+        // @ts-ignore
+        store.zoomLevel = renderer.getZoom();
+      }
+    });
   };
 
   const clear = () => {
     renderer.clear();
     initialized = false;
+  };
+
+  const zoomIn = () => {
+    // @ts-ignore
+    if (renderer.zoomIn) renderer.zoomIn();
+  };
+
+  const zoomOut = () => {
+    // @ts-ignore
+    if (renderer.zoomOut) renderer.zoomOut();
+  };
+
+  const resetZoom = () => {
+    // @ts-ignore
+    if (renderer.resetZoom) renderer.resetZoom();
   };
 
   const syncToRenderer = () => {
@@ -107,6 +130,9 @@ export function useCanvas() {
     init,
     clear,
     renderer,
-    syncToRenderer
+    syncToRenderer,
+    zoomIn,
+    zoomOut,
+    resetZoom
   };
 }

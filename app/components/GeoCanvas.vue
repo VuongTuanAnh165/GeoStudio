@@ -24,6 +24,20 @@
       <div class="w-px bg-slate-200 my-1 mx-1" />
       <button 
         class="p-2 rounded hover:bg-slate-100 transition-colors text-slate-700 tooltip-trigger"
+        title="Zoom Out"
+        @click="() => renderer.zoomOut && renderer.zoomOut()"
+      >
+        <Icon name="lucide:zoom-out" class="w-5 h-5" />
+      </button>
+      <button 
+        class="p-2 rounded hover:bg-slate-100 transition-colors text-slate-700 tooltip-trigger"
+        title="Zoom In"
+        @click="() => renderer.zoomIn && renderer.zoomIn()"
+      >
+        <Icon name="lucide:zoom-in" class="w-5 h-5" />
+      </button>
+      <button 
+        class="p-2 rounded hover:bg-slate-100 transition-colors text-slate-700 tooltip-trigger"
         title="Fit to View"
         @click="fitToView"
       >
@@ -49,6 +63,20 @@ onMounted(() => {
   // Sync initial settings
   renderer.setGridVisible(store.settings.gridVisible);
   renderer.setAxisVisible(store.settings.axisVisible);
+
+  // Listen to zoom events from StatusBar
+  window.addEventListener('geostudio:zoom-in', () => {
+    // @ts-ignore
+    if (renderer.zoomIn) renderer.zoomIn();
+  });
+  window.addEventListener('geostudio:zoom-out', () => {
+    // @ts-ignore
+    if (renderer.zoomOut) renderer.zoomOut();
+  });
+  window.addEventListener('geostudio:zoom-reset', () => {
+    // @ts-ignore
+    if (renderer.resetZoom) renderer.resetZoom();
+  });
 });
 
 // Watch for store settings changes to update renderer
