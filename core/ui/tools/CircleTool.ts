@@ -1,5 +1,6 @@
 import type { Tool, ToolContext, ToolEvent } from './Tool';
-import { CreatePointCommand, CreateCircleCommand } from '../../commands/primitives';
+import { CreatePointCommand } from '../../commands/primitives';
+import { CreateConstructionCommand } from '../../commands/constructions';
 import type { Coords2D } from '../../types/geometry';
 
 export class CircleTool implements Tool {
@@ -31,13 +32,7 @@ export class CircleTool implements Tool {
     } else {
       if (this.centerId !== clickedPointId) {
         context.clearTempObjects();
-        const center = context.getObject(this.centerId)?.definition.coords as Coords2D;
-        const point = event.mathPos;
-        const dx = point.x - center.x;
-        const dy = point.y - center.y;
-        const radius = Math.sqrt(dx * dx + dy * dy);
-
-        const cmd = new CreateCircleCommand(center, radius, context.generateId('circ'));
+        const cmd = new CreateConstructionCommand('circle', 'circle', [this.centerId, clickedPointId], context.generateId('circ'));
         context.executeCommand(cmd);
       }
       this.centerId = null;

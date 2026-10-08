@@ -79,7 +79,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
     attrs.id = obj.id; // Assign ID to find it later in hit tests
 
     try {
-      const isConstructed = obj.parents && obj.parents.length > 0 && !['point', 'segment', 'line', 'ray', 'circle', 'polygon'].includes(obj.definition.kind);
+      const isConstructed = obj.parents && obj.parents.length > 0;
 
       if (isConstructed) {
         const args: any[] = [...(obj.parents as string[])].map(id => this.jxgObjects.get(id)).filter(Boolean);
@@ -94,9 +94,14 @@ export class JSXGraphRenderer implements GeometryRenderer {
         } else if (obj.type === 'polygon') {
           specificAttrs.fillColor = styleInfo.baseColor;
           specificAttrs.fillOpacity = styleInfo.isSelected ? 0.3 : 0.1;
+          specificAttrs.hasInnerPoints = true;
         }
 
         switch (obj.definition.kind) {
+          case 'ray': {
+            jxgEl = this.board.create('line', args, { ...specificAttrs, straightFirst: false, straightLast: true });
+            break;
+          }
           case 'perpendicular_bisector': {
             let lineArg = args[0];
             if (args.length === 2) {
@@ -269,7 +274,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
       jxgEl.setAttribute({ [key]: val });
     }
 
-    const isConstructed = obj.parents && obj.parents.length > 0 && !['point', 'segment', 'line', 'ray', 'circle', 'polygon'].includes(obj.definition.kind);
+    const isConstructed = obj.parents && obj.parents.length > 0;
     if (isConstructed) {
       // Constructed objects update automatically in JSXGraph when parents change
       return;

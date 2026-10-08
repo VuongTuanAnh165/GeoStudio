@@ -1,5 +1,6 @@
 import type { Tool, ToolContext, ToolEvent } from './Tool';
-import { CreatePointCommand, CreateTriangleCommand } from '../../commands/primitives';
+import { CreatePointCommand } from '../../commands/primitives';
+import { CreateConstructionCommand } from '../../commands/constructions';
 import type { Coords2D } from '../../types/geometry';
 
 export class TriangleTool implements Tool {
@@ -28,11 +29,7 @@ export class TriangleTool implements Tool {
     if (this.pointIds.length === 3) {
       context.clearTempObjects();
       
-      const p1 = context.getObject(this.pointIds[0]!)?.definition.coords as Coords2D;
-      const p2 = context.getObject(this.pointIds[1]!)?.definition.coords as Coords2D;
-      const p3 = context.getObject(this.pointIds[2]!)?.definition.coords as Coords2D;
-      
-      const cmd = new CreateTriangleCommand(p1, p2, p3, context.generateId('tri'));
+      const cmd = new CreateConstructionCommand('polygon', 'polygon', this.pointIds, context.generateId('tri'));
       context.executeCommand(cmd);
       
       this.pointIds = [];

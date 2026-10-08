@@ -1,5 +1,6 @@
 import type { Tool, ToolContext, ToolEvent } from './Tool';
-import { CreatePointCommand, CreateSegmentCommand } from '../../commands/primitives';
+import { CreatePointCommand } from '../../commands/primitives';
+import { CreateConstructionCommand } from '../../commands/constructions';
 import type { Coords2D } from '../../types/geometry';
 
 export class SegmentTool implements Tool {
@@ -34,9 +35,7 @@ export class SegmentTool implements Tool {
       // Second click
       if (this.firstPointId !== clickedPointId) {
         context.clearTempObjects();
-        const p1 = context.getObject(this.firstPointId)?.definition.coords as Coords2D;
-        const p2 = event.mathPos; // Or getObject(clickedPointId).definition.coords
-        const cmd = new CreateSegmentCommand(p1, p2, context.generateId('seg'));
+        const cmd = new CreateConstructionCommand('segment', 'segment', [this.firstPointId, clickedPointId], context.generateId('seg'));
         context.executeCommand(cmd);
       }
       this.firstPointId = null;

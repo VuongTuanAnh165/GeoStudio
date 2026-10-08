@@ -1,5 +1,6 @@
 import type { Tool, ToolContext, ToolEvent } from './Tool';
-import { CreatePointCommand, CreatePolygonCommand } from '../../commands/primitives';
+import { CreatePointCommand } from '../../commands/primitives';
+import { CreateConstructionCommand } from '../../commands/constructions';
 import type { Coords2D } from '../../types/geometry';
 
 export class PolygonTool implements Tool {
@@ -27,8 +28,7 @@ export class PolygonTool implements Tool {
       // Close polygon
       context.clearTempObjects();
       
-      const points = this.pointIds.map(id => context.getObject(id)?.definition.coords as Coords2D);
-      const cmd = new CreatePolygonCommand(points, context.generateId('poly'));
+      const cmd = new CreateConstructionCommand('polygon', 'polygon', this.pointIds, context.generateId('poly'));
       context.executeCommand(cmd);
       
       this.pointIds = [];

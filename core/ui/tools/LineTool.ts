@@ -1,5 +1,6 @@
 import type { Tool, ToolContext, ToolEvent } from './Tool';
-import { CreatePointCommand, CreateLineCommand } from '../../commands/primitives';
+import { CreatePointCommand } from '../../commands/primitives';
+import { CreateConstructionCommand } from '../../commands/constructions';
 import type { Coords2D } from '../../types/geometry';
 
 export class LineTool implements Tool {
@@ -31,14 +32,7 @@ export class LineTool implements Tool {
     } else {
       if (this.firstPointId !== clickedPointId) {
         context.clearTempObjects();
-        const p1 = context.getObject(this.firstPointId)?.definition.coords as Coords2D;
-        const p2 = event.mathPos;
-        const dx = p2.x - p1.x;
-        const dy = p2.y - p1.y;
-        const length = Math.sqrt(dx * dx + dy * dy);
-        const direction = { x: dx / length, y: dy / length };
-        
-        const cmd = new CreateLineCommand(p1, direction, context.generateId('line'));
+        const cmd = new CreateConstructionCommand('line', 'line', [this.firstPointId, clickedPointId], context.generateId('line'));
         context.executeCommand(cmd);
       }
       this.firstPointId = null;

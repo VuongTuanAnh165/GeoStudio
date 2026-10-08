@@ -1,5 +1,6 @@
 import type { Tool, ToolContext, ToolEvent } from './Tool';
-import { CreatePointCommand, CreateRayCommand } from '../../commands/primitives';
+import { CreatePointCommand } from '../../commands/primitives';
+import { CreateConstructionCommand } from '../../commands/constructions';
 import type { Coords2D } from '../../types/geometry';
 
 export class RayTool implements Tool {
@@ -31,14 +32,7 @@ export class RayTool implements Tool {
     } else {
       if (this.firstPointId !== clickedPointId) {
         context.clearTempObjects();
-        const p1 = context.getObject(this.firstPointId)?.definition.coords as Coords2D;
-        const p2 = event.mathPos;
-        const dx = p2.x - p1.x;
-        const dy = p2.y - p1.y;
-        const length = Math.sqrt(dx * dx + dy * dy);
-        const direction = { x: dx / length, y: dy / length };
-
-        const cmd = new CreateRayCommand(p1, direction, context.generateId('ray'));
+        const cmd = new CreateConstructionCommand('ray', 'ray', [this.firstPointId, clickedPointId], context.generateId('ray'));
         context.executeCommand(cmd);
       }
       this.firstPointId = null;
