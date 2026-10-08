@@ -5,7 +5,7 @@ export abstract class BasePrimitive implements GeometryObject {
   public abstract type: GeometryObjectType;
   public dimension: 2 | 3 = 2;
   public parents: string[] = [];
-  public constraints: unknown[] = [];
+  public constraints: string[] = [];
   public style: Record<string, unknown> = {};
   public metadata: Record<string, unknown> = {};
 
