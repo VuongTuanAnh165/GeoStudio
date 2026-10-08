@@ -46,7 +46,15 @@ export class CreateConstructionCommand implements GeometryCommand {
     };
 
     if (this.objectType === 'point') {
-      newObject.metadata!.label = NameGenerator.getNextPointName(state);
+      const specialKinds = ['midpoint', 'orthocenter', 'circumcenter', 'incenter', 'centroid'];
+      if (specialKinds.includes(this.constructionKind)) {
+        newObject.metadata!.label = NameGenerator.getSpecialPointName(
+          state, 
+          this.constructionKind as 'midpoint' | 'orthocenter' | 'circumcenter' | 'incenter' | 'centroid'
+        );
+      } else {
+        newObject.metadata!.label = NameGenerator.getNextPointName(state);
+      }
     }
 
     // Clone the objects array and update parents' children lists

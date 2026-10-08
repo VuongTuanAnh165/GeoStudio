@@ -104,6 +104,21 @@ export class JSXGraphRenderer implements GeometryRenderer {
             }
             const midPoint = this.board.create('midpoint', args, { visible: false });
             jxgEl = this.board.create('perpendicular', [lineArg, midPoint], specificAttrs);
+            
+            // Smart construction: Right angle symbol
+            const p1 = this.board.create('point', [() => jxgEl.point2.X(), () => jxgEl.point2.Y()], { visible: false });
+            const p2 = this.board.create('point', [() => lineArg.point2.X(), () => lineArg.point2.Y()], { visible: false });
+            this.board.create('nonreflexangle', [p1, midPoint, p2], {
+              type: 'square', radius: 0.5, name: '', fillOpacity: 0, strokeWidth: 1, strokeColor: '#666'
+            });
+
+            // Smart construction: Equal segments
+            if (args.length === 2) { // 2 points
+              const s1 = this.board.create('segment', [args[0], midPoint], { visible: false });
+              const s2 = this.board.create('segment', [midPoint, args[1]], { visible: false });
+              this.board.create('hatch', [s1, 1], { face: '||', strokeColor: '#666' });
+              this.board.create('hatch', [s2, 1], { face: '||', strokeColor: '#666' });
+            }
             break;
           }
           case 'bisector': {
@@ -112,12 +127,47 @@ export class JSXGraphRenderer implements GeometryRenderer {
               jxgEl = lines.line1 || lines[1] || lines; // Try to extract the first line
             } else {
               jxgEl = this.board.create('bisector', args, specificAttrs);
+              // Smart construction: Equal angles
+              const pBisector = this.board.create('point', [() => jxgEl.point2.X(), () => jxgEl.point2.Y()], { visible: false });
+              const angleOpts = { radius: 1, name: '', fillOpacity: 0.1, fillColor: '#3b82f6', strokeColor: '#3b82f6', withLabel: false };
+              this.board.create('angle', [args[0], args[1], pBisector], angleOpts);
+              this.board.create('angle', [pBisector, args[1], args[2]], angleOpts);
             }
             break;
           }
           case 'incircle': {
             const incircleArray = this.board.create('incircle', args, specificAttrs);
             jxgEl = incircleArray[1]; // The circle object
+            break;
+          }
+          case 'perpendicular': {
+            jxgEl = this.board.create('perpendicular', args, specificAttrs);
+            // Smart construction: Right angle symbol
+            const lineArg = args[0];
+            const p1 = this.board.create('point', [() => jxgEl.point2.X(), () => jxgEl.point2.Y()], { visible: false });
+            const p2 = this.board.create('point', [() => lineArg.point1.X(), () => lineArg.point1.Y()], { visible: false });
+            const isect = this.board.create('intersection', [jxgEl, lineArg, 0], { visible: false });
+            this.board.create('nonreflexangle', [p1, isect, p2], {
+              type: 'square', radius: 0.5, name: '', fillOpacity: 0, strokeWidth: 1, strokeColor: '#666'
+            });
+            break;
+          }
+          case 'midpoint': {
+            jxgEl = this.board.create('midpoint', args, specificAttrs);
+            // Smart construction: Equal segments
+            if (args.length === 2) { // created from 2 points
+              const s1 = this.board.create('segment', [args[0], jxgEl], { visible: false });
+              const s2 = this.board.create('segment', [jxgEl, args[1]], { visible: false });
+              this.board.create('hatch', [s1, 1], { face: '||', strokeColor: '#666' });
+              this.board.create('hatch', [s2, 1], { face: '||', strokeColor: '#666' });
+            } else if (args.length === 1 && args[0].elType === 'segment') { // created from 1 segment
+              const p1 = args[0].point1;
+              const p2 = args[0].point2;
+              const s1 = this.board.create('segment', [p1, jxgEl], { visible: false });
+              const s2 = this.board.create('segment', [jxgEl, p2], { visible: false });
+              this.board.create('hatch', [s1, 1], { face: '||', strokeColor: '#666' });
+              this.board.create('hatch', [s2, 1], { face: '||', strokeColor: '#666' });
+            }
             break;
           }
           default:

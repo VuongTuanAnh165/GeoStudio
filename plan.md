@@ -584,8 +584,9 @@ Mỗi construction:
 **Mục tiêu:** Tích hợp camera + MediaPipe + gesture recognition. Giáo viên có thể dùng tay để điều khiển.
 
 ### Prerequisites
-- Phase 3 phải hoàn thành và ổn định
+- Phase 0 đến 5 phải hoàn thành và ổn định
 - Mouse interaction phải hoạt động hoàn hảo trước
+- Phải review lại toàn bộ phase 0 đến 5 đảm bảo đúng 100% thì mới làm Phase 6
 
 ### Tasks
 
