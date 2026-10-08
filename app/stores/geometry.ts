@@ -144,6 +144,11 @@ export const useGeometryStore = defineStore('geometry', () => {
     }
   };
 
+  const selectObjects = (ids: string[]) => {
+    engine.currentState.selection = [...ids];
+    selectedIds.value = new Set(ids);
+  };
+
   return {
     // State
     objects,
@@ -162,6 +167,7 @@ export const useGeometryStore = defineStore('geometry', () => {
     // Actions
     executeCommand,
     selectObject,
+    selectObjects,
     undo,
     redo,
     clearHistory,

@@ -1,5 +1,8 @@
 <template>
-  <div class="geo-canvas-wrapper relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-hidden transition-colors">
+  <div 
+    class="geo-canvas-wrapper relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-hidden transition-colors"
+    @contextmenu.prevent="handleContextMenu"
+  >
     <!-- JSXGraph Container -->
     <div id="jxgbox" class="jxgbox w-full h-full" />
     
@@ -44,6 +47,8 @@
         <Icon name="mdi:fit-to-screen" class="w-5 h-5" />
       </button>
     </div>
+
+    <ContextMenu />
   </div>
 </template>
 
@@ -52,9 +57,35 @@ import '../assets/css/jsxgraph.css';
 import { onMounted, watch } from 'vue';
 import { useCanvas } from '../composables/useCanvas';
 import { useGeometryStore } from '../stores/geometry';
+import { useContextMenu } from '../composables/useContextMenu';
+import ContextMenu from './ContextMenu.vue';
 
 const store = useGeometryStore();
 const { init, renderer } = useCanvas();
+const { showMenu } = useContextMenu();
+
+// Handle right click manually since JSXGraph doesn't expose it nicely
+const handleContextMenu = (e: MouseEvent) => {
+  e.preventDefault();
+  
+  let targetObject = null;
+  // Get math pos and check hit
+  // We can ask renderer to hitTest
+  if (renderer && typeof renderer.getMathPositionFromEvent === 'function') {
+    // @ts-ignore
+    const mathPos = renderer.getMathPositionFromEvent(e);
+    // @ts-ignore
+    const screenPos = renderer.getScreenPosition(mathPos);
+    // @ts-ignore
+    const hitId = renderer.hitTest(screenPos);
+    
+    if (hitId) {
+      targetObject = store.objects.get(hitId) || null;
+    }
+  }
+
+  showMenu(e.clientX, e.clientY, targetObject);
+};
 
 onMounted(() => {
   // Initialize the JSXGraph board
@@ -77,6 +108,16 @@ onMounted(() => {
     // @ts-ignore
     if (renderer.resetZoom) renderer.resetZoom();
   });
+  window.addEventListener('geostudio:zoom-fit', () => {
+    fitToView();
+  });
+  
+  // Listen to context menu from MouseHandler (handles touch long-press & right clicks)
+  window.addEventListener('geostudio:context-menu', ((e: CustomEvent) => {
+    const { clientX, clientY, hitId } = e.detail;
+    const targetObject = hitId ? store.objects.get(hitId) || null : null;
+    showMenu(clientX, clientY, targetObject);
+  }) as EventListener);
 });
 
 // Watch for store settings changes to update renderer

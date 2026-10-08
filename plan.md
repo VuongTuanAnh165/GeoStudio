@@ -371,16 +371,16 @@ Mỗi command cần:
 - [x] Theme toggle button
 
 #### 3.8 — Keyboard Shortcuts
-- [ ] `useKeyboard.ts` composable
-- [ ] Core shortcuts: Ctrl+Z, Ctrl+Y, Delete, Escape, Ctrl+A
-- [ ] Tool shortcuts: V, P, L, S, C, T, R, G
-- [ ] View shortcuts: Ctrl+0, F, F11
+- [x] `useKeyboard.ts` composable
+- [x] Core shortcuts: Ctrl+Z, Ctrl+Y, Delete, Escape, Ctrl+A
+- [x] Tool shortcuts: V, P, L, S, C, T, R, G
+- [x] View shortcuts: Ctrl+0, F, F11
 
 #### 3.9 — Context Menu
-- [ ] Right-click context menu component
-- [ ] Context-sensitive menu items (empty canvas vs point vs line vs polygon)
-- [ ] Long-press support cho touch
-- [ ] Construct sub-menu (hiện constructions khả dụng)
+- [x] Right-click context menu component
+- [x] Context-sensitive menu items (empty canvas vs point vs line vs polygon)
+- [x] Long-press support cho touch
+- [x] Construct sub-menu (hiện constructions khả dụng)
 
 #### 3.10 — Auto-naming System
 - [ ] `NameGenerator` class — tự đặt tên A, B, C... cho points

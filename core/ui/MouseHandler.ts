@@ -69,19 +69,71 @@ export class MouseHandler {
     };
   }
 
+  private longPressTimeout: any = null;
+  private startPos: { x: number, y: number } | null = null;
+  private readonly LONG_PRESS_DURATION = 500;
+  private readonly MOVE_THRESHOLD = 10; // pixels
+
   private onDown(e: any) {
+    // Detect right click
+    if (e.button === 2) {
+      // Right click should trigger context menu, not normal tool action
+      const event = this.createToolEvent(e);
+      window.dispatchEvent(new CustomEvent('geostudio:context-menu', {
+        detail: { clientX: e.clientX, clientY: e.clientY, hitId: event.hitObjectId }
+      }));
+      return;
+    }
+
+    // Start long-press detection for touch or pen
+    if (e.type.startsWith('touch') || e.pointerType === 'touch' || e.pointerType === 'pen') {
+      const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+      
+      this.startPos = { x: clientX, y: clientY };
+      this.longPressTimeout = setTimeout(() => {
+        const event = this.createToolEvent(e);
+        window.dispatchEvent(new CustomEvent('geostudio:context-menu', {
+          detail: { clientX, clientY, hitId: event.hitObjectId }
+        }));
+        this.longPressTimeout = null;
+        this.startPos = null;
+      }, this.LONG_PRESS_DURATION);
+    }
+
     if (!this.activeTool || !this.activeTool.onMouseDown) return;
     const event = this.createToolEvent(e);
     this.activeTool.onMouseDown(event, this.getToolContext());
   }
 
   private onMove(e: any) {
+    if (this.startPos) {
+      const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+      const dx = clientX - this.startPos.x;
+      const dy = clientY - this.startPos.y;
+      
+      if (Math.sqrt(dx * dx + dy * dy) > this.MOVE_THRESHOLD) {
+        if (this.longPressTimeout) {
+          clearTimeout(this.longPressTimeout);
+          this.longPressTimeout = null;
+        }
+        this.startPos = null;
+      }
+    }
+
     if (!this.activeTool || !this.activeTool.onMouseMove) return;
     const event = this.createToolEvent(e);
     this.activeTool.onMouseMove(event, this.getToolContext());
   }
 
   private onUp(e: any) {
+    if (this.longPressTimeout) {
+      clearTimeout(this.longPressTimeout);
+      this.longPressTimeout = null;
+    }
+    this.startPos = null;
+
     if (!this.activeTool || !this.activeTool.onMouseUp) return;
     const event = this.createToolEvent(e);
     this.activeTool.onMouseUp(event, this.getToolContext());

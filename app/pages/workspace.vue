@@ -45,8 +45,10 @@
 
 <script setup lang="ts">
 import { useTheme } from '../composables/useTheme';
+import { useKeyboard } from '../composables/useKeyboard';
 
 const { toggleTheme, isDark } = useTheme();
+useKeyboard();
 
 definePageMeta({
   layout: 'workspace'
