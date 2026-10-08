@@ -2,7 +2,7 @@
   <div class="h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-l border-slate-200/50 dark:border-slate-700/50 flex flex-col w-72 shrink-0 z-10 transition-colors shadow-[-4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[-4px_0_24px_rgba(0,0,0,0.2)]">
     <div class="flex flex-col flex-1 min-h-0 border-b border-slate-200/50 dark:border-slate-700/50">
       <div class="px-5 py-3 border-b border-slate-200/50 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30 font-semibold text-xs tracking-wider uppercase text-slate-500 dark:text-slate-400 shrink-0">
-        Objects
+        {{ $t('panel.objects') }}
       </div>
       <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-1.5 scrollbar-thin">
         <div 
@@ -22,14 +22,14 @@
             <button 
               class="p-1 rounded text-slate-400"
               :class="store.selectedIds.has(obj.id) ? 'hover:bg-blue-200 hover:text-blue-900' : 'hover:bg-slate-200 hover:text-slate-600'"
-              title="Toggle Visibility"
+              :title="$t('panel.toggle_visibility')"
               @click.stop="toggleVisibility(obj)"
             >
               <Icon :name="obj.style?.visible === false ? 'lucide:eye-off' : 'lucide:eye'" class="w-4 h-4" />
             </button>
             <button 
               class="p-1 rounded text-slate-400 hover:bg-red-100 hover:text-red-500 transition-colors"
-              title="Delete Object"
+              :title="$t('panel.delete_object')"
               @click.stop="deleteObject(obj.id)"
             >
               <Icon name="lucide:trash-2" class="w-4 h-4" />
@@ -37,7 +37,7 @@
           </div>
         </div>
         <div v-if="objectList.length === 0" class="p-4 text-center text-slate-400 text-sm italic">
-          No objects yet
+          {{ $t('panel.no_objects') }}
         </div>
       </div>
     </div>

@@ -21,15 +21,25 @@
           GeoStudio
         </h1>
       </div>
-      
-      <!-- Theme Toggle -->
-      <button 
-        @click="toggleTheme" 
-        class="w-10 h-10 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all hover:shadow-md"
-        :title="isDark ? 'Light Mode' : 'Dark Mode'"
-      >
-        <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" class="w-5 h-5" />
-      </button>
+      <div class="flex items-center gap-3">
+        <!-- Language Toggle -->
+        <button 
+          @click="toggleLanguage" 
+          class="w-10 h-10 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all hover:shadow-md font-medium text-sm uppercase"
+          :title="$t('statusbar.change_language')"
+        >
+          {{ locale }}
+        </button>
+
+        <!-- Theme Toggle -->
+        <button 
+          @click="toggleTheme" 
+          class="w-10 h-10 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all hover:shadow-md"
+          :title="isDark ? $t('statusbar.light_mode') : $t('statusbar.dark_mode')"
+        >
+          <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" class="w-5 h-5" />
+        </button>
+      </div>
     </header>
 
     <!-- Main Hero Section -->
@@ -40,7 +50,7 @@
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
         </span>
-        GeoStudio v1.0 is now live
+        {{ $t('landing.new_version') }}
       </div>
 
       <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-4xl leading-tight mb-8 animate-fade-in-up" style="animation-delay: 0.1s;">
@@ -48,19 +58,18 @@
       </h2>
       
       <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mb-12 leading-relaxed animate-fade-in-up" style="animation-delay: 0.2s;">
-        Khám phá, giảng dạy và học tập toán học với bảng vẽ thông minh, hỗ trợ đa chiều (2D/3D), 
-        công cụ dựng hình tự động và nhận diện cử chỉ.
+        {{ $t('landing.desc') }}
       </p>
       
       <div class="flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up" style="animation-delay: 0.3s;">
         <NuxtLink to="/workspace" class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 font-semibold text-white transition-all duration-300 bg-blue-600 rounded-full hover:bg-blue-700 hover:shadow-[0_0_40px_8px_rgba(37,99,235,0.3)] dark:hover:shadow-[0_0_40px_8px_rgba(59,130,246,0.3)] hover:-translate-y-1">
-          Bắt đầu ngay
+          {{ $t('landing.start') }}
           <Icon name="lucide:arrow-right" class="w-5 h-5 transition-transform group-hover:translate-x-1" />
         </NuxtLink>
         
         <a href="https://github.com" target="_blank" class="inline-flex items-center justify-center gap-3 px-8 py-4 font-semibold text-slate-700 dark:text-slate-300 transition-all duration-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 hover:-translate-y-1 hover:shadow-lg">
           <Icon name="lucide:github" class="w-5 h-5" />
-          Mã nguồn mở
+          {{ $t('landing.opensource') }}
         </a>
       </div>
       
@@ -72,9 +81,9 @@
           <div class="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-6">
             <Icon name="lucide:pen-tool" class="w-7 h-7" />
           </div>
-          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Dựng hình mạnh mẽ</h3>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">{{ $t('landing.feature1_title') }}</h3>
           <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-            Hàng chục công cụ dựng hình tự động, kết hợp hệ thống snap thông minh bắt điểm nhanh chóng.
+            {{ $t('landing.feature1_desc') }}
           </p>
         </div>
         
@@ -84,9 +93,9 @@
           <div class="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-6">
             <Icon name="lucide:move-3d" class="w-7 h-7" />
           </div>
-          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Không gian 3D</h3>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">{{ $t('landing.feature2_title') }}</h3>
           <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-            Hỗ trợ đầy đủ hệ trục tọa độ 3 chiều (3D) và các khối hình học không gian phức tạp.
+            {{ $t('landing.feature2_desc') }}
           </p>
         </div>
         
@@ -96,9 +105,9 @@
           <div class="w-14 h-14 rounded-2xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center text-teal-600 dark:text-teal-400 mb-6">
             <Icon name="lucide:hand" class="w-7 h-7" />
           </div>
-          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Nhận diện cử chỉ</h3>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">{{ $t('landing.feature3_title') }}</h3>
           <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
-            Điều khiển canvas và bảng vẽ bằng tay qua AI camera mà không cần dùng đến chuột hay bàn phím.
+            {{ $t('landing.feature3_desc') }}
           </p>
         </div>
       </div>
@@ -109,8 +118,14 @@
 
 <script setup lang="ts">
 import { useTheme } from '../composables/useTheme';
+import { useI18n } from '#imports';
 
 const { toggleTheme, isDark } = useTheme();
+const { locale, setLocale } = useI18n();
+
+const toggleLanguage = () => {
+  setLocale(locale.value === 'vi' ? 'en' : 'vi');
+};
 
 definePageMeta({
   layout: 'default'

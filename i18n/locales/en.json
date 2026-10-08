@@ -37,5 +37,61 @@
     "reset_view": "Reset View",
     "grid": "Grid",
     "axis": "Axis"
+  },
+  "snap": {
+    "intersection": "Intersection of {obj1} and {obj2}",
+    "midpoint": "Midpoint of {obj}",
+    "on_line": "On {obj}",
+    "grid": "Grid",
+    "point": "{obj}"
+  },
+  "landing": {
+    "new_version": "GeoStudio v1.0 is now live",
+    "subtitle": "Professional interactive geometry toolkit",
+    "desc": "Explore, teach and learn math with smart whiteboard, multi-dimensional (2D/3D) support, automatic construction tools and gesture recognition.",
+    "start": "Get started",
+    "opensource": "Open source",
+    "feature1_title": "Powerful constructions",
+    "feature1_desc": "Dozens of automatic construction tools, combined with smart snap system.",
+    "feature2_title": "3D Space",
+    "feature2_desc": "Full support for 3D coordinate system and complex spatial geometry blocks.",
+    "feature3_title": "Gesture recognition",
+    "feature3_desc": "Control canvas and whiteboard by hand via AI camera without using mouse or keyboard."
+  },
+  "workspace": {
+    "untitled": "Untitled Document",
+    "share": "Share",
+    "rename_object": "Rename Object",
+    "new_name": "New name",
+    "enter_name": "Enter a new name...",
+    "cancel": "Cancel",
+    "rename": "Rename"
+  },
+  "statusbar": {
+    "objects": "{count} objects",
+    "active_tool": "{tool} tool",
+    "select_tool": "Select tool",
+    "zoom_out": "Zoom Out",
+    "zoom_in": "Zoom In",
+    "reset_zoom": "Reset Zoom",
+    "change_language": "Change Language",
+    "light_mode": "Light Mode",
+    "dark_mode": "Dark Mode",
+    "cursor_position": "Cursor Position",
+    "zoom": "Zoom",
+    "object_count": "Object Count"
+  },
+  "panel": {
+    "objects": "Objects",
+    "toggle_visibility": "Toggle Visibility",
+    "delete_object": "Delete Object",
+    "no_objects": "No objects yet",
+    "properties": "Properties",
+    "no_object_selected": "No object selected",
+    "label": "Label",
+    "color": "Color",
+    "line_width": "Line Width",
+    "show_label": "Show Label",
+    "constraints": "Constraints"
   }
 }

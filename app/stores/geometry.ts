@@ -4,6 +4,7 @@ import { CommandEngine } from '../../core/commands';
 import { ConstructionGraph } from '../../core/geometry/graph/ConstructionGraph';
 import type { GeometryObject, GeometryConstraint } from '../../core/types/geometry';
 import type { GeometryCommand } from '../../core/types/commands';
+import type { SnapSettings } from '../../core/engine/SnapEngine';
 
 export const useGeometryStore = defineStore('geometry', () => {
   const engine = new CommandEngine({
@@ -38,6 +39,14 @@ export const useGeometryStore = defineStore('geometry', () => {
   const activeToolType = ref<string | null>(null);
   const cursorCoords = ref<{x: number, y: number}>({ x: 0, y: 0 });
   const settings = ref(engine.currentState.document.settings);
+  const snapSettings = ref<SnapSettings>({
+    point: true,
+    intersection: true,
+    midpoint: true,
+    line: true,
+    grid: true,
+    perpendicular: true
+  });
 
   const canUndo = ref(false);
   const canRedo = ref(false);
@@ -170,6 +179,7 @@ export const useGeometryStore = defineStore('geometry', () => {
     cursorCoords,
     zoomLevel: ref(100),
     settings,
+    snapSettings,
     
     // Getters
     selectedObjects,

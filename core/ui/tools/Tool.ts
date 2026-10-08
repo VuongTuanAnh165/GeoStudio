@@ -1,11 +1,13 @@
 import type { GeometryObject, Coords2D } from '../../types/geometry';
 import type { GeometryCommand } from '../../types/commands';
+import type { SnapResult } from '../../engine/SnapEngine';
 
 export interface ToolEvent {
   mathPos: Coords2D;
   screenPos: Coords2D;
   hitObjectId: string | null;
   nativeEvent: Event;
+  snapResult?: SnapResult;
 }
 
 export interface ToolContext {

@@ -37,5 +37,61 @@
     "reset_view": "Đặt lại góc nhìn",
     "grid": "Lưới toạ độ",
     "axis": "Trục toạ độ"
+  },
+  "snap": {
+    "intersection": "Giao điểm của {obj1} và {obj2}",
+    "midpoint": "Trung điểm của {obj}",
+    "on_line": "Trên {obj}",
+    "grid": "Lưới toạ độ",
+    "point": "{obj}"
+  },
+  "landing": {
+    "new_version": "GeoStudio v1.0 đã ra mắt",
+    "subtitle": "Bộ công cụ hình học tương tác chuyên nghiệp",
+    "desc": "Khám phá, giảng dạy và học tập toán học với bảng vẽ thông minh, hỗ trợ đa chiều (2D/3D), công cụ dựng hình tự động và nhận diện cử chỉ.",
+    "start": "Bắt đầu ngay",
+    "opensource": "Mã nguồn mở",
+    "feature1_title": "Dựng hình mạnh mẽ",
+    "feature1_desc": "Hàng chục công cụ dựng hình tự động, kết hợp hệ thống snap thông minh bắt điểm nhanh chóng.",
+    "feature2_title": "Không gian 3D",
+    "feature2_desc": "Hỗ trợ đầy đủ hệ trục tọa độ 3 chiều (3D) và các khối hình học không gian phức tạp.",
+    "feature3_title": "Nhận diện cử chỉ",
+    "feature3_desc": "Điều khiển canvas và bảng vẽ bằng tay qua AI camera mà không cần dùng đến chuột hay bàn phím."
+  },
+  "workspace": {
+    "untitled": "Tài liệu không tên",
+    "share": "Chia sẻ",
+    "rename_object": "Đổi tên đối tượng",
+    "new_name": "Tên mới",
+    "enter_name": "Nhập tên mới...",
+    "cancel": "Hủy",
+    "rename": "Đổi tên"
+  },
+  "statusbar": {
+    "objects": "{count} đối tượng",
+    "active_tool": "công cụ {tool}",
+    "select_tool": "Chọn công cụ",
+    "zoom_out": "Thu nhỏ",
+    "zoom_in": "Phóng to",
+    "reset_zoom": "Đặt lại thu phóng",
+    "change_language": "Đổi ngôn ngữ",
+    "light_mode": "Chế độ sáng",
+    "dark_mode": "Chế độ tối",
+    "cursor_position": "Vị trí con trỏ",
+    "zoom": "Thu phóng",
+    "object_count": "Số lượng đối tượng"
+  },
+  "panel": {
+    "objects": "Các đối tượng",
+    "toggle_visibility": "Bật/tắt hiển thị",
+    "delete_object": "Xóa đối tượng",
+    "no_objects": "Chưa có đối tượng nào",
+    "properties": "Thuộc tính",
+    "no_object_selected": "Chưa chọn đối tượng nào",
+    "label": "Tên nhãn",
+    "color": "Màu sắc",
+    "line_width": "Độ dày nét",
+    "show_label": "Hiển thị nhãn",
+    "constraints": "Ràng buộc"
   }
 }

@@ -13,12 +13,17 @@ import { SelectTool } from '../../core/ui/tools/SelectTool';
 import { DeleteTool } from '../../core/ui/tools/DeleteTool';
 import { ConstructionTool } from '../../core/ui/tools/ConstructionTool';
 import type { Tool } from '../../core/ui/tools/Tool';
+import { SnapEngine } from '../../core/engine/SnapEngine';
+import type { SnapResult } from '../../core/engine/SnapEngine';
 
 export function useCanvas() {
   const containerId = ref<string>('jxgbox');
   const renderer = new JSXGraphRenderer();
   const store = useGeometryStore();
   let initialized = false;
+  
+  const snapEngine = new SnapEngine(renderer);
+  const currentSnapResult = ref<SnapResult | null>(null);
   
   let mouseHandler: MouseHandler | null = null;
   const tools = new Map<string, Tool>();
@@ -48,7 +53,10 @@ export function useCanvas() {
       getObject: (id) => store.objects.get(id),
       getObjects: () => Array.from(store.objects.values()),
       generateId: (prefix) => `${prefix}_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-      selectObject: store.selectObject
+      selectObject: store.selectObject,
+      snapEngine,
+      getSnapSettings: () => store.snapSettings,
+      setSnapResult: (res) => { currentSnapResult.value = res; }
     });
     
     // Sync active tool from store
@@ -148,6 +156,7 @@ export function useCanvas() {
     syncToRenderer,
     zoomIn,
     zoomOut,
-    resetZoom
+    resetZoom,
+    currentSnapResult
   };
 }

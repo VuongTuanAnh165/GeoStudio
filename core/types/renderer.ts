@@ -4,7 +4,8 @@ export interface GeometryRenderer {
   init(container: string | HTMLElement): void;
   renderObject(obj: GeometryObject): void;
   removeObject(id: string): void;
-  updateObject(id: string, obj: GeometryObject): void;
+  updateObject(id: string, obj: GeometryObject, isSelected?: boolean): void;
+  getRawObject?(id: string): any;
   getRenderedIds(): string[];
   hitTest(screenPos: Coords2D): string | null;
   getScreenPosition(mathPos: Coords2D): Coords2D;

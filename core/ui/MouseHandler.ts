@@ -3,6 +3,8 @@ import type { Tool, ToolContext, ToolEvent } from './tools/Tool';
 import type { GeometryCommand } from '../types/commands';
 import type { GeometryObject } from '../types/geometry';
 
+import type { SnapEngine, SnapSettings, SnapResult } from '../engine/SnapEngine';
+
 export interface MouseHandlerContext {
   renderer: GeometryRenderer;
   executeCommand: (cmd: GeometryCommand) => void;
@@ -10,6 +12,9 @@ export interface MouseHandlerContext {
   getObjects: () => GeometryObject[];
   generateId: (prefix: string) => string;
   selectObject: (id: string | null) => void;
+  snapEngine?: SnapEngine;
+  getSnapSettings?: () => SnapSettings;
+  setSnapResult?: (result: SnapResult | null) => void;
 }
 
 export class MouseHandler {
@@ -57,15 +62,51 @@ export class MouseHandler {
   }
 
   private createToolEvent(e: any): ToolEvent {
-    const mathPos = this.context.renderer.getMathPositionFromEvent(e);
-    const screenPos = this.context.renderer.getScreenPosition(mathPos);
-    const hitObjectId = this.context.renderer.hitTest(screenPos);
+    let mathPos = this.context.renderer.getMathPositionFromEvent(e);
+    let screenPos = this.context.renderer.getScreenPosition(mathPos);
+    let hitObjectId = this.context.renderer.hitTest(screenPos);
+    
+    let snapResultOut;
+    
+    if (this.context.snapEngine && this.context.getSnapSettings) {
+      const snapResult = this.context.snapEngine.snap(
+        mathPos,
+        this.context.getObjects(),
+        this.context.getSnapSettings()
+      );
+      
+      snapResultOut = snapResult.snapped ? snapResult : undefined;
+      
+      if (this.context.setSnapResult) {
+        this.context.setSnapResult(snapResult.snapped ? snapResult : null);
+      }
+      
+      if (snapResult.snapped) {
+        mathPos = snapResult.pos;
+        screenPos = this.context.renderer.getScreenPosition(mathPos);
+        if (snapResult.snapType === 'point' && snapResult.targetIds && snapResult.targetIds.length > 0) {
+          hitObjectId = snapResult.targetIds[0]!;
+        } else if (snapResult.snapType === 'intersection' && snapResult.targetIds && snapResult.targetIds.length === 2) {
+           // We might need a way to pass this to the tool, but hitObjectId is a single string.
+           // For now, let the tool handle intersections if needed, or we just rely on hitObjectId = null and precise coords.
+           // Actually, if we snap to an intersection, the mathPos is exactly the intersection.
+           hitObjectId = null;
+        } else if (snapResult.snapType === 'midpoint' || snapResult.snapType === 'line' || snapResult.snapType === 'grid') {
+           // Don't hijack hitObjectId for lines, otherwise selecting a line might mistakenly create a point on it instead of selecting the line, wait.
+           // Actually, hitTest does a good job of finding the line anyway.
+           if (!hitObjectId && snapResult.targetIds && snapResult.targetIds.length > 0) {
+             hitObjectId = snapResult.targetIds[0]!;
+           }
+        }
+      }
+    }
     
     return {
       mathPos,
       screenPos,
       hitObjectId,
-      nativeEvent: e
+      nativeEvent: e,
+      snapResult: snapResultOut
     };
   }
 

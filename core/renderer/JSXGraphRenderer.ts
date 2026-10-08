@@ -36,6 +36,10 @@ export class JSXGraphRenderer implements GeometryRenderer {
     }
   }
 
+  getRawObject(id: string): any {
+    return this.jxgObjects.get(id);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getStyleAttributes(obj: GeometryObject, isSelected: boolean = false): Record<string, any> {
     const baseColor = obj.style?.color || '#3b82f6';
@@ -100,6 +104,11 @@ export class JSXGraphRenderer implements GeometryRenderer {
         switch (obj.definition.kind) {
           case 'ray': {
             jxgEl = this.board.create('line', args, { ...specificAttrs, straightFirst: false, straightLast: true });
+            break;
+          }
+          case 'glider': {
+            const coords = obj.definition.coords as Coords2D;
+            jxgEl = this.board.create('glider', [coords.x, coords.y, args[0]], specificAttrs);
             break;
           }
           case 'perpendicular_bisector': {

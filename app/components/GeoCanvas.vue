@@ -6,6 +6,9 @@
     <!-- JSXGraph Container -->
     <div id="jxgbox" class="jxgbox w-full h-full" />
     
+    <!-- Custom Overlay for Snap and Measurement Indicators -->
+    <CanvasOverlay :snap-result="currentSnapResult" :renderer="renderer" />
+
     <!-- View Controls Overlay (Bottom Right) -->
     <div class="absolute bottom-6 right-6 flex gap-1 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl shadow-lg shadow-black/5 rounded-2xl p-1.5 border border-slate-200/50 dark:border-slate-700/50 transition-colors">
       <button 
@@ -59,9 +62,10 @@ import { useCanvas } from '../composables/useCanvas';
 import { useGeometryStore } from '../stores/geometry';
 import { useContextMenu } from '../composables/useContextMenu';
 import ContextMenu from './ContextMenu.vue';
+import CanvasOverlay from './CanvasOverlay.vue';
 
 const store = useGeometryStore();
-const { init, renderer } = useCanvas();
+const { init, renderer, currentSnapResult } = useCanvas();
 const { showMenu } = useContextMenu();
 
 // Handle right click manually since JSXGraph doesn't expose it nicely
