@@ -407,14 +407,14 @@ Mỗi command cần:
 - ⚠️ JSXGraph bundle size lớn (~300KB) → lazy import
 
 ### Definition of Done
-- [ ] Tạo tất cả 9 primitives bằng mouse + keyboard shortcut
-- [ ] Kéo free point → dependants auto-update (visual confirmation)
-- [ ] Undo/Redo 20 lần → canvas state đúng
-- [ ] Zoom 10% → 500% → reset hoạt động
-- [ ] Dark/Light theme switch không flicker
-- [ ] Keyboard shortcut đúng cho tất cả tools
-- [ ] No console errors trong normal workflow
-- [ ] Render ≥ 100 objects không lag (≥ 30fps)
+- [x] Tạo tất cả 9 primitives bằng mouse + keyboard shortcut
+- [ ] Kéo free point → dependants auto-update (visual confirmation) (Sẽ implement ở Phase 4)
+- [x] Undo/Redo 20 lần → canvas state đúng
+- [x] Zoom 10% → 500% → reset hoạt động
+- [x] Dark/Light theme switch không flicker
+- [x] Keyboard shortcut đúng cho tất cả tools
+- [x] No console errors trong normal workflow
+- [x] Render ≥ 100 objects không lag (≥ 30fps)
 
 ### Estimated Time: 7–10 ngày
 

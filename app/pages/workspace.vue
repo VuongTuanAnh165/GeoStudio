@@ -40,11 +40,38 @@
 
     <!-- Status Bar (Bottom) -->
     <StatusBar />
+
+    <!-- Rename Modal -->
+    <div v-if="showRenameModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full max-w-sm overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200">
+        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700/50">
+          <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100">Rename Object</h3>
+        </div>
+        <div class="p-6">
+          <label for="object-name" class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">New name</label>
+          <input 
+            id="object-name"
+            type="text" 
+            v-model="renameInput"
+            @keyup.enter="confirmRename"
+            @keyup.esc="cancelRename"
+            ref="renameInputRef"
+            class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-colors"
+            placeholder="Enter a new name..."
+          />
+          <p v-if="renameError" class="mt-2 text-sm text-red-500 dark:text-red-400">{{ renameError }}</p>
+        </div>
+        <div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-700/50">
+          <button @click="cancelRename" class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors">Cancel</button>
+          <button @click="confirmRename" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors shadow-blue-500/20">Rename</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useTheme } from '../composables/useTheme';
 import { useKeyboard } from '../composables/useKeyboard';
 import { useGeometryStore } from '../stores/geometry';
@@ -55,6 +82,13 @@ const { toggleTheme, isDark } = useTheme();
 const store = useGeometryStore();
 useKeyboard();
 
+const showRenameModal = ref(false);
+const renameTargetId = ref('');
+const renameInput = ref('');
+const renameError = ref('');
+const renameOriginalLabel = ref('');
+const renameInputRef = ref<HTMLInputElement | null>(null);
+
 const handleRenameEvent = (e: Event) => {
   const customEvent = e as CustomEvent;
   const hitId = customEvent.detail?.hitId;
@@ -63,19 +97,41 @@ const handleRenameEvent = (e: Event) => {
   const obj = store.objects.get(hitId);
   if (!obj) return;
 
-  const currentLabel = (obj.metadata?.label as string) || '';
-  const newName = window.prompt(`Rename object ${currentLabel || obj.type}:`, currentLabel);
+  renameTargetId.value = hitId;
+  renameOriginalLabel.value = (obj.metadata?.label as string) || '';
+  renameInput.value = renameOriginalLabel.value;
+  renameError.value = '';
+  showRenameModal.value = true;
+  
+  nextTick(() => {
+    if (renameInputRef.value) {
+      renameInputRef.value.focus();
+      renameInputRef.value.select();
+    }
+  });
+};
+
+const cancelRename = () => {
+  showRenameModal.value = false;
+  renameError.value = '';
+};
+
+const confirmRename = () => {
+  const newName = renameInput.value;
   
   if (newName !== null && newName.trim() !== '') {
     const trimmed = newName.trim();
-    if (trimmed !== currentLabel) {
+    if (trimmed !== renameOriginalLabel.value) {
       if (!NameGenerator.isNameAvailable(store.rawState, trimmed)) {
-        window.alert(`Name "${trimmed}" is already taken!`);
+        renameError.value = `Name "${trimmed}" is already taken!`;
         return;
       }
-      store.executeCommand(new RenameObjectCommand(hitId, trimmed));
+      store.executeCommand(new RenameObjectCommand(renameTargetId.value, trimmed));
     }
   }
+  
+  showRenameModal.value = false;
+  renameError.value = '';
 };
 
 onMounted(() => {
