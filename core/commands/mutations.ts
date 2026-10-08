@@ -149,3 +149,24 @@ export class HideLabelCommand extends BaseMutationCommand {
     return obj;
   }
 }
+
+export class RenameObjectCommand extends BaseMutationCommand {
+  override type = 'RENAME_OBJECT';
+
+  constructor(objectId: string, public newLabel: string) {
+    super(objectId);
+    this.args = { newLabel };
+  }
+
+  override mutate(obj: GeometryObject): GeometryObject {
+    // In execute we might want to resolve collisions, but mutate runs purely.
+    // Collision resolution should happen in execute or validate.
+    // We'll let the UI handle collisions before creating the command or we can do a naive replace here.
+    obj.metadata = obj.metadata || {};
+    obj.metadata.label = this.newLabel;
+    obj.style = obj.style || {};
+    obj.style.showLabel = true;
+    return obj;
+  }
+}
+

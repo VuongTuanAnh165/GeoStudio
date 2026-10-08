@@ -1,6 +1,7 @@
 import type { GeometryCommand, GeometryState, ValidationResult } from '../types/commands';
 import type { GeometryObject, Coords2D } from '../types/geometry';
 import { Point, Segment, Line, Ray, Circle, Polygon } from '../geometry/primitives/2d';
+import { NameGenerator } from '../geometry/naming/NameGenerator';
 
 export abstract class BaseCreateCommand implements GeometryCommand {
   id: string;
@@ -17,10 +18,10 @@ export abstract class BaseCreateCommand implements GeometryCommand {
     this.timestamp = Date.now();
   }
 
-  abstract createPrimitive(): GeometryObject;
+  abstract createPrimitive(state: GeometryState): GeometryObject;
 
   execute(state: GeometryState): GeometryState {
-    const primitive = this.createPrimitive();
+    const primitive = this.createPrimitive(state);
     this.createdObjectId = primitive.id;
     
     // Immutable update
@@ -73,8 +74,11 @@ export class CreatePointCommand extends BaseCreateCommand {
     this.args = { x, y, objectId };
   }
 
-  override createPrimitive(): GeometryObject {
+  override createPrimitive(state: GeometryState): GeometryObject {
     const point = new Point(this.x, this.y, this.objectId);
+    const label = NameGenerator.getNextPointName(state);
+    point.metadata.label = label;
+    point.style.showLabel = true;
     return point.toJSON();
   }
 }
@@ -87,7 +91,7 @@ export class CreateSegmentCommand extends BaseCreateCommand {
     this.args = { p1, p2, objectId };
   }
 
-  override createPrimitive(): GeometryObject {
+  override createPrimitive(state: GeometryState): GeometryObject {
     const segment = new Segment(this.p1, this.p2, this.objectId);
     return segment.toJSON();
   }
@@ -101,7 +105,7 @@ export class CreateLineCommand extends BaseCreateCommand {
     this.args = { point, direction, objectId };
   }
 
-  override createPrimitive(): GeometryObject {
+  override createPrimitive(state: GeometryState): GeometryObject {
     const line = new Line(this.point, this.direction, this.objectId);
     return line.toJSON();
   }
@@ -115,7 +119,7 @@ export class CreateRayCommand extends BaseCreateCommand {
     this.args = { origin, direction, objectId };
   }
 
-  override createPrimitive(): GeometryObject {
+  override createPrimitive(state: GeometryState): GeometryObject {
     const ray = new Ray(this.origin, this.direction, this.objectId);
     return ray.toJSON();
   }
@@ -129,7 +133,7 @@ export class CreateCircleCommand extends BaseCreateCommand {
     this.args = { center, radius, objectId };
   }
 
-  override createPrimitive(): GeometryObject {
+  override createPrimitive(state: GeometryState): GeometryObject {
     const circle = new Circle(this.center, this.radius, this.objectId);
     return circle.toJSON();
   }
@@ -143,7 +147,7 @@ export class CreatePolygonCommand extends BaseCreateCommand {
     this.args = { points, objectId };
   }
 
-  override createPrimitive(): GeometryObject {
+  override createPrimitive(state: GeometryState): GeometryObject {
     const polygon = new Polygon(this.points, this.objectId);
     return polygon.toJSON();
   }

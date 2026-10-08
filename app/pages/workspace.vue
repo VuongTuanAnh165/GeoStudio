@@ -44,11 +44,47 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
 import { useTheme } from '../composables/useTheme';
 import { useKeyboard } from '../composables/useKeyboard';
+import { useGeometryStore } from '../stores/geometry';
+import { RenameObjectCommand } from '../../core/commands/mutations';
+import { NameGenerator } from '../../core/geometry/naming/NameGenerator';
 
 const { toggleTheme, isDark } = useTheme();
+const store = useGeometryStore();
 useKeyboard();
+
+const handleRenameEvent = (e: Event) => {
+  const customEvent = e as CustomEvent;
+  const hitId = customEvent.detail?.hitId;
+  if (!hitId) return;
+
+  const obj = store.objects.get(hitId);
+  if (!obj) return;
+
+  const currentLabel = (obj.metadata?.label as string) || '';
+  const newName = window.prompt(`Rename object ${currentLabel || obj.type}:`, currentLabel);
+  
+  if (newName !== null && newName.trim() !== '') {
+    const trimmed = newName.trim();
+    if (trimmed !== currentLabel) {
+      if (!NameGenerator.isNameAvailable(store.rawState, trimmed)) {
+        window.alert(`Name "${trimmed}" is already taken!`);
+        return;
+      }
+      store.executeCommand(new RenameObjectCommand(hitId, trimmed));
+    }
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('geostudio:rename-object', handleRenameEvent);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('geostudio:rename-object', handleRenameEvent);
+});
 
 definePageMeta({
   layout: 'workspace'

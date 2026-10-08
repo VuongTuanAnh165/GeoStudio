@@ -33,41 +33,52 @@ export class JSXGraphRenderer implements GeometryRenderer {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private getStyleAttributes(obj: GeometryObject): Record<string, any> {
+  private getStyleAttributes(obj: GeometryObject, isSelected: boolean = false): Record<string, any> {
+    const baseColor = obj.style?.color || '#3b82f6';
+    const baseStrokeWidth = (obj.style?.strokeWidth as number) || 2;
+
+    let strokeColor = baseColor;
+    let fillColor = baseColor;
+    let strokeWidth = baseStrokeWidth;
+    let size = 4;
+
+    if (isSelected) {
+      strokeWidth = baseStrokeWidth + 3;
+      size = 6;
+    }
+
     const defaultAttrs = {
       name: obj.metadata?.label || '',
       withLabel: obj.style?.showLabel === true,
       visible: obj.style?.visible !== false,
-      strokeColor: obj.style?.color || '#0000ff',
-      strokeWidth: obj.style?.strokeWidth || 2,
-      fixed: true // We will handle moving via our CommandEngine, so JSXGraph elements are "fixed" visually from its own dragging logic, or we let it drag but intercept? 
-      // Actually, if we let JSXGraph drag it, it updates its internal state. We might want to disable internal dragging or sync it.
-      // For Phase 3, we usually let our MouseHandler handle dragging, so JSXGraph elements should be pointer-events target but NOT internally dragged by JSXGraph physics to prevent state desync.
-      // Wait, JXG points can be dragged by default. Let's make them fixed so our MouseHandler controls everything, or we use JSXGraph's drag events. 
-      // plan.md says: `MouseHandler` class -> Drag -> move object. This implies we handle drag manually. So elements should not be draggable by JSXGraph.
+      strokeColor,
+      strokeWidth,
+      shadow: isSelected, // adds a drop shadow for highlight
+      fixed: true
     };
     
-    // Merge explicit overrides
-    return { ...defaultAttrs, fixed: true };
+    // We will return baseColor, strokeWidth and size for specific overrides
+    return { attrs: defaultAttrs, strokeColor, size, isSelected, baseColor };
   }
 
-  renderObject(obj: GeometryObject): void {
+  renderObject(obj: GeometryObject, isSelected: boolean = false): void {
     if (!this.board) return;
     if (this.jxgObjects.has(obj.id)) {
-      this.updateObject(obj.id, obj);
+      this.updateObject(obj.id, obj, isSelected);
       return;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let jxgEl: any;
-    const attrs = this.getStyleAttributes(obj);
+    const styleInfo = this.getStyleAttributes(obj, isSelected);
+    const attrs = styleInfo.attrs;
     attrs.id = obj.id; // Assign ID to find it later in hit tests
 
     try {
       switch (obj.type) {
         case 'point': {
           const coords = obj.definition.coords as Coords2D;
-          jxgEl = this.board.create('point', [coords.x, coords.y], { ...attrs, size: 4, fillColor: attrs.strokeColor });
+          jxgEl = this.board.create('point', [coords.x, coords.y], { ...attrs, size: styleInfo.size, fillColor: styleInfo.strokeColor });
           break;
         }
         case 'segment': {
@@ -94,15 +105,13 @@ export class JSXGraphRenderer implements GeometryRenderer {
         case 'circle': {
           const c = obj.definition.center as Coords2D;
           const r = obj.definition.radius as number;
-          // JSXGraph creates circle from center point and a point on circle, or center and radius.
-          // By passing center coords and radius:
           jxgEl = this.board.create('circle', [[c.x, c.y], r], attrs);
           break;
         }
         case 'polygon': {
           const points = obj.definition.points as Coords2D[];
           const coordArrays = points.map(p => [p.x, p.y]);
-          jxgEl = this.board.create('polygon', coordArrays, { ...attrs, hasInnerPoints: true });
+          jxgEl = this.board.create('polygon', coordArrays, { ...attrs, hasInnerPoints: true, fillColor: styleInfo.baseColor, fillOpacity: styleInfo.isSelected ? 0.3 : 0.1 });
           break;
         }
       }
@@ -124,17 +133,28 @@ export class JSXGraphRenderer implements GeometryRenderer {
     }
   }
 
-  updateObject(id: string, obj: GeometryObject): void {
+  updateObject(id: string, obj: GeometryObject, isSelected: boolean = false): void {
     if (!this.board) return;
     const jxgEl = this.jxgObjects.get(id);
     
     if (!jxgEl) {
-      this.renderObject(obj);
+      this.renderObject(obj, isSelected);
       return;
     }
 
     // Update style attributes
-    const attrs = this.getStyleAttributes(obj);
+    const styleInfo = this.getStyleAttributes(obj, isSelected);
+    const attrs = styleInfo.attrs;
+
+    if (obj.type === 'point') {
+      attrs.size = styleInfo.size;
+      attrs.fillColor = styleInfo.strokeColor;
+    }
+    if (obj.type === 'polygon') {
+      attrs.fillColor = styleInfo.baseColor;
+      attrs.fillOpacity = styleInfo.isSelected ? 0.3 : 0.1;
+    }
+    
     for (const [key, val] of Object.entries(attrs)) {
       jxgEl.setAttribute({ [key]: val });
     }

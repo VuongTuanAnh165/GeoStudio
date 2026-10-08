@@ -100,7 +100,8 @@ export function useCanvas() {
     // 1. Render or Update existing objects
     for (const [id, obj] of store.objects.entries()) {
       currentIds.add(id);
-      renderer.updateObject(id, obj);
+      const isSelected = store.selectedIds.has(id);
+      renderer.updateObject(id, obj, isSelected);
     }
 
     // 2. Remove deleted objects
@@ -116,6 +117,14 @@ export function useCanvas() {
   // Our geometry store creates a new Map on every state change.
   watch(
     () => store.objects,
+    () => {
+      syncToRenderer();
+    },
+    { deep: true }
+  );
+
+  watch(
+    () => store.selectedIds,
     () => {
       syncToRenderer();
     },

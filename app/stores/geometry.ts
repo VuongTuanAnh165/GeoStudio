@@ -140,7 +140,7 @@ export const useGeometryStore = defineStore('geometry', () => {
       selectedIds.value = new Set([id]);
     } else {
       engine.currentState.selection = [];
-      selectedIds.value.clear();
+      selectedIds.value = new Set();
     }
   };
 

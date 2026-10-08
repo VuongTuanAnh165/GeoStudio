@@ -127,6 +127,9 @@ export class MouseHandler {
     this.activeTool.onMouseMove(event, this.getToolContext());
   }
 
+  private lastClickTime: number = 0;
+  private lastClickObjectId: string | null = null;
+
   private onUp(e: any) {
     if (this.longPressTimeout) {
       clearTimeout(this.longPressTimeout);
@@ -136,6 +139,22 @@ export class MouseHandler {
 
     if (!this.activeTool || !this.activeTool.onMouseUp) return;
     const event = this.createToolEvent(e);
+
+    // Double click detection
+    const now = Date.now();
+    if (now - this.lastClickTime < 300 && this.lastClickObjectId === event.hitObjectId) {
+      if (event.hitObjectId) {
+        window.dispatchEvent(new CustomEvent('geostudio:rename-object', {
+          detail: { hitId: event.hitObjectId }
+        }));
+      }
+      this.lastClickTime = 0;
+      this.lastClickObjectId = null;
+    } else {
+      this.lastClickTime = now;
+      this.lastClickObjectId = event.hitObjectId;
+    }
+
     this.activeTool.onMouseUp(event, this.getToolContext());
   }
 }

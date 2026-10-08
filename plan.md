@@ -383,10 +383,10 @@ Mỗi command cần:
 - [x] Construct sub-menu (hiện constructions khả dụng)
 
 #### 3.10 — Auto-naming System
-- [ ] `NameGenerator` class — tự đặt tên A, B, C... cho points
-- [ ] Special naming (H, O, I, G, M cho các điểm đặc biệt)
-- [ ] Rename functionality (double-click label)
-- [ ] Name collision handling
+- [x] `NameGenerator` class — tự đặt tên A, B, C... cho points
+- [x] Special naming (H, O, I, G, M cho các điểm đặc biệt)
+- [x] Rename functionality (double-click label)
+- [x] Name collision handling
 
 ### Deliverables
 - ✅ Canvas hiển thị geometry objects

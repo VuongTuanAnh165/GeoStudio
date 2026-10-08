@@ -41,3 +41,16 @@
 .dark .jxgbox svg {
   filter: invert(0.93) hue-rotate(180deg) !important;
 }
+
+.dark .JXGtext {
+  color: rgb(var(--color-text)) !important;
+}
+
+.JXGtext {
+  /* Provide a slight shadow to make text readable over grid lines */
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.7), -1px -1px 0 rgba(255,255,255,0.7), 1px -1px 0 rgba(255,255,255,0.7), -1px 1px 0 rgba(255,255,255,0.7);
+}
+
+.dark .JXGtext {
+  text-shadow: 1px 1px 0 rgba(15,23,42,0.7), -1px -1px 0 rgba(15,23,42,0.7), 1px -1px 0 rgba(15,23,42,0.7), -1px 1px 0 rgba(15,23,42,0.7);
+}
