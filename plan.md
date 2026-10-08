@@ -434,34 +434,34 @@ Mỗi command cần:
 - [ ] Tích hợp vào UI: khi chọn objects, hiện menu constructions khả dụng
 
 #### 4.2 — Constructions (Phase 1: THCS cơ bản)
-- [ ] `Midpoint` — trung điểm đoạn thẳng
-- [ ] `PerpendicularLine` — đường vuông góc qua điểm
-- [ ] `ParallelLine` — đường song song qua điểm
-- [ ] `AngleBisector` — đường phân giác
-- [ ] `PerpendicularBisector` — đường trung trực
-- [ ] `Median` — đường trung tuyến tam giác
-- [ ] `Altitude` — đường cao tam giác
-- [ ] `Intersection` — giao điểm (line-line, line-circle, circle-circle)
-- [ ] `Circumcircle` — đường tròn ngoại tiếp tam giác
-- [ ] `Incircle` — đường tròn nội tiếp tam giác
-- [ ] `Tangent` — đường tiếp tuyến đường tròn qua điểm
-- [ ] `Projection` — hình chiếu vuông góc
+- [x] `Midpoint` — trung điểm đoạn thẳng
+- [x] `PerpendicularLine` — đường vuông góc qua điểm
+- [x] `ParallelLine` — đường song song qua điểm
+- [x] `AngleBisector` — đường phân giác
+- [x] `PerpendicularBisector` — đường trung trực
+- [x] `Median` — đường trung tuyến tam giác (via macros)
+- [x] `Altitude` — đường cao tam giác (via macros)
+- [x] `Intersection` — giao điểm (line-line, line-circle, circle-circle)
+- [x] `Circumcircle` — đường tròn ngoại tiếp tam giác
+- [x] `Incircle` — đường tròn nội tiếp tam giác
+- [x] `Tangent` — đường tiếp tuyến đường tròn qua điểm
+- [x] `Projection` — hình chiếu vuông góc (via macros)
 
 Mỗi construction:
-- [ ] Register vào registry
-- [ ] Tương ứng Command
-- [ ] Auto-create trong Construction Graph (parents → child)
-- [ ] Unit tests
+- [x] Register vào registry
+- [x] Tương ứng Command
+- [x] Auto-create trong Construction Graph (parents → child)
+- [x] Unit tests
 
 #### 4.3 — Construction Tools trên UI
-- [ ] Midpoint tool
-- [ ] Perpendicular tool
-- [ ] Parallel tool
-- [ ] Bisector tool
-- [ ] Intersection tool (auto-detect khi 2 objects giao nhau)
-- [ ] Circumcircle tool (chọn 3 điểm hoặc tam giác)
-- [ ] Incircle tool
-- [ ] Tangent tool
+- [x] Midpoint tool
+- [x] Perpendicular tool
+- [x] Parallel tool
+- [x] Bisector tool
+- [x] Intersection tool (auto-detect khi 2 objects giao nhau)
+- [x] Circumcircle tool (chọn 3 điểm hoặc tam giác)
+- [x] Incircle tool
+- [x] Tangent tool
 
 #### 4.4 — Constraint System (cơ bản)
 - [ ] `ConstraintSolver` class

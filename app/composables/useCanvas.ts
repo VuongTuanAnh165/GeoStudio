@@ -11,6 +11,7 @@ import { PolygonTool } from '../../core/ui/tools/PolygonTool';
 import { TriangleTool } from '../../core/ui/tools/TriangleTool';
 import { SelectTool } from '../../core/ui/tools/SelectTool';
 import { DeleteTool } from '../../core/ui/tools/DeleteTool';
+import { ConstructionTool } from '../../core/ui/tools/ConstructionTool';
 import type { Tool } from '../../core/ui/tools/Tool';
 
 export function useCanvas() {
@@ -30,6 +31,11 @@ export function useCanvas() {
   tools.set('triangle', new TriangleTool());
   tools.set('select', new SelectTool());
   tools.set('delete', new DeleteTool());
+  
+  const constructionTypes = ['midpoint', 'perpendicular', 'parallel', 'angle_bisector', 'perpendicular_bisector', 'intersection', 'circumcircle', 'incircle', 'tangent'];
+  constructionTypes.forEach(c => {
+    tools.set(`construct_${c}`, new ConstructionTool(c));
+  });
 
   const init = (id: string) => {
     containerId.value = id;

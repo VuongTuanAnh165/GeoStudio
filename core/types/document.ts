@@ -29,13 +29,20 @@ export const GeoDocumentViewportSchema = z.object({
   yMax: z.number()
 });
 
+export const GeometryConstraintSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  objectIds: z.array(z.string()),
+  parameters: z.record(z.string(), z.unknown()).optional()
+});
+
 export const GeometryObjectSchema = z.object({
   id: z.string(),
   type: z.string(),
   dimension: z.union([z.literal(2), z.literal(3)]).optional(),
   parents: z.array(z.string()).optional(),
   definition: z.record(z.string(), z.unknown()),
-  constraints: z.array(z.unknown()).optional(),
+  constraints: z.array(z.string()).optional(),
   style: z.record(z.string(), z.unknown()).optional(),
   metadata: z.record(z.string(), z.unknown()).optional()
 });
@@ -47,7 +54,7 @@ export const GeoDocumentSchema = z.object({
   settings: GeoDocumentSettingsSchema,
   viewport: GeoDocumentViewportSchema,
   objects: z.array(GeometryObjectSchema),
-  constraints: z.array(z.any()).optional(),
+  constraints: z.array(GeometryConstraintSchema).optional(),
   sliders: z.array(z.any()).optional(),
   annotations: z.array(z.any()).optional(),
   constructionSteps: z.array(z.any()).optional()
@@ -59,6 +66,8 @@ export type GeoDocumentSettings = z.infer<typeof GeoDocumentSettingsSchema>;
 export type GeoDocumentViewport = z.infer<typeof GeoDocumentViewportSchema>;
 
 // Full interface mapping to the schema
+import type { GeometryConstraint } from './geometry';
+
 export interface GeoDocument {
   version: string;
   schemaVersion: number;
@@ -66,7 +75,7 @@ export interface GeoDocument {
   settings: GeoDocumentSettings;
   viewport: GeoDocumentViewport;
   objects: GeometryObject[];
-  constraints?: unknown[];
+  constraints?: GeometryConstraint[];
   sliders?: unknown[];
   annotations?: unknown[];
   constructionSteps?: unknown[];

@@ -6,14 +6,14 @@
       <div class="flex flex-col gap-1 w-full items-center">
         <ToolButton 
           icon="lucide:mouse-pointer-2" 
-          label="Select & Move" 
+          :label="$t('tools.select')" 
           shortcut="V"
           :active="store.activeToolType === 'select'"
           @click="selectTool('select')" 
         />
         <ToolButton 
           icon="lucide:eraser" 
-          label="Delete Object" 
+          :label="$t('tools.delete')" 
           shortcut="Del"
           :active="store.activeToolType === 'delete'"
           @click="selectTool('delete')" 
@@ -26,7 +26,7 @@
       <div class="flex flex-col gap-1 w-full items-center">
         <ToolButton 
           icon="lucide:circle-dot" 
-          label="Point" 
+          :label="$t('tools.point')" 
           shortcut="P"
           :active="store.activeToolType === 'point'"
           @click="selectTool('point')" 
@@ -39,21 +39,21 @@
       <div class="flex flex-col gap-1 w-full items-center">
         <ToolButton 
           icon="lucide:minus" 
-          label="Segment" 
+          :label="$t('tools.segment')" 
           shortcut="S"
           :active="store.activeToolType === 'segment'"
           @click="selectTool('segment')" 
         />
         <ToolButton 
           icon="lucide:move-horizontal" 
-          label="Line" 
+          :label="$t('tools.line')" 
           shortcut="L"
           :active="store.activeToolType === 'line'"
           @click="selectTool('line')" 
         />
         <ToolButton 
           icon="lucide:arrow-right" 
-          label="Ray" 
+          :label="$t('tools.ray')" 
           shortcut="R"
           :active="store.activeToolType === 'ray'"
           @click="selectTool('ray')" 
@@ -66,7 +66,7 @@
       <div class="flex flex-col gap-1 w-full items-center">
         <ToolButton 
           icon="lucide:circle" 
-          label="Circle" 
+          :label="$t('tools.circle')" 
           shortcut="C"
           :active="store.activeToolType === 'circle'"
           @click="selectTool('circle')" 
@@ -79,17 +79,75 @@
       <div class="flex flex-col gap-1 w-full items-center">
         <ToolButton 
           icon="lucide:triangle" 
-          label="Triangle" 
+          :label="$t('tools.triangle')" 
           shortcut="T"
           :active="store.activeToolType === 'triangle'"
           @click="selectTool('triangle')" 
         />
         <ToolButton 
           icon="lucide:hexagon" 
-          label="Polygon" 
+          :label="$t('tools.polygon')" 
           shortcut="G"
           :active="store.activeToolType === 'polygon'"
           @click="selectTool('polygon')" 
+        />
+      </div>
+
+      <!-- Constructions -->
+      <div class="flex flex-col gap-1 w-full items-center">
+        <ToolButton 
+          icon="lucide:split-square-horizontal" 
+          :label="$t('tools.midpoint')" 
+          :active="store.activeToolType === 'construct_midpoint'"
+          @click="selectTool('construct_midpoint')" 
+        />
+        <ToolButton 
+          icon="lucide:ruler" 
+          :label="$t('tools.perpendicular')" 
+          :active="store.activeToolType === 'construct_perpendicular'"
+          @click="selectTool('construct_perpendicular')" 
+        />
+        <ToolButton 
+          icon="lucide:equal" 
+          :label="$t('tools.parallel')" 
+          :active="store.activeToolType === 'construct_parallel'"
+          @click="selectTool('construct_parallel')" 
+        />
+        <ToolButton 
+          icon="lucide:scissors" 
+          :label="$t('tools.angle_bisector')" 
+          :active="store.activeToolType === 'construct_angle_bisector'"
+          @click="selectTool('construct_angle_bisector')" 
+        />
+        <ToolButton 
+          icon="lucide:move-vertical" 
+          :label="$t('tools.perpendicular_bisector')" 
+          :active="store.activeToolType === 'construct_perpendicular_bisector'"
+          @click="selectTool('construct_perpendicular_bisector')" 
+        />
+        <ToolButton 
+          icon="lucide:x" 
+          :label="$t('tools.intersection')" 
+          :active="store.activeToolType === 'construct_intersection'"
+          @click="selectTool('construct_intersection')" 
+        />
+        <ToolButton 
+          icon="lucide:circle-dashed" 
+          :label="$t('tools.circumcircle')" 
+          :active="store.activeToolType === 'construct_circumcircle'"
+          @click="selectTool('construct_circumcircle')" 
+        />
+        <ToolButton 
+          icon="lucide:disc-3" 
+          :label="$t('tools.incircle')" 
+          :active="store.activeToolType === 'construct_incircle'"
+          @click="selectTool('construct_incircle')" 
+        />
+        <ToolButton 
+          icon="lucide:trending-up" 
+          :label="$t('tools.tangent')" 
+          :active="store.activeToolType === 'construct_tangent'"
+          @click="selectTool('construct_tangent')" 
         />
       </div>
 
@@ -100,6 +158,11 @@
 <script setup lang="ts">
 import { useGeometryStore } from '../stores/geometry';
 import ToolButton from './ToolButton.vue';
+
+// i18n
+import { useI18n } from 'vue-i18n';
+// The project might use vue-i18n or nuxt/i18n. Usually nuxt/i18n exposes $t globally.
+// Let's assume it works in the template globally.
 
 const store = useGeometryStore();
 

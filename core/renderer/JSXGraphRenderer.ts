@@ -9,6 +9,10 @@ export class JSXGraphRenderer implements GeometryRenderer {
   private jxgObjects: Map<string, any> = new Map();
 
   init(container: string | HTMLElement): void {
+    // Increase hit detection tolerance for easier selection of lines/curves
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (JXG.Options as any).precision.hasPoint = 15;
+    
     // Determine the container id
     const containerId = typeof container === 'string' ? container : container.id;
     
@@ -75,44 +79,90 @@ export class JSXGraphRenderer implements GeometryRenderer {
     attrs.id = obj.id; // Assign ID to find it later in hit tests
 
     try {
-      switch (obj.type) {
-        case 'point': {
-          const coords = obj.definition.coords as Coords2D;
-          jxgEl = this.board.create('point', [coords.x, coords.y], { ...attrs, size: styleInfo.size, fillColor: styleInfo.strokeColor });
-          break;
+      const isConstructed = obj.parents && obj.parents.length > 0 && !['point', 'segment', 'line', 'ray', 'circle', 'polygon'].includes(obj.definition.kind);
+
+      if (isConstructed) {
+        const args: any[] = [...(obj.parents as string[])].map(id => this.jxgObjects.get(id)).filter(Boolean);
+        if (obj.definition.index !== undefined) {
+          args.push(obj.definition.index);
         }
-        case 'segment': {
-          const p1 = obj.definition.p1 as Coords2D;
-          const p2 = obj.definition.p2 as Coords2D;
-          jxgEl = this.board.create('segment', [[p1.x, p1.y], [p2.x, p2.y]], attrs);
-          break;
+
+        const specificAttrs = { ...attrs };
+        if (obj.type === 'point') {
+          specificAttrs.size = styleInfo.size;
+          specificAttrs.fillColor = styleInfo.strokeColor;
+        } else if (obj.type === 'polygon') {
+          specificAttrs.fillColor = styleInfo.baseColor;
+          specificAttrs.fillOpacity = styleInfo.isSelected ? 0.3 : 0.1;
         }
-        case 'line': {
-          const p = obj.definition.point as Coords2D;
-          const d = obj.definition.direction as Coords2D;
-          // Line from point and direction. We can create it using two points
-          const p2 = { x: p.x + d.x, y: p.y + d.y };
-          jxgEl = this.board.create('line', [[p.x, p.y], [p2.x, p2.y]], attrs);
-          break;
+
+        switch (obj.definition.kind) {
+          case 'perpendicular_bisector': {
+            let lineArg = args[0];
+            if (args.length === 2) {
+              lineArg = this.board.create('segment', [args[0], args[1]], { visible: false });
+            }
+            const midPoint = this.board.create('midpoint', args, { visible: false });
+            jxgEl = this.board.create('perpendicular', [lineArg, midPoint], specificAttrs);
+            break;
+          }
+          case 'bisector': {
+            if (args.length === 2) {
+              const lines = this.board.create('bisectorlines', args, specificAttrs);
+              jxgEl = lines.line1 || lines[1] || lines; // Try to extract the first line
+            } else {
+              jxgEl = this.board.create('bisector', args, specificAttrs);
+            }
+            break;
+          }
+          case 'incircle': {
+            const incircleArray = this.board.create('incircle', args, specificAttrs);
+            jxgEl = incircleArray[1]; // The circle object
+            break;
+          }
+          default:
+            jxgEl = this.board.create(obj.definition.kind, args, specificAttrs);
+            break;
         }
-        case 'ray': {
-          const o = obj.definition.origin as Coords2D;
-          const d = obj.definition.direction as Coords2D;
-          const p2 = { x: o.x + d.x, y: o.y + d.y };
-          jxgEl = this.board.create('line', [[o.x, o.y], [p2.x, p2.y]], { ...attrs, straightFirst: false, straightLast: true });
-          break;
-        }
-        case 'circle': {
-          const c = obj.definition.center as Coords2D;
-          const r = obj.definition.radius as number;
-          jxgEl = this.board.create('circle', [[c.x, c.y], r], attrs);
-          break;
-        }
-        case 'polygon': {
-          const points = obj.definition.points as Coords2D[];
-          const coordArrays = points.map(p => [p.x, p.y]);
-          jxgEl = this.board.create('polygon', coordArrays, { ...attrs, hasInnerPoints: true, fillColor: styleInfo.baseColor, fillOpacity: styleInfo.isSelected ? 0.3 : 0.1 });
-          break;
+      } else {
+        switch (obj.type) {
+          case 'point': {
+            const coords = obj.definition.coords as Coords2D;
+            jxgEl = this.board.create('point', [coords.x, coords.y], { ...attrs, size: styleInfo.size, fillColor: styleInfo.strokeColor });
+            break;
+          }
+          case 'segment': {
+            const p1 = obj.definition.p1 as Coords2D;
+            const p2 = obj.definition.p2 as Coords2D;
+            jxgEl = this.board.create('segment', [[p1.x, p1.y], [p2.x, p2.y]], attrs);
+            break;
+          }
+          case 'line': {
+            const p = obj.definition.point as Coords2D;
+            const d = obj.definition.direction as Coords2D;
+            const p2 = { x: p.x + d.x, y: p.y + d.y };
+            jxgEl = this.board.create('line', [[p.x, p.y], [p2.x, p2.y]], attrs);
+            break;
+          }
+          case 'ray': {
+            const o = obj.definition.origin as Coords2D;
+            const d = obj.definition.direction as Coords2D;
+            const p2 = { x: o.x + d.x, y: o.y + d.y };
+            jxgEl = this.board.create('line', [[o.x, o.y], [p2.x, p2.y]], { ...attrs, straightFirst: false, straightLast: true });
+            break;
+          }
+          case 'circle': {
+            const c = obj.definition.center as Coords2D;
+            const r = obj.definition.radius as number;
+            jxgEl = this.board.create('circle', [[c.x, c.y], r], attrs);
+            break;
+          }
+          case 'polygon': {
+            const points = obj.definition.points as Coords2D[];
+            const coordArrays = points.map(p => [p.x, p.y]);
+            jxgEl = this.board.create('polygon', coordArrays, { ...attrs, hasInnerPoints: true, fillColor: styleInfo.baseColor, fillOpacity: styleInfo.isSelected ? 0.3 : 0.1 });
+            break;
+          }
         }
       }
 
@@ -139,8 +189,18 @@ export class JSXGraphRenderer implements GeometryRenderer {
     
     if (!jxgEl) {
       this.renderObject(obj, isSelected);
+      const newEl = this.jxgObjects.get(id);
+      if (newEl) {
+        newEl.__geoState = { ref: obj, isSelected };
+      }
       return;
     }
+
+    // FAST PATH: If object reference and selection state haven't changed, skip heavy JSXGraph DOM updates!
+    if (jxgEl.__geoState?.ref === obj && jxgEl.__geoState?.isSelected === isSelected) {
+      return;
+    }
+    jxgEl.__geoState = { ref: obj, isSelected };
 
     // Update style attributes
     const styleInfo = this.getStyleAttributes(obj, isSelected);
@@ -159,7 +219,13 @@ export class JSXGraphRenderer implements GeometryRenderer {
       jxgEl.setAttribute({ [key]: val });
     }
 
-    // Update coordinates based on type
+    const isConstructed = obj.parents && obj.parents.length > 0 && !['point', 'segment', 'line', 'ray', 'circle', 'polygon'].includes(obj.definition.kind);
+    if (isConstructed) {
+      // Constructed objects update automatically in JSXGraph when parents change
+      return;
+    }
+
+    // Update coordinates based on type for explicit primitives
     switch (obj.type) {
       case 'point': {
         const coords = obj.definition.coords as Coords2D;

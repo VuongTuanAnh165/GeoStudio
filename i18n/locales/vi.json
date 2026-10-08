@@ -1,3 +1,41 @@
 {
-  "welcome": "Chào mừng đến với GeoStudio"
+  "welcome": "Chào mừng đến với GeoStudio",
+  "tools": {
+    "select": "Chọn & Di chuyển",
+    "delete": "Xoá",
+    "point": "Điểm",
+    "segment": "Đoạn thẳng",
+    "line": "Đường thẳng",
+    "ray": "Tia",
+    "circle": "Đường tròn",
+    "triangle": "Tam giác",
+    "polygon": "Đa giác",
+    "midpoint": "Trung điểm",
+    "midpoint_desc": "Chọn hai điểm hoặc một đoạn thẳng",
+    "perpendicular": "Đường vuông góc",
+    "perpendicular_desc": "Chọn một điểm và một đường thẳng",
+    "parallel": "Đường song song",
+    "parallel_desc": "Chọn một điểm và một đường thẳng",
+    "angle_bisector": "Đường phân giác",
+    "angle_bisector_desc": "Chọn ba điểm hoặc hai đường thẳng",
+    "perpendicular_bisector": "Đường trung trực",
+    "perpendicular_bisector_desc": "Chọn hai điểm hoặc một đoạn thẳng",
+    "intersection": "Giao điểm",
+    "intersection_desc": "Chọn hai đối tượng cắt nhau",
+    "circumcircle": "Đường tròn ngoại tiếp",
+    "circumcircle_desc": "Chọn ba điểm",
+    "incircle": "Đường tròn nội tiếp",
+    "incircle_desc": "Chọn ba điểm",
+    "tangent": "Tiếp tuyến",
+    "tangent_desc": "Chọn một điểm và một đường tròn"
+  },
+  "context": {
+    "properties": "Thuộc tính",
+    "construct": "Dựng hình",
+    "no_constructions": "Không có phép dựng",
+    "select_all": "Chọn tất cả",
+    "reset_view": "Đặt lại góc nhìn",
+    "grid": "Lưới toạ độ",
+    "axis": "Trục toạ độ"
+  }
 }

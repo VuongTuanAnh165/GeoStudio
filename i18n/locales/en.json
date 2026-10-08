@@ -1,3 +1,41 @@
 {
-  "welcome": "Welcome to GeoStudio"
+  "welcome": "Welcome to GeoStudio",
+  "tools": {
+    "select": "Select & Move",
+    "delete": "Delete Object",
+    "point": "Point",
+    "segment": "Segment",
+    "line": "Line",
+    "ray": "Ray",
+    "circle": "Circle",
+    "triangle": "Triangle",
+    "polygon": "Polygon",
+    "midpoint": "Midpoint",
+    "midpoint_desc": "Select two points or one segment",
+    "perpendicular": "Perpendicular Line",
+    "perpendicular_desc": "Select a point and a line",
+    "parallel": "Parallel Line",
+    "parallel_desc": "Select a point and a line",
+    "angle_bisector": "Angle Bisector",
+    "angle_bisector_desc": "Select three points or two lines",
+    "perpendicular_bisector": "Perpendicular Bisector",
+    "perpendicular_bisector_desc": "Select two points or one segment",
+    "intersection": "Intersection",
+    "intersection_desc": "Select two intersecting objects",
+    "circumcircle": "Circumcircle",
+    "circumcircle_desc": "Select three points",
+    "incircle": "Incircle",
+    "incircle_desc": "Select three points",
+    "tangent": "Tangent",
+    "tangent_desc": "Select a point and a circle"
+  },
+  "context": {
+    "properties": "Properties",
+    "construct": "Construct",
+    "no_constructions": "No constructions available",
+    "select_all": "Select All",
+    "reset_view": "Reset View",
+    "grid": "Grid",
+    "axis": "Axis"
+  }
 }

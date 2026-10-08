@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { CommandEngine } from '../../core/commands';
 import { ConstructionGraph } from '../../core/geometry/graph/ConstructionGraph';
-import type { GeometryObject } from '../../core/types/geometry';
+import type { GeometryObject, GeometryConstraint } from '../../core/types/geometry';
 import type { GeometryCommand } from '../../core/types/commands';
 
 export const useGeometryStore = defineStore('geometry', () => {
@@ -24,13 +24,15 @@ export const useGeometryStore = defineStore('geometry', () => {
         dimension: 2 
       },
       viewport: { xMin: -10, xMax: 10, yMin: -10, yMax: 10 },
-      objects: []
+      objects: [],
+      constraints: []
     },
     selection: []
   });
 
   // Reactive State
   const objects = ref<Map<string, GeometryObject>>(new Map());
+  const constraints = ref<Map<string, GeometryConstraint>>(new Map());
   let constructionGraph = new ConstructionGraph();
   const selectedIds = ref<Set<string>>(new Set());
   const activeToolType = ref<string | null>(null);
@@ -50,6 +52,15 @@ export const useGeometryStore = defineStore('geometry', () => {
       newObjectsMap.set(obj.id, obj);
     });
     objects.value = newObjectsMap;
+
+    // 1b. Sync constraints
+    const newConstraintsMap = new Map<string, GeometryConstraint>();
+    if (state.document.constraints) {
+      state.document.constraints.forEach(c => {
+        newConstraintsMap.set(c.id, c);
+      });
+    }
+    constraints.value = newConstraintsMap;
 
     // 2. Sync selection
     selectedIds.value = new Set(state.selection);
@@ -152,6 +163,7 @@ export const useGeometryStore = defineStore('geometry', () => {
   return {
     // State
     objects,
+    constraints,
     get constructionGraph() { return constructionGraph; },
     selectedIds,
     activeToolType,

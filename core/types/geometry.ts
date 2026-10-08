@@ -20,13 +20,21 @@ export interface GeometryObjectDefinition {
   [key: string]: unknown;
 }
 
+export interface GeometryConstraint {
+  id: string;
+  type: string;
+  objectIds: string[];
+  parameters?: Record<string, unknown>;
+}
+
 export interface GeometryObject {
   id: string;
   type: GeometryObjectType;
   dimension: 2 | 3;
   parents?: string[];
+  children?: string[];
   definition: GeometryObjectDefinition;
-  constraints?: unknown[];
+  constraints?: string[]; // IDs of constraints applied to this object
   style?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
 }

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useTheme } from './composables/useTheme';
+import { registerBuiltinConstructions } from '../core/geometry/constructions/builtins';
 
 const { initTheme } = useTheme();
 
 onMounted(() => {
   initTheme();
+  registerBuiltinConstructions();
 });
 </script>
 
