@@ -92,3 +92,32 @@ export type WorkerResponse =
   | { type: 'landmarks'; data: HandDetection[]; timestamp: number; latencyMs: number }
   | { type: 'error'; message: string; code?: string }
   | { type: 'performance'; fps: number; avgLatencyMs: number; framesProcessed: number };
+
+// ── Hand Features ────────────────────────────────────────────────────
+
+export interface FingerState {
+  isExtended: boolean;
+  tipDistanceToPalm: number;
+}
+
+export interface HandOrientation {
+  pitch: number;
+  yaw: number;
+  roll: number;
+  facingCamera: boolean;
+}
+
+export interface HandFeatures {
+  handedness: 'Left' | 'Right';
+  fingers: {
+    thumb: FingerState;
+    index: FingerState;
+    middle: FingerState;
+    ring: FingerState;
+    pinky: FingerState;
+  };
+  pinchDistance: number; // Euclidean distance between thumb tip and index tip
+  palmPosition: { x: number; y: number; z: number }; // centroid of palm landmarks
+  palmVelocity: { x: number; y: number; z: number }; // delta per second
+  orientation: HandOrientation;
+}
