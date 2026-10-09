@@ -50,6 +50,7 @@ export const useGeometryStore = defineStore('geometry', () => {
 
   const canUndo = ref(false);
   const canRedo = ref(false);
+  const lastModified = ref(0);
 
   // Sync logic: Pulls immutable state from Engine into Pinia's reactive refs
   const syncState = () => {
@@ -90,6 +91,8 @@ export const useGeometryStore = defineStore('geometry', () => {
     // 5. Sync history flags
     canUndo.value = engine.historyManager.undoStack.length > 0;
     canRedo.value = engine.historyManager.redoStack.length > 0;
+    
+    lastModified.value++;
   };
 
   // Initial Sync
@@ -137,13 +140,15 @@ export const useGeometryStore = defineStore('geometry', () => {
 
   const clearHistory = () => {
     engine.clearHistory();
-    // This doesn't change state, just history limits, so we don't strictly need to sync,
-    // but Vue's computed canUndo/canRedo won't detect class internal changes automatically
-    // unless we trigger some reactivity. 
-    // An easy hack to force reactivity on history is to re-assign a fake variable or syncState.
-    // For now, syncState will do the trick by updating references.
     syncState(); 
   };
+
+  const loadDocument = (doc: import('../../core/types/document').GeoDocument) => {
+    engine.loadState({ document: JSON.parse(JSON.stringify(doc)), selection: [] });
+    syncState();
+  };
+
+  const currentDocument = computed(() => engine.currentState.document);
 
   const beginBatch = (label: string) => {
     engine.historyManager.beginBatch(label);
@@ -185,6 +190,7 @@ export const useGeometryStore = defineStore('geometry', () => {
     selectedObjects,
     canUndo,
     canRedo,
+    lastModified,
     
     // Actions
     executeCommand,
@@ -193,10 +199,12 @@ export const useGeometryStore = defineStore('geometry', () => {
     undo,
     redo,
     clearHistory,
+    loadDocument,
     beginBatch,
     endBatch,
     
     // Expose engine current state directly if components need raw doc
+    currentDocument,
     get rawState() {
       return engine.currentState;
     }

@@ -151,6 +151,36 @@
         />
       </div>
 
+      <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
+
+      <!-- Measurements -->
+      <div class="flex flex-col gap-1 w-full items-center">
+        <ToolButton 
+          icon="lucide:ruler" 
+          :label="$t('tools.measure_distance')" 
+          :active="store.activeToolType === 'construct_measure_distance'"
+          @click="selectTool('construct_measure_distance')" 
+        />
+        <ToolButton 
+          icon="lucide:spline" 
+          :label="$t('tools.measure_angle')" 
+          :active="store.activeToolType === 'construct_measure_angle'"
+          @click="selectTool('construct_measure_angle')" 
+        />
+        <ToolButton 
+          icon="lucide:scaling" 
+          :label="$t('tools.measure_area')" 
+          :active="store.activeToolType === 'construct_measure_area'"
+          @click="selectTool('construct_measure_area')" 
+        />
+        <ToolButton 
+          icon="lucide:expand" 
+          :label="$t('tools.measure_perimeter')" 
+          :active="store.activeToolType === 'construct_measure_perimeter'"
+          @click="selectTool('construct_measure_perimeter')" 
+        />
+      </div>
+
     </div>
   </div>
 </template>

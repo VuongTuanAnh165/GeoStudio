@@ -27,7 +27,11 @@
     "incircle": "Incircle",
     "incircle_desc": "Select three points",
     "tangent": "Tangent",
-    "tangent_desc": "Select a point and a circle"
+    "tangent_desc": "Select a point and a circle",
+    "measure_distance": "Measure Distance",
+    "measure_angle": "Measure Angle",
+    "measure_area": "Measure Area",
+    "measure_perimeter": "Measure Perimeter"
   },
   "context": {
     "properties": "Properties",
@@ -92,6 +96,18 @@
     "color": "Color",
     "line_width": "Line Width",
     "show_label": "Show Label",
-    "constraints": "Constraints"
+    "constraints": "Constraints",
+    "measurements": "Measurements",
+    "no_measurements": "No measurements yet"
+  },
+  "document": {
+    "open": "Open",
+    "save_title": "Save Document",
+    "name_label": "Document Name",
+    "desc_label": "Description",
+    "open_title": "Open Document",
+    "no_documents": "No documents found",
+    "no_desc": "No description",
+    "objects_count": "objects"
   }
 }

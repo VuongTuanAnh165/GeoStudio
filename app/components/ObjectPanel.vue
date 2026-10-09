@@ -1,6 +1,7 @@
 <template>
   <div class="h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-l border-slate-200/50 dark:border-slate-700/50 flex flex-col w-72 shrink-0 z-10 transition-colors shadow-[-4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[-4px_0_24px_rgba(0,0,0,0.2)]">
-    <div class="flex flex-col flex-1 min-h-0 border-b border-slate-200/50 dark:border-slate-700/50">
+    <!-- Objects Section -->
+    <div class="flex flex-col h-[40%] min-h-0 border-b border-slate-200/50 dark:border-slate-700/50">
       <div class="px-5 py-3 border-b border-slate-200/50 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30 font-semibold text-xs tracking-wider uppercase text-slate-500 dark:text-slate-400 shrink-0">
         {{ $t('panel.objects') }}
       </div>
@@ -42,7 +43,13 @@
       </div>
     </div>
     
-    <div class="flex flex-col h-1/2 shrink-0 bg-slate-50">
+    <!-- Measurements Section -->
+    <div class="flex flex-col h-[25%] shrink-0 border-b border-slate-200/50 dark:border-slate-700/50">
+      <MeasurementPanel />
+    </div>
+
+    <!-- Properties Section -->
+    <div class="flex flex-col flex-1 shrink-0 bg-slate-50">
       <PropertyEditor />
     </div>
   </div>
@@ -55,10 +62,11 @@ import { ToggleVisibilityCommand } from '../../core/commands/mutations';
 import { DeleteObjectCommand } from '../../core/commands/deletions';
 import type { GeometryObject } from '../../core/types/geometry';
 import PropertyEditor from './PropertyEditor.vue';
+import MeasurementPanel from './MeasurementPanel.vue';
 
 const store = useGeometryStore();
 
-const objectList = computed(() => Array.from(store.objects.values()));
+const objectList = computed(() => Array.from(store.objects.values()).filter(obj => obj.type !== 'measurement'));
 
 const getIcon = (type: string) => {
   switch(type) {

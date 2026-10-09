@@ -27,7 +27,11 @@
     "incircle": "Đường tròn nội tiếp",
     "incircle_desc": "Chọn ba điểm",
     "tangent": "Tiếp tuyến",
-    "tangent_desc": "Chọn một điểm và một đường tròn"
+    "tangent_desc": "Chọn một điểm và một đường tròn",
+    "measure_distance": "Đo khoảng cách",
+    "measure_angle": "Đo góc",
+    "measure_area": "Đo diện tích",
+    "measure_perimeter": "Đo chu vi"
   },
   "context": {
     "properties": "Thuộc tính",
@@ -92,6 +96,18 @@
     "color": "Màu sắc",
     "line_width": "Độ dày nét",
     "show_label": "Hiển thị nhãn",
-    "constraints": "Ràng buộc"
+    "constraints": "Ràng buộc",
+    "measurements": "Đo lường",
+    "no_measurements": "Chưa có phép đo nào"
+  },
+  "document": {
+    "open": "Mở",
+    "save_title": "Lưu Tài Liệu",
+    "name_label": "Tên Tài Liệu",
+    "desc_label": "Mô tả",
+    "open_title": "Mở Tài Liệu",
+    "no_documents": "Không có tài liệu nào",
+    "no_desc": "Không có mô tả",
+    "objects_count": "đối tượng"
   }
 }

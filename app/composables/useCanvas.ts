@@ -42,10 +42,18 @@ export function useCanvas() {
     tools.set(`construct_${c}`, new ConstructionTool(c));
   });
 
+  const measurementTypes = ['measure_distance', 'measure_angle', 'measure_area', 'measure_perimeter'];
+  measurementTypes.forEach(m => {
+    tools.set(`construct_${m}`, new ConstructionTool(m));
+  });
+
   const init = (id: string) => {
     containerId.value = id;
     renderer.init(id);
     initialized = true;
+    
+    // Expose renderer to window for components that need to query JSXGraph state directly (like MeasurementPanel)
+    (window as any).__geostudio_renderer = renderer;
 
     mouseHandler = new MouseHandler({
       renderer,

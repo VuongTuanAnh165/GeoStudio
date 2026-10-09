@@ -169,4 +169,66 @@ export const registerBuiltinConstructions = () => {
       return new CreateConstructionCommand('line', 'tangent', [pointObj.id, circleObj.id], generateId('line'));
     }
   });
+
+  // Measurements
+  registry.register({
+    id: 'measure_distance',
+    name: 'Measure Distance',
+    icon: 'lucide:ruler',
+    description: 'Select two points or one segment',
+    match: (objects) => {
+      if (objects.length === 1 && objects[0]?.type === 'segment') return true;
+      if (objects.length === 2 && objects.every(o => o.type === 'point')) return true;
+      return false;
+    },
+    createCommand: (objects, generateId) => {
+      const parents = objects.map(o => o.id);
+      return new CreateConstructionCommand('measurement', 'measurement', parents, generateId('measure'), { measureType: 'distance', targetIds: parents });
+    }
+  });
+
+  registry.register({
+    id: 'measure_angle',
+    name: 'Measure Angle',
+    icon: 'lucide:spline',
+    description: 'Select three points',
+    match: (objects) => {
+      if (objects.length === 3 && objects.every(o => o.type === 'point')) return true;
+      return false;
+    },
+    createCommand: (objects, generateId) => {
+      const parents = objects.map(o => o.id);
+      return new CreateConstructionCommand('measurement', 'measurement', parents, generateId('measure'), { measureType: 'angle', targetIds: parents });
+    }
+  });
+
+  registry.register({
+    id: 'measure_area',
+    name: 'Measure Area',
+    icon: 'lucide:scaling',
+    description: 'Select polygon',
+    match: (objects) => {
+      if (objects.length === 1 && objects[0]?.type === 'polygon') return true;
+      return false;
+    },
+    createCommand: (objects, generateId) => {
+      const parents = objects.map(o => o.id);
+      return new CreateConstructionCommand('measurement', 'measurement', parents, generateId('measure'), { measureType: 'area', targetIds: parents });
+    }
+  });
+
+  registry.register({
+    id: 'measure_perimeter',
+    name: 'Measure Perimeter',
+    icon: 'lucide:expand',
+    description: 'Select polygon',
+    match: (objects) => {
+      if (objects.length === 1 && objects[0]?.type === 'polygon') return true;
+      return false;
+    },
+    createCommand: (objects, generateId) => {
+      const parents = objects.map(o => o.id);
+      return new CreateConstructionCommand('measurement', 'measurement', parents, generateId('measure'), { measureType: 'perimeter', targetIds: parents });
+    }
+  });
 };

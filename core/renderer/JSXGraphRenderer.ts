@@ -12,10 +12,10 @@ export class JSXGraphRenderer implements GeometryRenderer {
     // Increase hit detection tolerance for easier selection of lines/curves
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (JXG.Options as any).precision.hasPoint = 15;
-    
+
     // Determine the container id
     const containerId = typeof container === 'string' ? container : container.id;
-    
+
     // Initialize the board
     this.board = JXG.JSXGraph.initBoard(containerId, {
       boundingbox: [-10, 10, 10, -10],
@@ -64,7 +64,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
       shadow: isSelected, // adds a drop shadow for highlight
       fixed: true
     };
-    
+
     // We will return baseColor, strokeWidth and size for specific overrides
     return { attrs: defaultAttrs, strokeColor, size, isSelected, baseColor };
   }
@@ -118,7 +118,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
             }
             const midPoint = this.board.create('midpoint', args, { visible: false });
             jxgEl = this.board.create('perpendicular', [lineArg, midPoint], specificAttrs);
-            
+
             // Smart construction: Right angle symbol
             const p1 = this.board.create('point', [() => jxgEl.point2.X(), () => jxgEl.point2.Y()], { visible: false });
             const p2 = this.board.create('point', [() => lineArg.point2.X(), () => lineArg.point2.Y()], { visible: false });
@@ -184,6 +184,96 @@ export class JSXGraphRenderer implements GeometryRenderer {
             }
             break;
           }
+          case 'measurement': {
+            const measureType = obj.definition.measureType as string;
+            
+            // Extract the objects from args to compute position and value dynamically
+            // args contains JSXGraph objects corresponding to targetIds
+            let textFn = () => '';
+            let xFn = () => 0;
+            let yFn = () => 0;
+
+            if (measureType === 'distance') {
+              if (args.length === 2) { // 2 points
+                xFn = () => (args[0].X() + args[1].X()) / 2;
+                yFn = () => (args[0].Y() + args[1].Y()) / 2;
+                textFn = () => {
+                  const d = Math.hypot(args[0].X() - args[1].X(), args[0].Y() - args[1].Y());
+                  return `${args[0].name}${args[1].name} = ${d.toFixed(2)}`;
+                };
+              } else if (args.length === 1) { // 1 segment
+                xFn = () => (args[0].point1.X() + args[0].point2.X()) / 2;
+                yFn = () => (args[0].point1.Y() + args[0].point2.Y()) / 2;
+                textFn = () => {
+                  const p1 = args[0].point1;
+                  const p2 = args[0].point2;
+                  const d = Math.hypot(p1.X() - p2.X(), p1.Y() - p2.Y());
+                  const name = args[0].name || `${p1.name}${p2.name}`;
+                  return `${name} = ${d.toFixed(2)}`;
+                };
+              }
+            } else if (measureType === 'angle') {
+              if (args.length === 3) {
+                // To position the text, place it at the bisector
+                xFn = () => {
+                  // We'll just put it near the vertex for now
+                  const a = args[0], b = args[1], c = args[2];
+                  return b.X() + 0.5; // naive
+                };
+                yFn = () => args[1].Y() + 0.5;
+                textFn = () => {
+                  const a = args[0], b = args[1], c = args[2];
+                  const v1x = a.X() - b.X(), v1y = a.Y() - b.Y();
+                  const v2x = c.X() - b.X(), v2y = c.Y() - b.Y();
+                  const dot = v1x * v2x + v1y * v2y;
+                  const mag1 = Math.hypot(v1x, v1y), mag2 = Math.hypot(v2x, v2y);
+                  let cos = dot / (mag1 * mag2);
+                  if (cos > 1) cos = 1; if (cos < -1) cos = -1;
+                  const ang = Math.acos(cos) * (180 / Math.PI);
+                  return `∠${a.name}${b.name}${c.name} = ${ang.toFixed(1)}°`;
+                };
+              }
+            } else if (measureType === 'area') {
+              if (args.length === 1 && args[0].elType === 'polygon') {
+                xFn = () => {
+                  let sumX = 0;
+                  args[0].vertices.forEach((v: any) => sumX += v.X());
+                  return sumX / (args[0].vertices.length - 1); // last vertex is duplicate
+                };
+                yFn = () => {
+                  let sumY = 0;
+                  args[0].vertices.forEach((v: any) => sumY += v.Y());
+                  return sumY / (args[0].vertices.length - 1);
+                };
+                textFn = () => `S = ${args[0].Area().toFixed(2)}`;
+              }
+            } else if (measureType === 'perimeter') {
+              if (args.length === 1 && args[0].elType === 'polygon') {
+                xFn = () => {
+                  let sumX = 0;
+                  args[0].vertices.forEach((v: any) => sumX += v.X());
+                  return sumX / (args[0].vertices.length - 1);
+                };
+                yFn = () => {
+                  let sumY = 0;
+                  args[0].vertices.forEach((v: any) => sumY += v.Y());
+                  return (sumY / (args[0].vertices.length - 1)) - 0.5; // slightly below area
+                };
+                textFn = () => `P = ${args[0].Perimeter().toFixed(2)}`;
+              }
+            }
+
+            jxgEl = this.board.create('text', [xFn, yFn, textFn], {
+              ...specificAttrs,
+              fontSize: 14,
+              anchorX: 'middle',
+              anchorY: 'middle',
+              strokeColor: styleInfo.baseColor,
+              cssClass: 'katex-formula',
+              parse: false
+            });
+            break;
+          }
           default:
             jxgEl = this.board.create(obj.definition.kind, args, specificAttrs);
             break;
@@ -238,6 +328,23 @@ export class JSXGraphRenderer implements GeometryRenderer {
     }
   }
 
+  getMeasurementText(id: string): string {
+    const el = this.jxgObjects.get(id);
+    if (el && el.elType === 'text') {
+      try {
+        if (typeof el.plaintext === 'function') {
+          return el.plaintext();
+        }
+        if (el.plaintext) {
+          return el.plaintext;
+        }
+      } catch (e) {
+        return '';
+      }
+    }
+    return '';
+  }
+
   removeObject(id: string): void {
     if (!this.board) return;
     const jxgEl = this.jxgObjects.get(id);
@@ -250,7 +357,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
   updateObject(id: string, obj: GeometryObject, isSelected: boolean = false): void {
     if (!this.board) return;
     const jxgEl = this.jxgObjects.get(id);
-    
+
     if (!jxgEl) {
       this.renderObject(obj, isSelected);
       const newEl = this.jxgObjects.get(id);
@@ -278,7 +385,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
       attrs.fillColor = styleInfo.baseColor;
       attrs.fillOpacity = styleInfo.isSelected ? 0.3 : 0.1;
     }
-    
+
     for (const [key, val] of Object.entries(attrs)) {
       jxgEl.setAttribute({ [key]: val });
     }
@@ -330,15 +437,15 @@ export class JSXGraphRenderer implements GeometryRenderer {
         break;
       }
     }
-    
+
     this.board.update();
   }
 
   hitTest(screenPos: Coords2D): string | null {
     if (!this.board) return null;
-    
+
     let hitId: string | null = null;
-    
+
     // JSXGraph usually stores elements in board.objects
     // But we have our map, we can iterate to see which one contains the mouse
     for (const [id, jxgEl] of this.jxgObjects.entries()) {
@@ -350,7 +457,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
         }
       }
     }
-    
+
     return hitId;
   }
 
@@ -412,7 +519,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
 
   fitToView(): void {
     if (!this.board) return;
-    
+
     // Check if we have objects
     if (this.jxgObjects.size === 0) {
       this.board.setBoundingBox([-10, 10, 10, -10], true);
@@ -423,7 +530,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
     // simple way: we can collect all points and set bbox
     let minX = Infinity, minY = Infinity;
     let maxX = -Infinity, maxY = -Infinity;
-    
+
     for (const el of this.jxgObjects.values()) {
       if (el.elType === 'point') {
         const x = el.X();
@@ -434,7 +541,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
         if (y > maxY) maxY = y;
       }
     }
-    
+
     if (minX === Infinity) {
       this.board.setBoundingBox([-10, 10, 10, -10], true);
     } else {

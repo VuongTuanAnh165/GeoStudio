@@ -7,10 +7,24 @@
           <Icon name="lucide:arrow-left" class="w-4 h-4" />
         </NuxtLink>
         <div class="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-1"></div>
-        <span class="font-medium text-sm text-slate-800 dark:text-slate-200">{{ $t('workspace.untitled') }}</span>
+        <div class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 px-2 py-1.5 rounded transition-colors" @click="dialogsRef?.openSaveDialog()">
+          <span class="font-medium text-sm text-slate-800 dark:text-slate-200">{{ currentTitle }}</span>
+          <span v-if="isSaving" class="text-xs text-slate-400 flex items-center gap-1">
+            <Icon name="lucide:loader-2" class="w-3 h-3 animate-spin" />
+            Saving...
+          </span>
+          <Icon v-else-if="lastSaved" name="lucide:check-circle-2" class="w-3.5 h-3.5 text-green-500" :title="'Last saved ' + lastSaved.toLocaleTimeString()" />
+        </div>
       </div>
       
       <div class="flex items-center gap-3">
+        <button 
+          @click="dialogsRef?.openLoadDialog()" 
+          class="px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors flex items-center gap-1.5"
+        >
+          <Icon name="lucide:folder-open" class="w-4 h-4" />
+          {{ $t('document.open') }}
+        </button>
         <button 
           @click="toggleTheme" 
           class="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all hover:shadow-md"
@@ -74,6 +88,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Document Save/Open Dialogs -->
+    <DocumentDialogs ref="dialogsRef" @document-loaded="onDocumentLoaded" />
   </div>
 </template>
 
@@ -82,14 +99,24 @@ import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useTheme } from '../composables/useTheme';
 import { useKeyboard } from '../composables/useKeyboard';
 import { useGeometryStore } from '../stores/geometry';
+import { useDocument } from '../composables/useDocument';
 import { RenameObjectCommand } from '../../core/commands/mutations';
 import { NameGenerator } from '../../core/geometry/naming/NameGenerator';
 import { useI18n } from '#imports';
+import DocumentDialogs from '../components/DocumentDialogs.vue';
 
 const { toggleTheme, isDark } = useTheme();
 const store = useGeometryStore();
+const { isSaving, lastSaved } = useDocument();
 const { locale, setLocale } = useI18n();
 useKeyboard();
+
+const currentTitle = computed(() => store.currentDocument?.metadata?.title || 'Untitled Document');
+const dialogsRef = ref<InstanceType<typeof DocumentDialogs> | null>(null);
+
+const onDocumentLoaded = () => {
+  // Can trigger re-render of canvas or show toast if necessary
+};
 
 const toggleLanguage = () => {
   setLocale(locale.value === 'vi' ? 'en' : 'vi');

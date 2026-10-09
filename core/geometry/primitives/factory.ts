@@ -6,7 +6,7 @@ import {
 
 export function createPrimitiveFromJSON(json: GeometryObject): Point | Line | Segment | Ray | Circle | Arc | Angle | Vector | Polygon {
   let instance: Point | Line | Segment | Ray | Circle | Arc | Angle | Vector | Polygon;
-  
+
   switch (json.type) {
     case 'point': {
       const def = json.definition as PointDef;

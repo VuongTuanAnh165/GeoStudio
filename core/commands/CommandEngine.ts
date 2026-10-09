@@ -73,4 +73,9 @@ export class CommandEngine {
   clearHistory(): void {
     this.history.clear();
   }
+
+  loadState(state: GeometryState): void {
+    this.state = state;
+    this.history.clear();
+  }
 }
