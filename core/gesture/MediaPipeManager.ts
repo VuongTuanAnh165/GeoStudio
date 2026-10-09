@@ -59,7 +59,7 @@ export class MediaPipeManager {
   private ready = false;
   private destroyed = false;
   private config: MediaPipeConfig;
-  private useWorker = true;
+  private useWorker = false; // Disabling worker for Nuxt testing
 
   // Fallback: inline HandLandmarker when Web Workers unavailable
   private inlineLandmarker: unknown = null;
@@ -326,8 +326,8 @@ export class MediaPipeManager {
         const result = landmarker.detectForVideo(this.video, timestamp);
         const latencyMs = performance.now() - start;
 
+        const detections: HandDetection[] = [];
         if (result?.landmarks?.length) {
-          const detections: HandDetection[] = [];
           for (let i = 0; i < result.landmarks.length; i++) {
             detections.push({
               landmarks: result.landmarks[i],
@@ -335,8 +335,8 @@ export class MediaPipeManager {
               handedness: result.handedness?.[i]?.[0] ?? { categoryName: 'Right', score: 0, index: i, displayName: 'Right' },
             });
           }
-          this.onLandmarks?.(detections, timestamp, latencyMs);
         }
+        this.onLandmarks?.(detections, timestamp, latencyMs);
       } catch {
         // Skip frame on error
       }

@@ -28,6 +28,10 @@ export class GestureStateMachine implements IGestureStateMachine {
     this.config = { ...DEFAULT_CONFIG, ...config };
   }
 
+  public updateConfig(newConfig: Partial<GestureStateMachineConfig>) {
+    this.config = { ...this.config, ...newConfig };
+  }
+
   public transition(event: GestureEvent): GestureState {
     const { features, timestamp } = event;
 

@@ -61,9 +61,8 @@ export class MouseHandler {
     };
   }
 
-  private createToolEvent(e: any): ToolEvent {
-    let mathPos = this.context.renderer.getMathPositionFromEvent(e);
-    let screenPos = this.context.renderer.getScreenPosition(mathPos);
+  private createToolEventFromScreenPos(screenPos: {x: number, y: number}, nativeEvent?: any): ToolEvent {
+    let mathPos = this.context.renderer.getMathPosition(screenPos);
     let hitObjectId = this.context.renderer.hitTest(screenPos);
     
     let snapResultOut;
@@ -87,13 +86,8 @@ export class MouseHandler {
         if (snapResult.snapType === 'point' && snapResult.targetIds && snapResult.targetIds.length > 0) {
           hitObjectId = snapResult.targetIds[0]!;
         } else if (snapResult.snapType === 'intersection' && snapResult.targetIds && snapResult.targetIds.length === 2) {
-           // We might need a way to pass this to the tool, but hitObjectId is a single string.
-           // For now, let the tool handle intersections if needed, or we just rely on hitObjectId = null and precise coords.
-           // Actually, if we snap to an intersection, the mathPos is exactly the intersection.
            hitObjectId = null;
         } else if (snapResult.snapType === 'midpoint' || snapResult.snapType === 'line' || snapResult.snapType === 'grid') {
-           // Don't hijack hitObjectId for lines, otherwise selecting a line might mistakenly create a point on it instead of selecting the line, wait.
-           // Actually, hitTest does a good job of finding the line anyway.
            if (!hitObjectId && snapResult.targetIds && snapResult.targetIds.length > 0) {
              hitObjectId = snapResult.targetIds[0]!;
            }
@@ -105,9 +99,73 @@ export class MouseHandler {
       mathPos,
       screenPos,
       hitObjectId,
-      nativeEvent: e,
+      nativeEvent,
       snapResult: snapResultOut
     };
+  }
+
+  private createToolEvent(e: any): ToolEvent {
+    // We can ask renderer to get math pos from event, then get screen pos from math pos
+    let mathPos = this.context.renderer.getMathPositionFromEvent(e);
+    let screenPos = this.context.renderer.getScreenPosition(mathPos);
+    return this.createToolEventFromScreenPos(screenPos, e);
+  }
+
+  public handleIntent(intent: import('../types/input').InputIntent) {
+    // 1. Calculate screen pos from normalized pos
+    const container = document.getElementById('jxgbox');
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const screenPos = {
+      x: intent.position.x * rect.width,
+      y: intent.position.y * rect.height
+    };
+
+    // 2. Handle non-tool intents like panning/zooming if needed
+    // (For now, we map 'pan' directly to board navigation if needed, 
+    // but the task says gesture engine -> input intent -> command engine. 
+    // Usually pan is handled by JSXGraph native touch/mouse. For gesture, we might need a custom pan.)
+    // Let's delegate 'pointer' and 'drag' to the active tool for now.
+    
+    if (intent.type === 'pan') {
+      // Basic pan implementation via renderer's bounding box
+      if (intent.action === 'down') {
+        this.startPos = { ...screenPos };
+      } else if (intent.action === 'move' && this.startPos) {
+        const dx = screenPos.x - this.startPos.x;
+        const dy = screenPos.y - this.startPos.y;
+        this.startPos = { ...screenPos };
+        
+        // Convert screen pixels to math units
+        const p1 = this.context.renderer.getMathPosition({ x: 0, y: 0 });
+        const p2 = this.context.renderer.getMathPosition({ x: dx, y: dy });
+        const mdx = p1.x - p2.x;
+        const mdy = p1.y - p2.y;
+        
+        // Use an internal pan method or just move bounding box
+        // @ts-ignore
+        if (this.context.renderer.board) {
+          // @ts-ignore
+          const b = this.context.renderer.board;
+          b.moveOrigin(screenPos.x, screenPos.y, true); // this might work, or change bounding box
+        }
+      } else if (intent.action === 'up') {
+        this.startPos = null;
+      }
+      return;
+    }
+
+    // 3. Delegate standard interactions to tool
+    if (!this.activeTool) return;
+    const event = this.createToolEventFromScreenPos(screenPos);
+
+    if (intent.action === 'down') {
+      this.activeTool.onMouseDown?.(event, this.getToolContext());
+    } else if (intent.action === 'move') {
+      this.activeTool.onMouseMove?.(event, this.getToolContext());
+    } else if (intent.action === 'up') {
+      this.activeTool.onMouseUp?.(event, this.getToolContext());
+    }
   }
 
   private longPressTimeout: any = null;

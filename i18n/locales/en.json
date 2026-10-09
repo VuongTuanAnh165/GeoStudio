@@ -126,5 +126,29 @@
     "svg": "Save as SVG",
     "json": "Save as JSON",
     "print": "Print Document"
+  },
+  "gesture": {
+    "camera": "Camera",
+    "mirror_camera": "Mirror Camera",
+    "close_camera": "Close Camera",
+    "starting": "Starting...",
+    "click_to_start": "Click to Start",
+    "retry": "Retry",
+    "camera_toggle": "Toggle Camera",
+    "calibration": "Gesture Calibration",
+    "step_1": "Pinch Threshold",
+    "step_2": "Workspace Bounds",
+    "step_1_desc": "Make a pinch gesture (touch your index finger and thumb) to let the system learn your hand proportions.",
+    "step_2_desc": "Adjust the active workspace padding. This defines how much you have to move your hand to reach the edges of the screen.",
+    "great_hold_it": "Great! Hold it...",
+    "waiting_for_pinch": "Waiting for pinch...",
+    "sensitivity": "Sensitivity",
+    "sensitivity_desc": "Move left for more sensitive, right for less sensitive",
+    "horizontal_padding": "Horizontal Padding (X)",
+    "vertical_padding": "Vertical Padding (Y)",
+    "active_area": "Active Area",
+    "back": "Back",
+    "next_step": "Next Step",
+    "save_finish": "Save & Finish"
   }
 }

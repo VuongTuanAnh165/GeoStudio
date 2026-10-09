@@ -41,7 +41,8 @@ export class ContextualGestureMapper {
     currentState: GestureState,
     features: HandFeatures | null,
     activeTool: string,
-    timestamp: number
+    timestamp: number,
+    workspacePadding?: { x: number; y: number }
   ): InputIntent | null {
     if (!features) {
       if (this.lastIsPinching) {
@@ -54,10 +55,17 @@ export class ContextualGestureMapper {
       return null;
     }
 
-    const position = { 
-      x: features.pointerPosition.x, 
-      y: features.pointerPosition.y 
-    };
+    let px = features.pointerPosition.x;
+    let py = features.pointerPosition.y;
+    
+    // Apply calibration padding to map camera active area to full canvas [0..1]
+    if (workspacePadding) {
+      const { x: pxPad, y: pyPad } = workspacePadding;
+      px = Math.max(0, Math.min(1, (px - pxPad) / (1 - 2 * pxPad)));
+      py = Math.max(0, Math.min(1, (py - pyPad) / (1 - 2 * pyPad)));
+    }
+
+    const position = { x: px, y: py };
     
     let action: InputIntent['action'] = 'none';
     const isPinchingNow = ['PINCH_START', 'PINCH_HOLD', 'DRAGGING'].includes(currentState);
@@ -74,9 +82,9 @@ export class ContextualGestureMapper {
     }
 
     // Determine semantic type based on mapping table
-    const toolMapping = this.config[activeTool] || this.config['*'];
+    const toolMapping = this.config[activeTool] || this.config['*'] || {};
     // Fallback to '*' if the specific state isn't mapped for the tool
-    const type = toolMapping[currentState] || this.config['*'][currentState] || 'pointer';
+    const type = toolMapping[currentState] || (this.config['*'] && this.config['*'][currentState]) || 'pointer';
 
     const intent = this.createIntent(type, action, position, timestamp);
     

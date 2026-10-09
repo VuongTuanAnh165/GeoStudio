@@ -1,5 +1,6 @@
 <template>
-  <div class="flex flex-col w-full h-full overflow-hidden">
+  <div class="flex flex-col w-full h-full overflow-hidden relative">
+    <VirtualCursor />
     <!-- Header của workspace -->
     <header class="h-12 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between px-4 shrink-0 transition-colors z-20 shadow-sm">
       <div class="flex items-center gap-3">
@@ -24,6 +25,14 @@
         >
           <Icon name="lucide:folder-open" class="w-4 h-4" />
           {{ $t('document.open') }}
+        </button>
+        <button 
+          @click="gestureStore.toggleCamera()" 
+          class="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md"
+          :class="gestureStore.showCamera ? 'text-green-600 dark:text-green-400 border-green-300 dark:border-green-600 bg-green-50 dark:bg-green-900/30' : 'text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'"
+          :title="$t('gesture.camera_toggle') || 'Toggle Camera'"
+        >
+          <Icon name="lucide:camera" class="w-4 h-4" />
         </button>
         <button 
           @click="toggleTheme" 
@@ -57,6 +66,8 @@
       <!-- Canvas Area (Center) -->
       <div class="flex-1 relative h-full overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors">
         <GeoCanvas />
+        <CameraView v-model="gestureStore.showCamera" @video-ready="onVideoReady" />
+        <GestureHUD />
       </div>
 
       <!-- Object Panel (Right) -->
@@ -98,30 +109,57 @@
 
     <!-- Export Dialog -->
     <ExportDialog v-model="showExportModal" />
+
+    <!-- Calibration Modal -->
+    <CalibrationModal />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, nextTick } from 'vue';
+import { onMounted, onUnmounted, ref, computed, nextTick } from 'vue';
 import { useTheme } from '../composables/useTheme';
 import { useKeyboard } from '../composables/useKeyboard';
 import { useGeometryStore } from '../stores/geometry';
+import { useGestureStore } from '../stores/gesture';
 import { useDocument } from '../composables/useDocument';
 import { RenameObjectCommand } from '../../core/commands/mutations';
 import { NameGenerator } from '../../core/geometry/naming/NameGenerator';
 import { useI18n } from '#imports';
 import DocumentDialogs from '../components/DocumentDialogs.vue';
 import ExportDialog from '../components/ExportDialog.vue';
+import CameraView from '../components/CameraView.vue';
+import GestureHUD from '../components/GestureHUD.vue';
+import CalibrationModal from '../components/CalibrationModal.vue';
+
+import { useGestureEngine } from '../composables/useGestureEngine';
 
 const { toggleTheme, isDark } = useTheme();
 const store = useGeometryStore();
+const gestureStore = useGestureStore();
 const { isSaving, lastSaved } = useDocument();
 const { locale, setLocale } = useI18n();
 useKeyboard();
 
+const { startEngine, stopEngine } = useGestureEngine();
+
 const currentTitle = computed(() => store.currentDocument?.metadata?.title || 'Untitled Document');
 const dialogsRef = ref<InstanceType<typeof DocumentDialogs> | null>(null);
 const showExportModal = ref(false);
+
+const onVideoReady = async (video: HTMLVideoElement) => {
+  try {
+    await startEngine(video);
+    console.log('Gesture Engine started.');
+  } catch (err) {
+    console.error('Failed to start Gesture Engine:', err);
+  }
+};
+
+watch(() => gestureStore.showCamera, (show) => {
+  if (!show) {
+    stopEngine();
+  }
+});
 
 const onDocumentLoaded = () => {
   // Can trigger re-render of canvas or show toast if necessary

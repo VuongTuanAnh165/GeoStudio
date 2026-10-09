@@ -126,5 +126,29 @@
     "svg": "Lưu Vector SVG",
     "json": "Lưu File JSON",
     "print": "In Tài Liệu"
+  },
+  "gesture": {
+    "camera": "Máy ảnh",
+    "mirror_camera": "Lật ngang camera",
+    "close_camera": "Đóng camera",
+    "starting": "Đang khởi động...",
+    "click_to_start": "Nhấn để bắt đầu",
+    "retry": "Thử lại",
+    "camera_toggle": "Bật/tắt Camera",
+    "calibration": "Hiệu chỉnh cử chỉ",
+    "step_1": "Ngưỡng kẹp ngón tay (Pinch)",
+    "step_2": "Khung làm việc",
+    "step_1_desc": "Hãy thực hiện cử chỉ kẹp (chạm ngón trỏ và ngón cái) để hệ thống học khoảng cách ngón tay của bạn.",
+    "step_2_desc": "Điều chỉnh giới hạn không gian tay của bạn so với màn hình. Điều này quyết định bạn phải vung tay bao xa để trỏ tới mép viền bảng vẽ.",
+    "great_hold_it": "Tuyệt vời! Hãy giữ nguyên...",
+    "waiting_for_pinch": "Đang chờ cử chỉ kẹp...",
+    "sensitivity": "Độ nhạy",
+    "sensitivity_desc": "Kéo sang trái để nhạy hơn, sang phải để bớt nhạy",
+    "horizontal_padding": "Đệm ngang (X)",
+    "vertical_padding": "Đệm dọc (Y)",
+    "active_area": "Vùng thao tác",
+    "back": "Quay lại",
+    "next_step": "Tiếp tục",
+    "save_finish": "Lưu & Kết thúc"
   }
 }

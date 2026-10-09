@@ -37,13 +37,13 @@ export class GestureFeatureExtractor {
     const ring = this.computeFingerState(landmarks, 13, 14, 15, 16, palmPosition, false);
     const pinky = this.computeFingerState(landmarks, 17, 18, 19, 20, palmPosition, false);
 
-    const pinchDistance = this.distance(landmarks[4], landmarks[8]);
+    const pinchDistance = this.distance(landmarks[4]!, landmarks[8]!);
     
     // Pointer position: midway between index tip and thumb tip
     const pointerPosition = {
-      x: (landmarks[4].x + landmarks[8].x) / 2,
-      y: (landmarks[4].y + landmarks[8].y) / 2,
-      z: (landmarks[4].z + landmarks[8].z) / 2
+      x: (landmarks[4]!.x + landmarks[8]!.x) / 2,
+      y: (landmarks[4]!.y + landmarks[8]!.y) / 2,
+      z: (landmarks[4]!.z + landmarks[8]!.z) / 2
     };
 
     return {
@@ -72,9 +72,9 @@ export class GestureFeatureExtractor {
     let x = 0, y = 0, z = 0;
     
     for (const idx of indices) {
-      x += landmarks[idx].x;
-      y += landmarks[idx].y;
-      z += landmarks[idx].z;
+      x += landmarks[idx]!.x;
+      y += landmarks[idx]!.y;
+      z += landmarks[idx]!.z;
     }
     
     return {
@@ -120,18 +120,18 @@ export class GestureFeatureExtractor {
     palmPosition: Vector3D,
     isThumb: boolean
   ): FingerState {
-    const wrist = landmarks[0];
-    const mcp = landmarks[mcpIdx];
-    const pip = landmarks[pipIdx];
-    const tip = landmarks[tipIdx];
+    const wrist = landmarks[0]!;
+    const mcp = landmarks[mcpIdx]!;
+    const pip = landmarks[pipIdx]!;
+    const tip = landmarks[tipIdx]!;
 
     let isExtended = false;
 
     if (isThumb) {
       // Thumb is extended if its tip is further from the index MCP (5) than its IP (3)
       // or using a simple distance metric to the wrist
-      const distTipToIndexMcp = this.distance(tip, landmarks[5]);
-      const distIpToIndexMcp = this.distance(landmarks[3], landmarks[5]);
+      const distTipToIndexMcp = this.distance(tip, landmarks[5]!);
+      const distIpToIndexMcp = this.distance(landmarks[3]!, landmarks[5]!);
       isExtended = distTipToIndexMcp > distIpToIndexMcp;
     } else {
       // Other fingers: extended if the distance from wrist to tip is greater than wrist to PIP
@@ -152,13 +152,13 @@ export class GestureFeatureExtractor {
   }
 
   private computeOrientation(landmarks: NormalizedLandmark[]): HandOrientation {
-    const wrist = landmarks[0];
-    const indexMcp = landmarks[5];
-    const pinkyMcp = landmarks[17];
+    const wrist = landmarks[0]!;
+    const indexMcp = landmarks[5]!;
+    const pinkyMcp = landmarks[17]!;
 
     // Compute basis vectors for the hand coordinate system
     // Y-axis: vector from wrist to middle MCP (approximate up direction for the hand)
-    const middleMcp = landmarks[9];
+    const middleMcp = landmarks[9]!;
     const yAxis = this.normalize(this.subtract(middleMcp, wrist));
 
     // X-axis: vector from pinky MCP to index MCP (across the palm)

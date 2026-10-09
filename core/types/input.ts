@@ -34,6 +34,7 @@ export interface GestureStateMachine {
   readonly currentState: GestureState;
   transition(event: GestureEvent): GestureState;
   config: GestureStateMachineConfig;
+  updateConfig(newConfig: Partial<GestureStateMachineConfig>): void;
 }
 
 /** 3D normalized landmark from MediaPipe (values 0..1 relative to image) */
