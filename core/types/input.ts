@@ -14,25 +14,25 @@ export type GestureState =
   | 'PINCH_HOLD'
   | 'DRAGGING'
   | 'PINCH_RELEASE'
-  | 'DRAW_START'
-  | 'DRAWING'
-  | 'DRAW_END';
+  | 'SWIPE';
 
-export type GestureEvent = unknown;
+export interface GestureEvent {
+  features: HandFeatures | null; // null if tracking lost
+  timestamp: number;
+}
+
+export interface GestureStateMachineConfig {
+  pinchThreshold: number; // Max distance between thumb and index to trigger pinch
+  pinchHoldDuration: number; // Ms required in pinch state to transition to PINCH_HOLD
+  dragThreshold: number; // Min distance palm must move to trigger DRAGGING
+  releaseDebounce: number; // Ms required without pinch to trigger PINCH_RELEASE
+  swipeVelocityMin: number; // Min speed to trigger SWIPE
+}
 
 export interface GestureStateMachine {
-  currentState: GestureState;
+  readonly currentState: GestureState;
   transition(event: GestureEvent): GestureState;
-
-  // Debounce / threshold configuration
-  config: {
-    pinchThreshold: number; // khoảng cách ngón để trigger pinch
-    pinchHoldDuration: number; // ms giữ pinch trước khi thành HOLD
-    dragThreshold: number; // pixel di chuyển để thành DRAG
-    releaseDebounce: number; // ms debounce khi release
-    swipeVelocityMin: number; // tốc độ tối thiểu cho swipe
-    doublePinchWindow: number; // ms cửa sổ double pinch
-  };
+  config: GestureStateMachineConfig;
 }
 
 /** 3D normalized landmark from MediaPipe (values 0..1 relative to image) */
