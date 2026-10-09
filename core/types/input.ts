@@ -1,5 +1,6 @@
 export interface InputIntent {
-  type: 'pointer' | 'select' | 'drag' | 'zoom' | 'pan' | 'cancel';
+  type: 'pointer' | 'select' | 'drag' | 'zoom' | 'pan' | 'cancel' | 'swipe';
+  action: 'down' | 'move' | 'up' | 'none';
   position: { x: number; y: number };
   source: 'mouse' | 'touch' | 'stylus' | 'gesture' | 'keyboard';
   modifiers: { shift: boolean; ctrl: boolean; alt: boolean };
@@ -119,5 +120,6 @@ export interface HandFeatures {
   pinchDistance: number; // Euclidean distance between thumb tip and index tip
   palmPosition: { x: number; y: number; z: number }; // centroid of palm landmarks
   palmVelocity: { x: number; y: number; z: number }; // delta per second
+  pointerPosition: { x: number; y: number; z: number }; // index tip or pinch centroid
   orientation: HandOrientation;
 }

@@ -38,6 +38,13 @@ export class GestureFeatureExtractor {
     const pinky = this.computeFingerState(landmarks, 17, 18, 19, 20, palmPosition, false);
 
     const pinchDistance = this.distance(landmarks[4], landmarks[8]);
+    
+    // Pointer position: midway between index tip and thumb tip
+    const pointerPosition = {
+      x: (landmarks[4].x + landmarks[8].x) / 2,
+      y: (landmarks[4].y + landmarks[8].y) / 2,
+      z: (landmarks[4].z + landmarks[8].z) / 2
+    };
 
     return {
       handedness: handedness.categoryName,
@@ -45,6 +52,7 @@ export class GestureFeatureExtractor {
       pinchDistance,
       palmPosition,
       palmVelocity,
+      pointerPosition,
       orientation
     };
   }

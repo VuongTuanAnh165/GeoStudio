@@ -24,6 +24,7 @@ export type GeoEvent =
   | { type: 'command:undone'; payload: { command: GeometryCommand } }
   | { type: 'command:redone'; payload: { command: GeometryCommand } }
   // Input events
+  | { type: 'input:intent'; payload: { intent: import('./input').InputIntent } }
   | { type: 'gesture:recognized'; payload: { gesture: GestureResult } }
   | { type: 'tool:changed'; payload: { tool: ToolType } }
   // Document events
