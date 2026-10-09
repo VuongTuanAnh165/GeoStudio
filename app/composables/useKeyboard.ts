@@ -1,6 +1,7 @@
 import { onMounted, onUnmounted } from 'vue';
 import { useGeometryStore } from '../stores/geometry';
 import { DeleteObjectCommand } from '../../core/commands/deletions';
+import { ClipboardManager } from '../../core/clipboard/ClipboardManager';
 
 export function useKeyboard() {
   const store = useGeometryStore();
@@ -34,6 +35,31 @@ export function useKeyboard() {
       else if (e.key.toLowerCase() === 'y') {
         e.preventDefault();
         store.redo();
+      }
+      else if (e.key.toLowerCase() === 'c') {
+        // Only if we have a selection, and not in text input
+        if (store.selectedIds.size > 0) {
+          e.preventDefault();
+          ClipboardManager.copy(store.rawState, Array.from(store.selectedIds));
+        }
+      }
+      else if (e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+        ClipboardManager.paste(store.rawState).then(cmd => {
+          if (cmd) {
+            store.executeCommand(cmd);
+          }
+        });
+      }
+      else if (e.key.toLowerCase() === 'd') {
+        e.preventDefault();
+        if (store.selectedIds.size > 0) {
+          ClipboardManager.copy(store.rawState, Array.from(store.selectedIds)).then(() => {
+            ClipboardManager.paste(store.rawState).then(cmd => {
+              if (cmd) store.executeCommand(cmd);
+            });
+          });
+        }
       }
       return; // Do not process single-key tool shortcuts if a modifier is pressed
     }

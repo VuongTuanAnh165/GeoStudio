@@ -42,6 +42,15 @@
       </div>
 
       <div class="h-px bg-slate-200/50 dark:bg-slate-700/50 my-1 mx-2"></div>
+      <button @click="handleAction('copy')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 transition-colors">
+        <Icon name="lucide:copy" class="w-4 h-4 text-slate-400"/> 
+        {{ $t('context.copy', 'Copy') }}
+      </button>
+      <button @click="handleAction('duplicate')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 transition-colors">
+        <Icon name="lucide:copy-plus" class="w-4 h-4 text-slate-400"/> 
+        {{ $t('context.duplicate', 'Duplicate') }}
+      </button>
+      <div class="h-px bg-slate-200/50 dark:bg-slate-700/50 my-1 mx-2"></div>
       <button @click="handleAction('delete')" class="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center gap-3 transition-colors">
         <Icon name="lucide:trash-2" class="w-4 h-4 opacity-70"/> 
         {{ $t('tools.delete', 'Delete') }}
@@ -70,6 +79,12 @@
           </div>
         </div>
       </div>
+
+      <button @click="handleAction('paste')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 transition-colors">
+        <Icon name="lucide:clipboard-paste" class="w-4 h-4 text-slate-400"/> 
+        {{ $t('context.paste', 'Paste') }}
+      </button>
+      <div class="h-px bg-slate-200/50 dark:bg-slate-700/50 my-1 mx-2"></div>
 
       <button @click="handleAction('selectAll')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 transition-colors">
         <Icon name="lucide:check-square" class="w-4 h-4 text-slate-400"/> 
@@ -102,6 +117,7 @@ import { DeleteObjectCommand } from '../../core/commands/deletions';
 import { ConstructionRegistry } from '../../core/geometry/constructions/ConstructionRegistry';
 import type { ConstructionDefinition } from '../../core/geometry/constructions/ConstructionRegistry';
 import type { GeometryObject } from '../../core/types/geometry';
+import { ClipboardManager } from '../../core/clipboard/ClipboardManager';
 
 const { state, hideMenu } = useContextMenu();
 const store = useGeometryStore();
@@ -158,6 +174,35 @@ const handleAction = (action: string) => {
       if (state.value.targetObject) {
         store.selectObject(state.value.targetObject.id);
       }
+      break;
+    case 'copy':
+      {
+        const idsToCopy = store.selectedIds.size > 0 
+          ? Array.from(store.selectedIds) 
+          : state.value.targetObject ? [state.value.targetObject.id] : [];
+        if (idsToCopy.length > 0) {
+          ClipboardManager.copy(store.rawState, idsToCopy);
+        }
+      }
+      break;
+    case 'duplicate':
+      {
+        const idsToCopy = store.selectedIds.size > 0 
+          ? Array.from(store.selectedIds) 
+          : state.value.targetObject ? [state.value.targetObject.id] : [];
+        if (idsToCopy.length > 0) {
+          ClipboardManager.copy(store.rawState, idsToCopy).then(() => {
+            ClipboardManager.paste(store.rawState).then(cmd => {
+              if (cmd) store.executeCommand(cmd);
+            });
+          });
+        }
+      }
+      break;
+    case 'paste':
+      ClipboardManager.paste(store.rawState).then(cmd => {
+        if (cmd) store.executeCommand(cmd);
+      });
       break;
     case 'selectAll':
       store.selectObjects(Array.from(store.objects.keys()));

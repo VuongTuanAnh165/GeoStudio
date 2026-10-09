@@ -40,7 +40,10 @@
     "select_all": "Chọn tất cả",
     "reset_view": "Đặt lại góc nhìn",
     "grid": "Lưới toạ độ",
-    "axis": "Trục toạ độ"
+    "axis": "Trục toạ độ",
+    "copy": "Sao chép",
+    "paste": "Dán",
+    "duplicate": "Nhân bản"
   },
   "snap": {
     "intersection": "Giao điểm của {obj1} và {obj2}",
@@ -60,7 +63,14 @@
     "feature2_title": "Không gian 3D",
     "feature2_desc": "Hỗ trợ đầy đủ hệ trục tọa độ 3 chiều (3D) và các khối hình học không gian phức tạp.",
     "feature3_title": "Nhận diện cử chỉ",
-    "feature3_desc": "Điều khiển canvas và bảng vẽ bằng tay qua AI camera mà không cần dùng đến chuột hay bàn phím."
+    "feature3_desc": "Điều khiển canvas và bảng vẽ bằng tay qua AI camera mà không cần dùng đến chuột hay bàn phím.",
+    "recent_documents": "Tài liệu gần đây",
+    "new_workspace": "Tạo không gian làm việc mới",
+    "import_json": "Nhập từ file JSON",
+    "quick_templates": "Mẫu dựng sẵn",
+    "template_triangle": "Tam giác",
+    "template_quadrilateral": "Tứ giác",
+    "template_circle": "Đường tròn"
   },
   "workspace": {
     "untitled": "Tài liệu không tên",
@@ -109,5 +119,12 @@
     "no_documents": "Không có tài liệu nào",
     "no_desc": "Không có mô tả",
     "objects_count": "đối tượng"
+  },
+  "export": {
+    "title": "Xuất Tài Liệu",
+    "png": "Lưu Ảnh PNG",
+    "svg": "Lưu Vector SVG",
+    "json": "Lưu File JSON",
+    "print": "In Tài Liệu"
   }
 }

@@ -7,7 +7,8 @@ import {
   CreateRayCommand,
   CreateCircleCommand,
   CreatePolygonCommand,
-  CreateTriangleCommand
+  CreateTriangleCommand,
+  PasteObjectsCommand
 } from './primitives';
 import {
   MovePointCommand,
@@ -17,7 +18,7 @@ import {
   HideLabelCommand
 } from './mutations';
 import { DeleteObjectCommand } from './deletions';
-import type { Coords2D } from '../types/geometry';
+import type { Coords2D, GeometryObject } from '../types/geometry';
 
 export function createCommandFromJSON(json: Record<string, unknown>): GeometryCommand {
   const type = json.type as string;
@@ -81,6 +82,10 @@ export function createCommandFromJSON(json: Record<string, unknown>): GeometryCo
     
     case 'DELETE_OBJECT':
       cmd = new DeleteObjectCommand((args.objectId || json.objectId) as string, args.cascade as boolean | undefined);
+      break;
+
+    case 'PASTE_OBJECTS':
+      cmd = new PasteObjectsCommand(json.objects as GeometryObject[]);
       break;
 
     default:

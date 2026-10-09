@@ -39,8 +39,12 @@
         >
           {{ locale }}
         </button>
-        <button class="px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-md transition-colors">
-          {{ $t('workspace.share') }}
+        <button 
+          @click="showExportModal = true"
+          class="px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-md transition-colors flex items-center gap-1.5"
+        >
+          <Icon name="lucide:share" class="w-4 h-4" />
+          {{ $t('export.title') }}
         </button>
       </div>
     </header>
@@ -91,6 +95,9 @@
 
     <!-- Document Save/Open Dialogs -->
     <DocumentDialogs ref="dialogsRef" @document-loaded="onDocumentLoaded" />
+
+    <!-- Export Dialog -->
+    <ExportDialog v-model="showExportModal" />
   </div>
 </template>
 
@@ -104,6 +111,7 @@ import { RenameObjectCommand } from '../../core/commands/mutations';
 import { NameGenerator } from '../../core/geometry/naming/NameGenerator';
 import { useI18n } from '#imports';
 import DocumentDialogs from '../components/DocumentDialogs.vue';
+import ExportDialog from '../components/ExportDialog.vue';
 
 const { toggleTheme, isDark } = useTheme();
 const store = useGeometryStore();
@@ -113,6 +121,7 @@ useKeyboard();
 
 const currentTitle = computed(() => store.currentDocument?.metadata?.title || 'Untitled Document');
 const dialogsRef = ref<InstanceType<typeof DocumentDialogs> | null>(null);
+const showExportModal = ref(false);
 
 const onDocumentLoaded = () => {
   // Can trigger re-render of canvas or show toast if necessary
@@ -189,5 +198,21 @@ definePageMeta({
 
 <style scoped>
 /* Vite HMR cache fix */
+@media print {
+  /* Hide everything except the canvas area */
+  header, .flex-row > *:not(.relative), .StatusBar {
+    display: none !important;
+  }
+  
+  .flex-row > .relative {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: white !important;
+  }
+}
 </style>
 

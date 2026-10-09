@@ -40,7 +40,10 @@
     "select_all": "Select All",
     "reset_view": "Reset View",
     "grid": "Grid",
-    "axis": "Axis"
+    "axis": "Axis",
+    "copy": "Copy",
+    "paste": "Paste",
+    "duplicate": "Duplicate"
   },
   "snap": {
     "intersection": "Intersection of {obj1} and {obj2}",
@@ -60,7 +63,14 @@
     "feature2_title": "3D Space",
     "feature2_desc": "Full support for 3D coordinate system and complex spatial geometry blocks.",
     "feature3_title": "Gesture recognition",
-    "feature3_desc": "Control canvas and whiteboard by hand via AI camera without using mouse or keyboard."
+    "feature3_desc": "Control canvas and whiteboard by hand via AI camera without using mouse or keyboard.",
+    "recent_documents": "Recent Documents",
+    "new_workspace": "New Workspace",
+    "import_json": "Import JSON",
+    "quick_templates": "Quick Templates",
+    "template_triangle": "Triangle",
+    "template_quadrilateral": "Quadrilateral",
+    "template_circle": "Circle"
   },
   "workspace": {
     "untitled": "Untitled Document",
@@ -109,5 +119,12 @@
     "no_documents": "No documents found",
     "no_desc": "No description",
     "objects_count": "objects"
+  },
+  "export": {
+    "title": "Export Document",
+    "png": "Save as PNG",
+    "svg": "Save as SVG",
+    "json": "Save as JSON",
+    "print": "Print Document"
   }
 }

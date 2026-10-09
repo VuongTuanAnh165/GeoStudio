@@ -62,15 +62,58 @@
       </p>
       
       <div class="flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up" style="animation-delay: 0.3s;">
-        <NuxtLink to="/workspace" class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 font-semibold text-white transition-all duration-300 bg-blue-600 rounded-full hover:bg-blue-700 hover:shadow-[0_0_40px_8px_rgba(37,99,235,0.3)] dark:hover:shadow-[0_0_40px_8px_rgba(59,130,246,0.3)] hover:-translate-y-1">
-          {{ $t('landing.start') }}
-          <Icon name="lucide:arrow-right" class="w-5 h-5 transition-transform group-hover:translate-x-1" />
-        </NuxtLink>
+        <button @click="newWorkspace" class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 font-semibold text-white transition-all duration-300 bg-blue-600 rounded-full hover:bg-blue-700 hover:shadow-[0_0_40px_8px_rgba(37,99,235,0.3)] dark:hover:shadow-[0_0_40px_8px_rgba(59,130,246,0.3)] hover:-translate-y-1">
+          {{ $t('landing.new_workspace') }}
+          <Icon name="lucide:plus" class="w-5 h-5 transition-transform group-hover:rotate-90" />
+        </button>
         
-        <a href="https://github.com" target="_blank" class="inline-flex items-center justify-center gap-3 px-8 py-4 font-semibold text-slate-700 dark:text-slate-300 transition-all duration-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 hover:-translate-y-1 hover:shadow-lg">
-          <Icon name="lucide:github" class="w-5 h-5" />
-          {{ $t('landing.opensource') }}
-        </a>
+        <button @click="importJSON" class="inline-flex items-center justify-center gap-3 px-8 py-4 font-semibold text-slate-700 dark:text-slate-300 transition-all duration-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-slate-50 dark:hover:bg-slate-700 hover:-translate-y-1 hover:shadow-lg">
+          <Icon name="lucide:upload" class="w-5 h-5" />
+          {{ $t('landing.import_json') }}
+        </button>
+      </div>
+
+      <!-- Quick Templates -->
+      <div class="mt-12 w-full max-w-3xl animate-fade-in-up" style="animation-delay: 0.35s;">
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-4">{{ $t('landing.quick_templates') }}</h3>
+        <div class="flex justify-center gap-4">
+          <button @click="openTemplate('triangle')" class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-blue-300 transition-all hover:-translate-y-1 w-32">
+            <Icon name="lucide:triangle" class="w-8 h-8 text-blue-500" />
+            <span class="text-sm font-medium">{{ $t('landing.template_triangle') }}</span>
+          </button>
+          <button @click="openTemplate('quadrilateral')" class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-purple-300 transition-all hover:-translate-y-1 w-32">
+            <Icon name="lucide:square" class="w-8 h-8 text-purple-500" />
+            <span class="text-sm font-medium">{{ $t('landing.template_quadrilateral') }}</span>
+          </button>
+          <button @click="openTemplate('circle')" class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-teal-300 transition-all hover:-translate-y-1 w-32">
+            <Icon name="lucide:circle" class="w-8 h-8 text-teal-500" />
+            <span class="text-sm font-medium">{{ $t('landing.template_circle') }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Documents -->
+      <div v-if="recentDocs.length > 0" class="mt-16 w-full max-w-4xl animate-fade-in-up text-left" style="animation-delay: 0.4s;">
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-6 pl-4">{{ $t('landing.recent_documents') }}</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <button 
+            v-for="doc in recentDocs" 
+            :key="doc.metadata.id" 
+            @click="openDocument(doc)"
+            class="group text-left p-5 rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 hover:-translate-y-1"
+          >
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <Icon name="lucide:file-box" class="w-5 h-5" />
+              </div>
+              <div class="truncate font-semibold text-slate-800 dark:text-slate-200">
+                {{ doc.metadata.title || $t('workspace.untitled') }}
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-1 truncate">{{ doc.metadata.description || $t('document.no_desc') }}</p>
+            <p class="text-[10px] text-slate-400">{{ new Date(doc.metadata.updatedAt).toLocaleString() }}</p>
+          </button>
+        </div>
       </div>
       
       <!-- Feature Cards -->
@@ -117,14 +160,114 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { useTheme } from '../composables/useTheme';
-import { useI18n } from '#imports';
+import { useI18n, useRouter } from '#imports';
+import { DocumentStorage } from '../../core/storage/DocumentStorage';
+import type { GeoDocument } from '../../core/types/document';
+import { useGeometryStore } from '../stores/geometry';
+import { Point, Polygon, Circle } from '../../core/geometry/primitives/2d';
 
 const { toggleTheme, isDark } = useTheme();
-const { locale, setLocale } = useI18n();
+const { locale, setLocale, t } = useI18n();
+const router = useRouter();
+const store = useGeometryStore();
+const recentDocs = ref<GeoDocument[]>([]);
+
+onMounted(async () => {
+  const storage = new DocumentStorage();
+  recentDocs.value = (await storage.list()).slice(0, 3);
+});
 
 const toggleLanguage = () => {
   setLocale(locale.value === 'vi' ? 'en' : 'vi');
+};
+
+const newWorkspace = () => {
+  store.loadDocument({
+    version: '1.0',
+    schemaVersion: 1,
+    metadata: {
+      id: crypto.randomUUID(),
+      title: t('workspace.untitled'),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    settings: { theme: 'light', gridVisible: true, axisVisible: true, snapEnabled: true, dimension: 2 },
+    viewport: { xMin: -10, xMax: 10, yMin: -10, yMax: 10 },
+    objects: []
+  });
+  router.push('/workspace');
+};
+
+const importJSON = () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const text = await file.text();
+      try {
+        const doc = JSON.parse(text);
+        if (doc.metadata && doc.objects) {
+          store.loadDocument(doc);
+          router.push('/workspace');
+        } else {
+          alert('Invalid GeoStudio Document Format');
+        }
+      } catch (err) {
+        console.error('Invalid JSON', err);
+        alert('Invalid JSON File');
+      }
+    }
+  };
+  input.click();
+};
+
+const openDocument = (doc: GeoDocument) => {
+  store.loadDocument(doc);
+  router.push('/workspace');
+};
+
+const openTemplate = (type: string) => {
+  const objects: any[] = [];
+  if (type === 'triangle') {
+    const p1 = new Point(-2, -2).toJSON(); if(p1.metadata) p1.metadata.label = 'A';
+    const p2 = new Point(2, -2).toJSON(); if(p2.metadata) p2.metadata.label = 'B';
+    const p3 = new Point(0, 2).toJSON(); if(p3.metadata) p3.metadata.label = 'C';
+    const poly = new Polygon([{x: -2, y: -2}, {x: 2, y: -2}, {x: 0, y: 2}]).toJSON();
+    poly.parents = [p1.id, p2.id, p3.id];
+    objects.push(p1, p2, p3, poly);
+  } else if (type === 'quadrilateral') {
+    const p1 = new Point(-2, -2).toJSON(); if(p1.metadata) p1.metadata.label = 'A';
+    const p2 = new Point(2, -2).toJSON(); if(p2.metadata) p2.metadata.label = 'B';
+    const p3 = new Point(2, 2).toJSON(); if(p3.metadata) p3.metadata.label = 'C';
+    const p4 = new Point(-2, 2).toJSON(); if(p4.metadata) p4.metadata.label = 'D';
+    const poly = new Polygon([{x: -2, y: -2}, {x: 2, y: -2}, {x: 2, y: 2}, {x: -2, y: 2}]).toJSON();
+    poly.parents = [p1.id, p2.id, p3.id, p4.id];
+    objects.push(p1, p2, p3, p4, poly);
+  } else if (type === 'circle') {
+    const p1 = new Point(0, 0).toJSON(); if(p1.metadata) p1.metadata.label = 'O';
+    const circ = new Circle({x: 0, y: 0}, 3).toJSON();
+    circ.parents = [p1.id];
+    objects.push(p1, circ);
+  }
+  
+  store.loadDocument({
+    version: '1.0',
+    schemaVersion: 1,
+    settings: { theme: 'light', gridVisible: true, axisVisible: true, snapEnabled: true, dimension: 2 },
+    viewport: { xMin: -10, xMax: 10, yMin: -10, yMax: 10 },
+    metadata: {
+      id: crypto.randomUUID(),
+      title: t('landing.template_' + type),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    objects
+  });
+  router.push('/workspace');
 };
 
 definePageMeta({

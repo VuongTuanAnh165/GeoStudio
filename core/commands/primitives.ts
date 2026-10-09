@@ -174,3 +174,58 @@ export class CreateTriangleCommand extends BaseCreateCommand {
   }
 }
 
+export class PasteObjectsCommand implements GeometryCommand {
+  id: string;
+  type = 'PASTE_OBJECTS';
+  args: Record<string, unknown> = {};
+  timestamp: number;
+  source: 'mouse' | 'touch' | 'gesture' | 'keyboard' | 'voice' | 'ai' | 'script' = 'keyboard';
+  undoable = true;
+
+  constructor(public objects: GeometryObject[]) {
+    this.id = crypto.randomUUID();
+    this.timestamp = Date.now();
+    this.args = { objectCount: objects.length };
+  }
+
+  execute(state: GeometryState): GeometryState {
+    // Add objects
+    return {
+      ...state,
+      document: {
+        ...state.document,
+        objects: [...state.document.objects, ...this.objects]
+      },
+      selection: this.objects.map(o => o.id)
+    };
+  }
+
+  undo(state: GeometryState): GeometryState {
+    const idsToRemove = new Set(this.objects.map(o => o.id));
+    return {
+      ...state,
+      document: {
+        ...state.document,
+        objects: state.document.objects.filter(obj => !idsToRemove.has(obj.id))
+      },
+      selection: []
+    };
+  }
+
+  validate(_state: GeometryState): ValidationResult {
+    return { valid: true };
+  }
+
+  toJSON(): Record<string, unknown> {
+    return {
+      id: this.id,
+      type: this.type,
+      args: this.args,
+      timestamp: this.timestamp,
+      source: this.source,
+      undoable: this.undoable,
+      objects: this.objects
+    };
+  }
+}
+
