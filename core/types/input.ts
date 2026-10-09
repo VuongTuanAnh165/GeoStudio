@@ -35,12 +35,52 @@ export interface GestureStateMachine {
   };
 }
 
-export type MediaPipeConfig = Record<string, unknown>;
-export type HandLandmarks = Record<string, unknown>;
-// Use DOM ImageBitmap for web workers if available, otherwise any
-export type FrameBitmap = globalThis.ImageBitmap | unknown;
+/** 3D normalized landmark from MediaPipe (values 0..1 relative to image) */
+export interface NormalizedLandmark {
+  x: number;
+  y: number;
+  z: number;
+  visibility?: number;
+}
 
-// Worker Communication Protocol
+/** Handedness classification result */
+export interface HandednessResult {
+  categoryName: 'Left' | 'Right';
+  score: number;
+  index: number;
+  displayName: string;
+}
+
+/** A single hand detection result: 21 landmarks + handedness */
+export interface HandDetection {
+  landmarks: NormalizedLandmark[];   // 21 landmarks in normalized coords
+  worldLandmarks: NormalizedLandmark[]; // 21 landmarks in world coords (meters)
+  handedness: HandednessResult;
+}
+
+/** Configuration for the MediaPipe Hand Landmarker */
+export interface MediaPipeConfig {
+  /** URL to the WASM binary loader files directory */
+  wasmLoaderPath: string;
+  /** URL to the hand landmarker model .task file */
+  modelAssetPath: string;
+  /** Max number of hands to detect (1 or 2) */
+  numHands: number;
+  /** Minimum confidence for hand detection (0-1) */
+  minHandDetectionConfidence: number;
+  /** Minimum confidence for hand presence (0-1) */
+  minHandPresenceConfidence: number;
+  /** Minimum confidence for tracking (0-1) */
+  minTrackingConfidence: number;
+  /** Whether to run in VIDEO (true) or IMAGE (false) mode */
+  runningMode: 'VIDEO' | 'IMAGE';
+}
+
+// Use DOM ImageBitmap for web workers
+export type FrameBitmap = ImageBitmap;
+
+// ── Worker Communication Protocol ──────────────────────────────────
+
 export type WorkerMessage =
   | { type: 'init'; config: MediaPipeConfig }
   | { type: 'process_frame'; frame: FrameBitmap; timestamp: number }
@@ -49,6 +89,6 @@ export type WorkerMessage =
 
 export type WorkerResponse =
   | { type: 'ready' }
-  | { type: 'landmarks'; data: HandLandmarks[]; timestamp: number; latencyMs: number }
-  | { type: 'error'; message: string }
-  | { type: 'performance'; fps: number; avgLatency: number };
+  | { type: 'landmarks'; data: HandDetection[]; timestamp: number; latencyMs: number }
+  | { type: 'error'; message: string; code?: string }
+  | { type: 'performance'; fps: number; avgLatencyMs: number; framesProcessed: number };

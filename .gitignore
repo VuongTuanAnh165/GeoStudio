@@ -22,3 +22,6 @@ logs
 .env
 .env.*
 !.env.example
+
+# MediaPipe model files (large binaries)
+public/models/*.task
