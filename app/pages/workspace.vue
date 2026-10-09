@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col w-full h-full overflow-hidden relative">
     <VirtualCursor />
+    <GestureGuide />
     <!-- Header của workspace -->
     <header class="h-12 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between px-4 shrink-0 transition-colors z-20 shadow-sm">
       <div class="flex items-center gap-3">

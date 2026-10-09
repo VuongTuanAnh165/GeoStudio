@@ -26,6 +26,10 @@ export const useGestureStore = defineStore('gesture', {
     rawPinchDistance: 0, // For real-time feedback during calibration
     cursorX: -100,
     cursorY: -100,
+    leftCursorX: -100,
+    leftCursorY: -100,
+    leftHandState: 'IDLE' as GestureState,
+    lastDetections: [] as any[],
   }),
   actions: {
     toggleCamera() {
@@ -38,8 +42,9 @@ export const useGestureStore = defineStore('gesture', {
       this.fps = fps;
       this.latency = latency;
     },
-    updateState(state: GestureState, confidence: number, rawPinchDistance?: number) {
+    updateState(state: GestureState, confidence: number, rawPinchDistance?: number, leftState: GestureState = 'IDLE') {
       this.currentState = state;
+      this.leftHandState = leftState;
       this.confidence = confidence;
       if (rawPinchDistance !== undefined) {
         this.rawPinchDistance = rawPinchDistance;

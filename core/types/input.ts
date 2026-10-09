@@ -15,7 +15,9 @@ export type GestureState =
   | 'PINCH_HOLD'
   | 'DRAGGING'
   | 'PINCH_RELEASE'
-  | 'SWIPE';
+  | 'SWIPE'
+  | 'OPEN_PALM'
+  | 'FIST';
 
 export interface GestureEvent {
   features: HandFeatures | null; // null if tracking lost

@@ -128,21 +128,20 @@ export class GestureFeatureExtractor {
     let isExtended = false;
 
     if (isThumb) {
-      // Thumb is extended if its tip is further from the index MCP (5) than its IP (3)
-      // or using a simple distance metric to the wrist
-      const distTipToIndexMcp = this.distance(tip, landmarks[5]!);
-      const distIpToIndexMcp = this.distance(landmarks[3]!, landmarks[5]!);
-      isExtended = distTipToIndexMcp > distIpToIndexMcp;
+      // Thumb: check distance to pinky MCP (17). 
+      // If extended, tip is further from pinky MCP than the IP joint (3).
+      const distTipToPinky = Math.hypot(tip.x - landmarks[17]!.x, tip.y - landmarks[17]!.y);
+      const distIpToPinky = Math.hypot(landmarks[3]!.x - landmarks[17]!.x, landmarks[3]!.y - landmarks[17]!.y);
+      isExtended = distTipToPinky > distIpToPinky;
     } else {
-      // Other fingers: extended if the distance from wrist to tip is greater than wrist to PIP
-      const distTipToWrist = this.distance(tip, wrist);
-      const distPipToWrist = this.distance(pip, wrist);
+      // Other fingers: use 2D distance to wrist and MCP
+      const distTipToWrist = Math.hypot(tip.x - wrist.x, tip.y - wrist.y);
+      const distPipToWrist = Math.hypot(pip.x - wrist.x, pip.y - wrist.y);
       
-      // Additional check: tip must be further from MCP than PIP is from MCP
-      const distTipToMcp = this.distance(tip, mcp);
-      const distPipToMcp = this.distance(pip, mcp);
+      const distTipToMcp = Math.hypot(tip.x - mcp.x, tip.y - mcp.y);
+      const distPipToMcp = Math.hypot(pip.x - mcp.x, pip.y - mcp.y);
       
-      isExtended = distTipToWrist > distPipToWrist && distTipToMcp > distPipToMcp;
+      isExtended = (distTipToWrist > distPipToWrist) && (distTipToMcp > distPipToMcp);
     }
 
     return {

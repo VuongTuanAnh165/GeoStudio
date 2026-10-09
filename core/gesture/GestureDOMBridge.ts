@@ -1,5 +1,6 @@
 export class GestureDOMBridge {
   private lastTarget: Element | null = null;
+  private lastHovered: Element | null = null;
   private isDragging = false;
   private lastX = 0;
   private lastY = 0;
@@ -11,6 +12,18 @@ export class GestureDOMBridge {
     // Hide the virtual cursor temporarily to find the element underneath it
     // Alternatively, just make sure VirtualCursor has pointer-events: none in CSS
     const target = document.elementFromPoint(x, y);
+    
+    if (this.lastHovered && this.lastHovered !== target) {
+      this.lastHovered.classList.remove('gesture-hover');
+      this.dispatch(this.lastHovered, 'pointerleave', x, y);
+    }
+    
+    if (target && this.lastHovered !== target) {
+      target.classList.add('gesture-hover');
+      this.dispatch(target, 'pointerenter', x, y);
+      this.lastHovered = target;
+    }
+
     if (!target) return;
 
     if (state === 'PINCH_START') {
@@ -20,7 +33,7 @@ export class GestureDOMBridge {
     } else if (state === 'DRAGGING' || (this.isDragging && state === 'PINCH_HOLD')) {
       const dispatchTarget = this.lastTarget || target;
       this.dispatch(dispatchTarget, 'pointermove', x, y);
-    } else if (state === 'PINCH_RELEASE') {
+    } else if (state === 'PINCH_RELEASE' || (this.isDragging && (state === 'HOVER' || state === 'IDLE'))) {
       if (this.isDragging) {
         const dispatchTarget = this.lastTarget || target;
         this.dispatch(dispatchTarget, 'pointerup', x, y);

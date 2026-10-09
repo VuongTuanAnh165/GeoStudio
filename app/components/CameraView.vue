@@ -41,6 +41,11 @@
         playsinline
         muted
       ></video>
+      <canvas
+        ref="canvasRef"
+        class="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        :class="{ 'scale-x-[-1]': isMirrored }"
+      ></canvas>
       
       <!-- Overlays for loading/errors -->
       <div v-if="isRequesting" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/50 backdrop-blur-sm text-white">
@@ -98,6 +103,74 @@ const gestureStore = useGestureStore();
 const isVisible = ref(props.modelValue);
 const isMirrored = ref(true);
 const videoRef = ref<HTMLVideoElement | null>(null);
+const canvasRef = ref<HTMLCanvasElement | null>(null);
+let animationFrameId: number;
+
+const drawSkeleton = () => {
+  const canvas = canvasRef.value;
+  const video = videoRef.value;
+  if (!canvas || !video) return;
+
+  // Sync canvas size with video
+  if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+  }
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const detections = gestureStore.lastDetections;
+  if (!detections || detections.length === 0) {
+    animationFrameId = requestAnimationFrame(drawSkeleton);
+    return;
+  }
+
+  // Mediapipe Hand Connections
+  const HAND_CONNECTIONS: [number, number][] = [
+    [0,1],[1,2],[2,3],[3,4], // Thumb
+    [0,5],[5,6],[6,7],[7,8], // Index
+    [5,9],[9,10],[10,11],[11,12], // Middle
+    [9,13],[13,14],[14,15],[15,16], // Ring
+    [13,17],[0,17],[17,18],[18,19],[19,20] // Pinky & Palm
+  ];
+
+  detections.forEach((detection: any) => {
+    const landmarks = detection.landmarks;
+    if (!landmarks) return;
+
+    // Determine color based on state (for right hand)
+    let color = '#3b82f6'; // Blue for idle/hover
+    if (gestureStore.currentState === 'PINCH_START' || gestureStore.currentState === 'DRAGGING') {
+      color = '#22c55e'; // Green for interaction
+    }
+
+    // Draw connections
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    HAND_CONNECTIONS.forEach(([startIdx, endIdx]) => {
+      const start = landmarks[startIdx]!;
+      const end = landmarks[endIdx]!;
+      ctx.moveTo(start.x * canvas.width, start.y * canvas.height);
+      ctx.lineTo(end.x * canvas.width, end.y * canvas.height);
+    });
+    ctx.stroke();
+
+    // Draw landmarks
+    ctx.fillStyle = '#ffffff';
+    landmarks.forEach((lm: any) => {
+      ctx.beginPath();
+      ctx.arc(lm.x * canvas.width, lm.y * canvas.height, 4, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
+    });
+  });
+
+  animationFrameId = requestAnimationFrame(drawSkeleton);
+};
 
 watch(() => props.modelValue, (val) => {
   isVisible.value = val;
@@ -109,6 +182,7 @@ watch(() => props.modelValue, (val) => {
   } else {
     // Stop camera when closed
     stop();
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
   }
 });
 
@@ -117,6 +191,10 @@ watch(stream, (newStream) => {
     videoRef.value.srcObject = newStream;
     // Notify parent that video is ready for MediaPipe
     emit('video-ready', videoRef.value);
+    
+    // Start drawing loop
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    drawSkeleton();
   }
 });
 
@@ -138,5 +216,6 @@ const onCameraChange = () => {
 
 onUnmounted(() => {
   stop();
+  if (animationFrameId) cancelAnimationFrame(animationFrameId);
 });
 </script>
