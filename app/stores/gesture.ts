@@ -30,12 +30,32 @@ export const useGestureStore = defineStore('gesture', {
     leftCursorY: -100,
     leftHandState: 'IDLE' as GestureState,
     lastDetections: [] as any[],
+    isToolDockVisible: false,
   }),
+  getters: {
+    isGestureActive: (state) => state.isEnabled,
+  },
   actions: {
     toggleCamera() {
-      this.showCamera = !this.showCamera;
-      if (this.showCamera) {
-        this.isEnabled = true; // Auto enable gesture if camera is open
+      this.setCamera(!this.showCamera);
+    },
+    setCamera(val: boolean) {
+      this.showCamera = val;
+      this.isEnabled = val;
+      if (!val) {
+        // Reset all gesture state when camera is turned off
+        this.currentState = 'IDLE';
+        this.confidence = 0;
+        this.fps = 0;
+        this.latency = 0;
+        this.activeIntentType = 'none';
+        this.cursorX = -100;
+        this.cursorY = -100;
+        this.leftCursorX = -100;
+        this.leftCursorY = -100;
+        this.leftHandState = 'IDLE';
+        this.lastDetections = [];
+        this.isToolDockVisible = false;
       }
     },
     updateMetrics(fps: number, latency: number) {

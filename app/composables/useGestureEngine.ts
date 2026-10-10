@@ -24,6 +24,13 @@ export function useGestureEngine() {
   const domBridge = new GestureDOMBridge();
   const cursorFilter = new CursorFilter();
 
+  let lastLeftPanPos: { x: number, y: number } | null = null;
+  let lastRightZoomPos: { y: number } | null = null;
+
+  // Double-pinch detection for one-handed tool dock
+  let lastPinchReleaseTime = 0;
+  const DOUBLE_PINCH_WINDOW = 400; // ms
+
   const startEngine = async (video: HTMLVideoElement) => {
     if (mediaPipeManager) {
       mediaPipeManager.destroy();
@@ -111,19 +118,7 @@ export function useGestureEngine() {
         .filter(f => f.isExtended).length;
       
       leftState = fingersUpCount >= 4 ? 'OPEN_PALM' : (fingersUpCount === 0 ? 'FIST' : 'IDLE');
-
-      // Left Hand Tool Switcher (Sign Language)
-      // Only switch if the user explicitly changes the state to avoid flickering?
-      // For now, instant switch is fine.
-      if (fingersUpCount === 1) {
-        geometryStore.activeToolType = 'point';
-      } else if (fingersUpCount === 2) {
-        geometryStore.activeToolType = 'segment';
-      } else if (fingersUpCount === 3) {
-        geometryStore.activeToolType = 'circle';
-      } else if (fingersUpCount >= 4) {
-        geometryStore.activeToolType = 'select';
-      }
+      // Tool switching is handled by SpatialToolDock — no finger counting here
     }
 
     // 3. Contextual Mapping & Dispatching
@@ -133,6 +128,17 @@ export function useGestureEngine() {
     // Pinch Lock Mechanism
     if (rightState === 'PINCH_START' && gestureStore.currentState !== 'PINCH_START') {
       cursorFilter.lock(150); // Lock for 150ms to absorb click jitter
+    }
+
+    // Double-pinch detection (one-handed tool dock access)
+    if (rightState === 'PINCH_RELEASE' && gestureStore.currentState !== 'PINCH_RELEASE') {
+      const now = Date.now();
+      if (now - lastPinchReleaseTime < DOUBLE_PINCH_WINDOW) {
+        gestureStore.isToolDockVisible = !gestureStore.isToolDockVisible;
+        lastPinchReleaseTime = 0; // Reset to avoid triple-trigger
+      } else {
+        lastPinchReleaseTime = now;
+      }
     }
 
     // Process intent for right hand
@@ -158,11 +164,54 @@ export function useGestureEngine() {
       // Smooth the cursor
       const smoothed = cursorFilter.update(targetX, targetY);
       
-      gestureStore.cursorX = smoothed.x;
-      gestureStore.cursorY = smoothed.y;
-      
-      // Dispatch DOM events! This replaces manual interaction.
-      domBridge.process(rightState, smoothed.x, smoothed.y);
+      // Bimanual Pan & Zoom
+      if (leftState === 'FIST') {
+        // 1. Pan with left hand movement
+        if (leftFeatures) {
+          const lpx = (1.0 - leftFeatures.pointerPosition.x) * window.innerWidth;
+          const lpy = leftFeatures.pointerPosition.y * window.innerHeight;
+          if (lastLeftPanPos) {
+            const dx = lpx - lastLeftPanPos.x;
+            const dy = lpy - lastLeftPanPos.y;
+            if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+              window.dispatchEvent(new CustomEvent('geostudio:pan', { detail: { dx, dy } }));
+            }
+          }
+          lastLeftPanPos = { x: lpx, y: lpy };
+        }
+
+        // 2. Zoom with right hand Pinch & Drag
+        if (rightState === 'DRAGGING' || rightState === 'PINCH_HOLD') {
+          if (lastRightZoomPos) {
+            const dy = smoothed.y - lastRightZoomPos.y;
+            if (Math.abs(dy) > 10) { // Threshold for zooming
+              if (dy < 0) {
+                window.dispatchEvent(new CustomEvent('geostudio:zoom-in'));
+              } else {
+                window.dispatchEvent(new CustomEvent('geostudio:zoom-out'));
+              }
+              lastRightZoomPos = { y: smoothed.y };
+            }
+          } else {
+            lastRightZoomPos = { y: smoothed.y };
+          }
+        } else {
+          lastRightZoomPos = null;
+        }
+        
+        // Reset dom bridge to prevent stuck drags
+        domBridge.reset();
+        gestureStore.cursorX = smoothed.x;
+        gestureStore.cursorY = smoothed.y;
+      } else {
+        lastLeftPanPos = null;
+        lastRightZoomPos = null;
+        
+        // Normal tool interaction
+        const snapped = domBridge.process(rightState, smoothed.x, smoothed.y);
+        gestureStore.cursorX = snapped.x;
+        gestureStore.cursorY = snapped.y;
+      }
     }
     
     // Compute screen coordinates for LEFT hand (for Hand Menu)
@@ -171,6 +220,11 @@ export function useGestureEngine() {
       let py = leftFeatures.pointerPosition.y;
       gestureStore.leftCursorX = px * window.innerWidth;
       gestureStore.leftCursorY = py * window.innerHeight;
+      
+      // Spatial Zone: Bottom 25% of screen
+      gestureStore.isToolDockVisible = py > 0.75;
+    } else {
+      gestureStore.isToolDockVisible = false;
     }
     
     if (intent) {

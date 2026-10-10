@@ -13,6 +13,7 @@ export type GestureState =
   | 'HOVER'
   | 'PINCH_START'
   | 'PINCH_HOLD'
+  | 'PINCH_HOLD_LONG'
   | 'DRAGGING'
   | 'PINCH_RELEASE'
   | 'SWIPE'
@@ -27,6 +28,7 @@ export interface GestureEvent {
 export interface GestureStateMachineConfig {
   pinchThreshold: number; // Max distance between thumb and index to trigger pinch
   pinchHoldDuration: number; // Ms required in pinch state to transition to PINCH_HOLD
+  pinchHoldLongDuration: number; // Ms required to trigger PINCH_HOLD_LONG (context menu)
   dragThreshold: number; // Min distance palm must move to trigger DRAGGING
   releaseDebounce: number; // Ms required without pinch to trigger PINCH_RELEASE
   swipeVelocityMin: number; // Min speed to trigger SWIPE

@@ -51,7 +51,8 @@
       </button>
     </div>
 
-    <ContextMenu />
+    <ContextMenu v-if="!gestureStore.isGestureActive" />
+    <SpatialRadialMenu v-else />
   </div>
 </template>
 
@@ -60,11 +61,14 @@ import '../assets/css/jsxgraph.css';
 import { onMounted, watch } from 'vue';
 import { useCanvas } from '../composables/useCanvas';
 import { useGeometryStore } from '../stores/geometry';
+import { useGestureStore } from '../stores/gesture';
 import { useContextMenu } from '../composables/useContextMenu';
 import ContextMenu from './ContextMenu.vue';
+import SpatialRadialMenu from './SpatialRadialMenu.vue';
 import CanvasOverlay from './CanvasOverlay.vue';
 
 const store = useGeometryStore();
+const gestureStore = useGestureStore();
 const { init, renderer, currentSnapResult } = useCanvas();
 const { showMenu } = useContextMenu();
 
@@ -107,6 +111,11 @@ onMounted(() => {
   window.addEventListener('geostudio:zoom-out', () => {
     // @ts-ignore
     if (renderer.zoomOut) renderer.zoomOut();
+  });
+  window.addEventListener('geostudio:pan', (e: any) => {
+    if (renderer.pan && e.detail) {
+      renderer.pan(e.detail.dx, e.detail.dy);
+    }
   });
   window.addEventListener('geostudio:zoom-reset', () => {
     // @ts-ignore

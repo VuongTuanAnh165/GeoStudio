@@ -6,11 +6,12 @@ import type {
 } from '../types/input';
 
 const DEFAULT_CONFIG: GestureStateMachineConfig = {
-  pinchThreshold: 0.05, // e.g. 5% of screen or roughly 5cm if world coordinates
-  pinchHoldDuration: 300, // 300ms
-  dragThreshold: 0.02, // Euclidean distance from start
-  releaseDebounce: 100, // 100ms
-  swipeVelocityMin: 2.5, // units per second
+  pinchThreshold: 0.05,
+  pinchHoldDuration: 300,
+  pinchHoldLongDuration: 500, // 500ms
+  dragThreshold: 0.02,
+  releaseDebounce: 100,
+  swipeVelocityMin: 2.5,
 };
 
 export class GestureStateMachine implements IGestureStateMachine {
@@ -81,6 +82,27 @@ export class GestureStateMachine implements IGestureStateMachine {
       }
 
       case 'PINCH_HOLD': {
+        if (!isPinched) {
+          if (!this.isReleasing) {
+            this.isReleasing = true;
+            this.releaseStartTime = timestamp;
+          } else if (timestamp - this.releaseStartTime >= this.config.releaseDebounce) {
+            this.currentState = 'PINCH_RELEASE';
+            this.isReleasing = false;
+          }
+        } else {
+          this.isReleasing = false;
+          const distMoved = this.distance(features.palmPosition, this.pinchStartPos);
+          if (distMoved >= this.config.dragThreshold) {
+            this.currentState = 'DRAGGING';
+          } else if (timestamp - this.pinchStartTime >= this.config.pinchHoldLongDuration) {
+            this.currentState = 'PINCH_HOLD_LONG';
+          }
+        }
+        break;
+      }
+
+      case 'PINCH_HOLD_LONG': {
         if (!isPinched) {
           if (!this.isReleasing) {
             this.isReleasing = true;

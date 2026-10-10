@@ -62,17 +62,19 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-row overflow-hidden">
       <!-- Toolbar (Left) -->
-      <Toolbar />
+      <Toolbar v-if="!gestureStore.isGestureActive" />
 
       <!-- Canvas Area (Center) -->
       <div class="flex-1 relative h-full overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors">
         <GeoCanvas />
-        <CameraView v-model="gestureStore.showCamera" @video-ready="onVideoReady" />
+        <CameraView :model-value="gestureStore.showCamera" @update:model-value="val => gestureStore.setCamera(val)" @video-ready="onVideoReady" />
         <GestureHUD />
+        <SpatialToolDock />
+        <SpatialPropertyEditor />
       </div>
 
       <!-- Object Panel (Right) -->
-      <ObjectPanel />
+      <ObjectPanel v-if="!gestureStore.isGestureActive" />
     </div>
 
     <!-- Status Bar (Bottom) -->

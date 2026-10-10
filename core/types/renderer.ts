@@ -15,6 +15,8 @@ export interface GeometryRenderer {
   setGridVisible(visible: boolean): void;
   setAxisVisible(visible: boolean): void;
   fitToView(): void;
+  pan(dx: number, dy: number): void;
+  zoom(factor: number, x: number, y: number): void;
   
   on(eventName: string, callback: (event: any) => void): void;
   off(eventName: string, callback: (event: any) => void): void;

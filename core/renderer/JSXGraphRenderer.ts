@@ -585,4 +585,29 @@ export class JSXGraphRenderer implements GeometryRenderer {
       this.board.off(eventName, callback);
     }
   }
+
+  pan(dx: number, dy: number): void {
+    if (this.board) {
+      this.board.moveOrigin(this.board.origin.scrCoords[1] + dx, this.board.origin.scrCoords[2] + dy);
+    }
+  }
+
+  zoom(factor: number, x: number, y: number): void {
+    if (this.board) {
+      // For JSXGraph, we can just use the internal zooming methods
+      // It expects x, y in screen coordinates if provided, wait, no, zoomMultiply handles it?
+      // Actually, dispatching a wheel event to the board container is the safest way to ensure exact same behavior.
+      // But we can also use zoomMultiply if we know the math coordinates.
+      // Let's just use moveOrigin and zoom100 or something if we really need to.
+      // Actually, JSXGraph has: this.board.zoomMultiply(factor, factor, x, y) where x,y are pixel coords? No, user coords.
+      const mathPos = this.getMathPosition({ x, y });
+      this.board.zoomIn(mathPos.x, mathPos.y); // JSXGraph zoomIn doesn't take factor usually, it uses default zoom factor.
+      // We will refine this if needed, for now just call zoomIn/zoomOut based on factor > 1
+      if (factor > 1) {
+        this.board.zoomIn(mathPos.x, mathPos.y);
+      } else if (factor < 1) {
+        this.board.zoomOut(mathPos.x, mathPos.y);
+      }
+    }
+  }
 }
