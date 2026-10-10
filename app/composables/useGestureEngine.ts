@@ -36,11 +36,11 @@ export function useGestureEngine() {
       mediaPipeManager.destroy();
     }
 
-    // Use absolute URL or relative to public directory for WASM and task files
-    // Nuxt serves public/ directory at root
+    // Use absolute URL for the model asset to prevent 404s inside Web Workers on Vercel
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
     mediaPipeManager = new MediaPipeManager({
       wasmLoaderPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm',
-      modelAssetPath: '/models/hand_landmarker.task',
+      modelAssetPath: `${origin}/models/hand_landmarker.task`,
       numHands: 2,
       minHandDetectionConfidence: 0.5,
       minHandPresenceConfidence: 0.5,
