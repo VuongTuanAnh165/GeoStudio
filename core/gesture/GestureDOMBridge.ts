@@ -5,10 +5,6 @@ export class GestureDOMBridge {
   private hasTriggeredLongPinch = false;
   private lastX = 0;
   private lastY = 0;
-  
-  // Throttle hover to prevent lag
-  private lastHoverDispatchTime = 0;
-  private readonly HOVER_THROTTLE_MS = 100; // max 10 hover events/sec
 
   public process(state: string, rawX: number, rawY: number) {
     const x = rawX;
@@ -17,7 +13,20 @@ export class GestureDOMBridge {
     this.lastX = x;
     this.lastY = y;
 
-    const target = document.elementFromPoint(x, y);
+    // To prevent severe layout thrashing (lag) during 60fps drag, 
+    // we only sample elementFromPoint when hovering, or if lastTarget is null.
+    let target: Element | null = null;
+    
+    // If lastTarget was removed from the DOM (e.g. temporary preview objects), clear it
+    if (this.lastTarget && !this.lastTarget.isConnected) {
+      this.lastTarget = document.getElementById('jxgbox') || document.body;
+    }
+
+    if (this.isDragging && this.lastTarget) {
+      target = this.lastTarget;
+    } else {
+      target = document.elementFromPoint(x, y);
+    }
     
     // Hover tracking (CSS class for visual feedback)
     if (this.lastHovered && this.lastHovered !== target) {
@@ -61,21 +70,13 @@ export class GestureDOMBridge {
       const t = this.lastTarget || target;
       this.dispatchMouse(t, 'mouseup', x, y);
       
-      // Synthesize click if we didn't long-press
-      if (!this.hasTriggeredLongPinch) {
-        this.dispatchMouse(t, 'click', x, y);
-      }
       this.isDragging = false;
       this.hasTriggeredLongPinch = false;
       this.lastTarget = null;
       
     } else if (!this.isDragging && (state === 'HOVER' || state === 'IDLE')) {
-      // Passive hover: THROTTLE to prevent lag
-      const now = Date.now();
-      if (now - this.lastHoverDispatchTime >= this.HOVER_THROTTLE_MS) {
-        this.lastHoverDispatchTime = now;
-        this.dispatchMouse(target, 'mousemove', x, y);
-      }
+      // Passive hover: send pointermove directly for 60fps smoothness
+      this.dispatchMouse(target, 'mousemove', x, y);
     }
     
     return { x, y };
@@ -94,14 +95,36 @@ export class GestureDOMBridge {
   }
 
   private dispatchMouse(target: Element, type: string, x: number, y: number) {
-    const event = new MouseEvent(type, {
+    // JSXGraph and modern libraries rely on PointerEvent for drag/draw
+    const pointerType = type.replace('mouse', 'pointer');
+    
+    // We also dispatch native mouse events for fallback compatibility
+    const buttons = (type === 'mousedown' || type === 'mousemove') && this.isDragging ? 1 : 0;
+    
+    const pointerEvent = new PointerEvent(pointerType, {
       bubbles: true,
       cancelable: true,
       clientX: x,
       clientY: y,
       button: 0,
-      buttons: (type === 'mousedown' || type === 'mousemove') && this.isDragging ? 1 : 0,
+      buttons,
+      pointerId: 1, // Must be consistent so JSXGraph tracks the drag correctly
+      pointerType: 'mouse', // Tricks JSXGraph into thinking it's a real mouse
+      isPrimary: true,
     });
-    target.dispatchEvent(event);
+    target.dispatchEvent(pointerEvent);
+
+    // If it's a click, we just send a MouseEvent
+    if (type === 'click') {
+      const clickEvent = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        clientX: x,
+        clientY: y,
+        button: 0,
+        buttons: 0,
+      });
+      target.dispatchEvent(clickEvent);
+    }
   }
 }

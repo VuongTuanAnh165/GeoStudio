@@ -31,6 +31,10 @@ export function useGestureEngine() {
   let lastPinchReleaseTime = 0;
   const DOUBLE_PINCH_WINDOW = 400; // ms
 
+  // Left hand tool switching debouncer
+  let leftHandFingerCountBuffer: number[] = [];
+  const LEFT_HAND_BUFFER_SIZE = 15; // 0.5 seconds at 30fps
+
   const startEngine = async (video: HTMLVideoElement) => {
     if (mediaPipeManager) {
       mediaPipeManager.destroy();
@@ -114,11 +118,69 @@ export function useGestureEngine() {
     
     if (leftFeatures) {
       const fingers = leftFeatures.fingers;
-      const fingersUpCount = [fingers.thumb, fingers.index, fingers.middle, fingers.ring, fingers.pinky]
-        .filter(f => f.isExtended).length;
       
-      leftState = fingersUpCount >= 4 ? 'OPEN_PALM' : (fingersUpCount === 0 ? 'FIST' : 'IDLE');
-      // Tool switching is handled by SpatialToolDock — no finger counting here
+      // Create a 4-bit mask for the 4 main fingers (ignoring jittery thumb)
+      // Index=1, Middle=2, Ring=4, Pinky=8
+      const bitmask = 
+        (fingers.index.isExtended ? 1 : 0) |
+        (fingers.middle.isExtended ? 2 : 0) |
+        (fingers.ring.isExtended ? 4 : 0) |
+        (fingers.pinky.isExtended ? 8 : 0);
+      
+      leftHandFingerCountBuffer.push(bitmask);
+      if (leftHandFingerCountBuffer.length > LEFT_HAND_BUFFER_SIZE) {
+        leftHandFingerCountBuffer.shift();
+      }
+
+      // Get the most frequent bitmask in the buffer (Mode) to debounce flickering
+      const counts = new Array(16).fill(0);
+      for (const mask of leftHandFingerCountBuffer) {
+        counts[mask]++;
+      }
+      let stableMask = 0;
+      let maxCount = 0;
+      for (let i = 0; i < 16; i++) {
+        if (counts[i] > maxCount) {
+          maxCount = counts[i];
+          stableMask = i;
+        }
+      }
+
+      // 1. Navigation States
+      if (stableMask === 0 && !fingers.thumb.isExtended) {
+        leftState = 'FIST'; // Pan/Zoom
+      } else if (stableMask === 15) {
+        leftState = 'OPEN_PALM'; // Select/Move
+        if (geometryStore.activeToolType !== 'select') geometryStore.activeToolType = 'select';
+      } else {
+        leftState = 'IDLE';
+      }
+
+      // 2. Specific Tool Selection (Bimanual Chording)
+      // Only switch if we have a stable explicit gesture and not fist/palm
+      if (leftState === 'IDLE' && stableMask > 0 && stableMask < 15) {
+        let targetTool = '';
+        switch (stableMask) {
+          case 1: targetTool = 'point'; break;          // Index ☝️
+          case 2: targetTool = 'segment'; break;        // Middle 🖕
+          case 4: targetTool = 'circle'; break;         // Ring 💍
+          case 8: targetTool = 'polygon'; break;        // Pinky 🤙
+          case 3: targetTool = 'line'; break;           // Index + Middle ✌️
+          case 6: targetTool = 'ray'; break;            // Middle + Ring 🖖
+          case 12: targetTool = 'triangle'; break;      // Ring + Pinky
+          case 9: targetTool = 'delete'; break;         // Index + Pinky 🤘
+          case 7: targetTool = 'measure_angle'; break;  // Index + Middle + Ring
+          case 14: targetTool = 'measure_distance'; break; // Middle + Ring + Pinky
+          case 13: targetTool = 'text'; break;          // Index + Ring + Pinky
+          default: break;
+        }
+        
+        if (targetTool && geometryStore.activeToolType !== targetTool) {
+          geometryStore.activeToolType = targetTool;
+        }
+      }
+    } else {
+      leftHandFingerCountBuffer = []; // reset if hand lost
     }
 
     // 3. Contextual Mapping & Dispatching
@@ -127,7 +189,9 @@ export function useGestureEngine() {
     
     // Pinch Lock Mechanism
     if (rightState === 'PINCH_START' && gestureStore.currentState !== 'PINCH_START') {
-      cursorFilter.lock(150); // Lock for 150ms to absorb click jitter
+      cursorFilter.lock(150); // Lock for 150ms to absorb click down jitter
+    } else if (rightState === 'PINCH_RELEASE' && gestureStore.currentState !== 'PINCH_RELEASE') {
+      cursorFilter.lock(150); // Lock for 150ms to absorb click up jitter
     }
 
     // Double-pinch detection (one-handed tool dock access)

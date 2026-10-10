@@ -31,7 +31,8 @@
     "measure_distance": "Đo khoảng cách",
     "measure_angle": "Đo góc",
     "measure_area": "Đo diện tích",
-    "measure_perimeter": "Đo chu vi"
+    "measure_perimeter": "Đo chu vi",
+    "text": "Chèn chữ"
   },
   "context": {
     "properties": "Thuộc tính",

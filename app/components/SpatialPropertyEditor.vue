@@ -1,6 +1,6 @@
 <template>
   <div v-if="selectedObj && gestureStore.isEnabled" 
-       class="fixed right-6 top-1/2 -translate-y-1/2 z-[80] w-24 bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl shadow-2xl rounded-[2rem] p-4 flex flex-col items-center gap-6 border border-white/40 dark:border-slate-700/50 transition-all pointer-events-auto"
+       class="fixed left-6 top-1/2 -translate-y-1/2 z-[80] w-24 bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl shadow-2xl rounded-[2rem] p-4 flex flex-col items-center gap-6 border border-white/40 dark:border-slate-700/50 transition-all pointer-events-auto"
   >
     <!-- Header -->
     <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center mt-2">

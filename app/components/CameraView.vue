@@ -1,8 +1,16 @@
 <template>
-  <div v-if="isVisible" class="absolute top-16 right-4 z-40 bg-white dark:bg-slate-800 shadow-xl rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden w-64 flex flex-col transition-all">
-    <!-- Header Controls -->
-    <div class="flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
-      <div class="flex items-center gap-2">
+  <div 
+    v-if="isVisible" 
+    ref="cameraContainerRef"
+    class="absolute z-40 bg-white dark:bg-slate-800 shadow-xl rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden w-64 flex flex-col"
+    :style="{ top: `${position.y}px`, left: `${position.x}px`, touchAction: 'none' }"
+  >
+    <!-- Header Controls (Draggable Area) -->
+    <div 
+      class="flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 cursor-move select-none"
+      @pointerdown="onPointerDown"
+    >
+      <div class="flex items-center gap-2 pointer-events-none">
         <Icon name="lucide:camera" class="w-4 h-4 text-slate-500" />
         <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">{{ $t('gesture.camera') }}</span>
       </div>
@@ -83,9 +91,55 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useCamera } from '../composables/useCamera';
 import { useGestureStore } from '../stores/gesture';
+
+// --- Draggable Logic ---
+const cameraContainerRef = ref<HTMLElement | null>(null);
+const position = ref({ 
+  x: typeof window !== 'undefined' ? window.innerWidth - 280 : 800, 
+  y: 64 
+}); // Default: top-16 right-4
+let isDragging = false;
+let startPos = { x: 0, y: 0 };
+let offset = { x: 0, y: 0 };
+
+const onPointerDown = (e: PointerEvent) => {
+  if ((e.target as HTMLElement).closest('button')) return; // Don't drag if clicking buttons
+  isDragging = true;
+  startPos = { x: e.clientX, y: e.clientY };
+  offset = { x: position.value.x, y: position.value.y };
+  
+  window.addEventListener('pointermove', onPointerMove);
+  window.addEventListener('pointerup', onPointerUp);
+  window.addEventListener('pointercancel', onPointerUp);
+  
+  if (cameraContainerRef.value) {
+    cameraContainerRef.value.setPointerCapture(e.pointerId);
+  }
+};
+
+const onPointerMove = (e: PointerEvent) => {
+  if (!isDragging) return;
+  const dx = e.clientX - startPos.x;
+  const dy = e.clientY - startPos.y;
+  position.value = {
+    x: Math.max(0, Math.min(window.innerWidth - 256, offset.x + dx)), // clamp to screen
+    y: Math.max(0, Math.min(window.innerHeight - 100, offset.y + dy))
+  };
+};
+
+const onPointerUp = (e: PointerEvent) => {
+  isDragging = false;
+  window.removeEventListener('pointermove', onPointerMove);
+  window.removeEventListener('pointerup', onPointerUp);
+  window.removeEventListener('pointercancel', onPointerUp);
+  if (cameraContainerRef.value) {
+    cameraContainerRef.value.releasePointerCapture(e.pointerId);
+  }
+};
+// -----------------------
 
 const props = defineProps<{
   modelValue: boolean;

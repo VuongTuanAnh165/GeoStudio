@@ -39,16 +39,50 @@
           </div>
         </div>
 
-        <!-- Tool Dock 1 tay -->
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center shrink-0">
+        <!-- Bimanual Tool Dictionary -->
+        <div class="flex items-start gap-3 mt-2 border-t border-slate-100 dark:border-slate-700/50 pt-4">
+          <div class="w-8 h-8 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center shrink-0 mt-1">
             <span class="text-lg">✌️</span>
           </div>
-          <div>
-            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">Mở khay công cụ (Tool Dock)</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-              - <b>Cách 1 (2 tay):</b> Hạ tay trái xuống mép dưới màn hình.<br/>
-              - <b>Cách 2 (1 tay):</b> Pinch <b>2 lần liên tiếp</b> bằng tay phải.
+          <div class="w-full">
+            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-2">Từ điển Công cụ (Tay trái)</p>
+            
+            <div class="space-y-3">
+              <!-- Basic Shapes -->
+              <div class="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-100 dark:border-slate-700">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Giơ 1 ngón (Cơ bản)</p>
+                <div class="grid grid-cols-2 gap-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                  <span>☝️ Trỏ: <b class="text-blue-500">Điểm</b></span>
+                  <span>🖕 Giữa: <b class="text-blue-500">Đoạn thẳng</b></span>
+                  <span>💍 Áp út: <b class="text-blue-500">Đường tròn</b></span>
+                  <span>🤙 Út: <b class="text-blue-500">Đa giác</b></span>
+                </div>
+              </div>
+
+              <!-- Constructive -->
+              <div class="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-100 dark:border-slate-700">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Giơ 2 ngón (Nâng cao)</p>
+                <div class="grid grid-cols-2 gap-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                  <span>✌️ Trỏ+Giữa: <b class="text-purple-500">Đường thẳng</b></span>
+                  <span>🖖 Giữa+Áp út: <b class="text-purple-500">Tia (Ray)</b></span>
+                  <span>🤘 Trỏ+Út: <b class="text-red-500">Xóa (Delete)</b></span>
+                  <span>🤟 Áp út+Út: <b class="text-purple-500">Tam giác</b></span>
+                </div>
+              </div>
+
+              <!-- Measurements -->
+              <div class="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-100 dark:border-slate-700">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Giơ 3 ngón (Đo lường)</p>
+                <div class="grid grid-cols-1 gap-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                  <span>Trỏ+Giữa+Áp út: <b class="text-orange-500">Đo Góc (Angle)</b></span>
+                  <span>Giữa+Áp út+Út: <b class="text-orange-500">Đo Khoảng cách</b></span>
+                  <span>Trỏ+Áp út+Út: <b class="text-orange-500">Viết Chữ (Text)</b></span>
+                </div>
+              </div>
+            </div>
+            
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3 italic text-center">
+              *Không cần mở menu, chỉ cần giơ đúng ngón tay trái và dùng tay phải vẽ.
             </p>
           </div>
         </div>
@@ -65,9 +99,24 @@
             </p>
           </div>
         </div>
+
+        <!-- Swipe (Undo/Redo) -->
+        <div class="flex items-start gap-3 mt-2 border-t border-slate-100 dark:border-slate-700/50 pt-4">
+          <div class="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center shrink-0">
+            <span class="text-lg">👋</span>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">Hoàn tác (Undo / Redo)</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              Mở bàn tay trái và <b>Vuốt nhanh (Swipe)</b>:<br/>
+              - Vuốt sang trái: <b>Undo</b> (Hoàn tác).<br/>
+              - Vuốt sang phải: <b>Redo</b> (Làm lại).
+            </p>
+          </div>
+        </div>
         
         <!-- Pan / Zoom -->
-        <div class="flex items-start gap-3">
+        <div class="flex items-start gap-3 mt-2 border-t border-slate-100 dark:border-slate-700/50 pt-4">
           <div class="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center shrink-0">
             <span class="text-lg">✊</span>
           </div>

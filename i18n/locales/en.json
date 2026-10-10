@@ -31,7 +31,8 @@
     "measure_distance": "Measure Distance",
     "measure_angle": "Measure Angle",
     "measure_area": "Measure Area",
-    "measure_perimeter": "Measure Perimeter"
+    "measure_perimeter": "Measure Perimeter",
+    "text": "Text"
   },
   "context": {
     "properties": "Properties",
