@@ -805,11 +805,11 @@ Mỗi construction:
 ### Tasks
 
 #### 9.1 — Curriculum Engine
-- [ ] Curriculum data structure (JSON files trong `content/curriculum/`)
-- [ ] Grade selector (Lớp 1–12)
-- [ ] Tool filtering theo grade (chỉ hiện tools phù hợp)
-- [ ] Concept mapping (xem docs.md Section 56)
-- [ ] Curriculum browser UI
+- [x] Curriculum data structure (JSON files trong `content/curriculum/`)
+- [x] Grade selector (Lớp 1–12)
+- [x] Tool filtering theo grade (chỉ hiện tools phù hợp)
+- [x] Concept mapping (xem docs.md Section 56)
+- [x] Curriculum browser UI
 
 #### 9.2 — Lesson Builder
 - [ ] Create lesson (title, grade, description)

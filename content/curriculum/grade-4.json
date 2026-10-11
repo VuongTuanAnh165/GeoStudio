@@ -1,0 +1,67 @@
+{
+  "grade": 4,
+  "name": "Toán Lớp 4 — Góc, hai đường thẳng song song, diện tích tam giác",
+  "level": "primary",
+  "description": "Phân loại góc nhọn, tù, bẹt; vẽ hai đường thẳng song song và vuông góc; hình bình hành, hình thoi; đường cao và diện tích tam giác.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "line",
+    "ray",
+    "circle",
+    "triangle",
+    "polygon",
+    "midpoint",
+    "perpendicular",
+    "parallel",
+    "measure_distance",
+    "measure_angle",
+    "measure_area",
+    "measure_perimeter",
+    "reflect"
+  ],
+  "concepts": [
+    {
+      "id": "g4_angles_types",
+      "grade": 4,
+      "name": "Góc nhọn, góc tù, góc bẹt",
+      "category": "Góc & Đo lường",
+      "description": "Nhận biết và so sánh góc nhọn (<90°), góc tù (>90° và <180°), góc bẹt (=180°) với góc vuông.",
+      "requiredTools": ["ray", "line", "measure_angle"],
+      "dimension": 2,
+      "keywords": ["góc nhọn", "góc tù", "góc bẹt", "độ"]
+    },
+    {
+      "id": "g4_parallel_perp",
+      "grade": 4,
+      "name": "Hai đường thẳng vuông góc và hai đường thẳng song song",
+      "category": "Quan hệ vị trí",
+      "description": "Dựng đường thẳng vuông góc hoặc song song đi qua một điểm cho trước.",
+      "requiredTools": ["line", "perpendicular", "parallel"],
+      "dimension": 2,
+      "keywords": ["song song", "vuông góc", "dựng đường song song"]
+    },
+    {
+      "id": "g4_parallelogram_rhombus",
+      "grade": 4,
+      "name": "Hình bình hành và Hình thoi",
+      "category": "Hình phẳng",
+      "description": "Nhận biết các cặp cạnh song song và bằng nhau của hình bình hành và hình thoi.",
+      "requiredTools": ["polygon", "parallel", "measure_distance"],
+      "dimension": 2,
+      "keywords": ["hình bình hành", "hình thoi", "cạnh đối song song"]
+    },
+    {
+      "id": "g4_triangle_area",
+      "grade": 4,
+      "name": "Đường cao và diện tích hình tam giác",
+      "category": "Đo lường",
+      "description": "Vẽ đường cao tương ứng với cạnh đáy của tam giác và tính diện tích tam giác (S = a × h / 2).",
+      "requiredTools": ["triangle", "perpendicular", "measure_area", "measure_distance"],
+      "dimension": 2,
+      "keywords": ["đường cao", "diện tích tam giác", "cạnh đáy"]
+    }
+  ]
+}

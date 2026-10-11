@@ -1,0 +1,59 @@
+{
+  "grade": 5,
+  "name": "Toán Lớp 5 — Hình thang, hình tròn và hình khối không gian",
+  "level": "primary",
+  "description": "Tính diện tích hình thang; chu vi và diện tích hình tròn; làm quen với hình hộp chữ nhật và hình lập phương trong không gian 3D.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "line",
+    "ray",
+    "circle",
+    "triangle",
+    "polygon",
+    "slider",
+    "midpoint",
+    "perpendicular",
+    "parallel",
+    "measure_distance",
+    "measure_angle",
+    "measure_area",
+    "measure_perimeter",
+    "reflect",
+    "view_3d"
+  ],
+  "concepts": [
+    {
+      "id": "g5_trapezoid_area",
+      "grade": 5,
+      "name": "Hình thang và diện tích hình thang",
+      "category": "Hình phẳng & Đo lường",
+      "description": "Nhận biết hai đáy và đường cao hình thang, tính diện tích hình thang bằng (đáy lớn + đáy bé) × chiều cao / 2.",
+      "requiredTools": ["polygon", "parallel", "perpendicular", "measure_area"],
+      "dimension": 2,
+      "keywords": ["hình thang", "diện tích hình thang", "đáy", "chiều cao"]
+    },
+    {
+      "id": "g5_circle_circum_area",
+      "grade": 5,
+      "name": "Chu vi và diện tích hình tròn",
+      "category": "Hình phẳng & Đo lường",
+      "description": "Tính chu vi (C = d × 3.14) và diện tích hình tròn (S = r × r × 3.14).",
+      "requiredTools": ["circle", "measure_distance", "measure_perimeter", "measure_area"],
+      "dimension": 2,
+      "keywords": ["chu vi hình tròn", "diện tích hình tròn", "bán kính", "đường kính"]
+    },
+    {
+      "id": "g5_3d_solids",
+      "grade": 5,
+      "name": "Hình hộp chữ nhật và hình lập phương",
+      "category": "Hình học không gian",
+      "description": "Làm quen với hình hộp chữ nhật, hình lập phương: đỉnh, cạnh, mặt đáy và mặt bên trong không gian 3D.",
+      "requiredTools": ["view_3d", "measure_area"],
+      "dimension": 3,
+      "keywords": ["hình hộp chữ nhật", "hình lập phương", "mặt đáy", "3D"]
+    }
+  ]
+}

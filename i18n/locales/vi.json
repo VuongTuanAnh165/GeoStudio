@@ -227,5 +227,27 @@
     "speed": "Tốc độ:",
     "edit_annotation": "Thêm / sửa chú thích bài giảng",
     "close": "Đóng"
+  },
+  "curriculum": {
+    "title": "Chương trình hình học GDPT 2018",
+    "grade_selector": "Khối lớp",
+    "all_grades": "Tất cả lớp",
+    "grade_format": "Lớp {grade}",
+    "level_all": "Tất cả",
+    "level_primary": "Tiểu học (1–5)",
+    "level_secondary": "THCS (6–9)",
+    "level_high": "THPT (10–12)",
+    "search_placeholder": "Tìm kiếm bài học, khái niệm hình học (ví dụ: trung điểm, góc vuông, vectơ)...",
+    "lessons_count": "{count} bài học / khái niệm",
+    "allowed_tools": "Công cụ được mở:",
+    "all_tools_unlocked": "Tất cả công cụ",
+    "required_tools": "Công cụ sử dụng:",
+    "apply_grade": "Lọc theo lớp này",
+    "apply_lesson": "Dựng bài học này",
+    "no_results": "Không tìm thấy khái niệm phù hợp",
+    "reset_filter": "Bỏ lọc (Hiện tất cả)",
+    "active_grade_banner": "Đang lọc công cụ theo chương trình {grade}. Các công cụ ngoài chương trình đã được ẩn để giáo viên và học sinh tập trung.",
+    "tools_unlocked_summary": "{count} công cụ đang khả dụng",
+    "concepts_in_grade": "{count} bài học / khái niệm trong lớp này"
   }
 }

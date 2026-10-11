@@ -1,0 +1,93 @@
+{
+  "grade": 7,
+  "name": "Toán Lớp 7 — Tam giác và các đường đồng quy",
+  "level": "secondary",
+  "description": "Hai đường thẳng song song; tam giác bằng nhau; quan hệ giữa các yếu tố trong tam giác; các đường trung tuyến, đường cao, đường trung trực, đường phân giác; đường tròn ngoại tiếp và nội tiếp.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "line",
+    "ray",
+    "circle",
+    "triangle",
+    "polygon",
+    "slider",
+    "midpoint",
+    "perpendicular",
+    "parallel",
+    "angle_bisector",
+    "perpendicular_bisector",
+    "intersection",
+    "circumcircle",
+    "incircle",
+    "measure_distance",
+    "measure_angle",
+    "measure_area",
+    "measure_perimeter",
+    "reflect"
+  ],
+  "concepts": [
+    {
+      "id": "g7_parallel_lines",
+      "grade": 7,
+      "name": "Hai đường thẳng song song và các góc tạo bởi một đường thẳng cắt hai đường thẳng",
+      "category": "Hình học phẳng",
+      "description": "Góc so le trong, đồng vị, trong cùng phía và dấu hiệu nhận biết hai đường thẳng song song.",
+      "requiredTools": ["line", "parallel", "measure_angle"],
+      "dimension": 2,
+      "keywords": ["song song", "so le trong", "đồng vị"]
+    },
+    {
+      "id": "g7_triangle_congruence",
+      "grade": 7,
+      "name": "Tam giác và các trường hợp bằng nhau của hai tam giác",
+      "category": "Tam giác",
+      "description": "Các trường hợp bằng nhau: c-c-c, c-g-c, g-c-g và tam giác vuông.",
+      "requiredTools": ["triangle", "measure_distance", "measure_angle"],
+      "dimension": 2,
+      "keywords": ["tam giác bằng nhau", "c-c-c", "c-g-c", "g-c-g"]
+    },
+    {
+      "id": "g7_medians_centroid",
+      "grade": 7,
+      "name": "Đường trung tuyến và Trọng tâm tam giác",
+      "category": "Đường đồng quy",
+      "description": "Ba đường trung tuyến của tam giác cùng đi qua một điểm gọi là trọng tâm; tỉ số 2/3 khoảng cách từ đỉnh đến trung điểm cạnh đối diện.",
+      "requiredTools": ["triangle", "midpoint", "segment", "intersection"],
+      "dimension": 2,
+      "keywords": ["trung tuyến", "trọng tâm", "đồng quy"]
+    },
+    {
+      "id": "g7_altitudes_orthocenter",
+      "grade": 7,
+      "name": "Đường cao và Trực tâm tam giác",
+      "category": "Đường đồng quy",
+      "description": "Ba đường cao xuất phát từ các đỉnh vuông góc với cạnh đối diện cùng đồng quy tại trực tâm.",
+      "requiredTools": ["triangle", "perpendicular", "intersection"],
+      "dimension": 2,
+      "keywords": ["đường cao", "trực tâm", "vuông góc"]
+    },
+    {
+      "id": "g7_perpendicular_bisector_circumcircle",
+      "grade": 7,
+      "name": "Đường trung trực và Đường tròn ngoại tiếp tam giác",
+      "category": "Đường đồng quy & Đường tròn",
+      "description": "Ba đường trung trực đồng quy tại tâm đường tròn ngoại tiếp, cách đều ba đỉnh của tam giác.",
+      "requiredTools": ["triangle", "perpendicular_bisector", "circumcircle", "intersection"],
+      "dimension": 2,
+      "keywords": ["trung trực", "đường tròn ngoại tiếp", "tâm ngoại tiếp"]
+    },
+    {
+      "id": "g7_angle_bisector_incircle",
+      "grade": 7,
+      "name": "Đường phân giác và Đường tròn nội tiếp tam giác",
+      "category": "Đường đồng quy & Đường tròn",
+      "description": "Ba đường phân giác của tam giác đồng quy tại tâm đường tròn nội tiếp, cách đều ba cạnh của tam giác.",
+      "requiredTools": ["triangle", "angle_bisector", "incircle", "intersection"],
+      "dimension": 2,
+      "keywords": ["phân giác", "đường tròn nội tiếp", "tâm nội tiếp"]
+    }
+  ]
+}

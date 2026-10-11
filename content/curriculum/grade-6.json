@@ -1,0 +1,70 @@
+{
+  "grade": 6,
+  "name": "Toán Lớp 6 — Hình học trực quan và hình học phẳng",
+  "level": "secondary",
+  "description": "Điểm, đường thẳng, tia, đoạn thẳng; trung điểm đoạn thẳng; góc và tia phân giác; hình có trục đối xứng và tâm đối xứng.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "line",
+    "ray",
+    "circle",
+    "triangle",
+    "polygon",
+    "slider",
+    "midpoint",
+    "angle_bisector",
+    "perpendicular",
+    "parallel",
+    "intersection",
+    "measure_distance",
+    "measure_angle",
+    "measure_area",
+    "measure_perimeter",
+    "reflect"
+  ],
+  "concepts": [
+    {
+      "id": "g6_points_lines",
+      "grade": 6,
+      "name": "Điểm, đường thẳng, tia và đoạn thẳng",
+      "category": "Hình học phẳng",
+      "description": "Các đối tượng hình học nguyên thủy: điểm thuộc/không thuộc đường thẳng, ba điểm thẳng hàng, hai đường thẳng cắt nhau.",
+      "requiredTools": ["point", "line", "ray", "segment", "intersection"],
+      "dimension": 2,
+      "keywords": ["đường thẳng", "tia", "cắt nhau", "thẳng hàng"]
+    },
+    {
+      "id": "g6_midpoint",
+      "grade": 6,
+      "name": "Độ dài đoạn thẳng và trung điểm của đoạn thẳng",
+      "category": "Dựng hình & Đo lường",
+      "description": "So sánh độ dài đoạn thẳng và dựng trung điểm M của đoạn thẳng AB thỏa mãn MA = MB = AB/2.",
+      "requiredTools": ["segment", "midpoint", "measure_distance"],
+      "dimension": 2,
+      "keywords": ["độ dài đoạn thẳng", "trung điểm", "chia đôi"]
+    },
+    {
+      "id": "g6_angle_bisector",
+      "grade": 6,
+      "name": "Góc và tia phân giác của góc",
+      "category": "Góc & Dựng hình",
+      "description": "Đo số đo góc (0° đến 180°) và dựng tia phân giác chia góc thành hai góc bằng nhau.",
+      "requiredTools": ["ray", "angle_bisector", "measure_angle"],
+      "dimension": 2,
+      "keywords": ["góc", "tia phân giác", "chia đôi góc"]
+    },
+    {
+      "id": "g6_symmetry",
+      "grade": 6,
+      "name": "Hình có trục đối xứng và hình có tâm đối xứng",
+      "category": "Biến hình & Đối xứng",
+      "description": "Nhận biết và kiểm chứng đối xứng qua trục và đối xứng qua tâm của các hình phẳng.",
+      "requiredTools": ["reflect", "point", "line", "polygon"],
+      "dimension": 2,
+      "keywords": ["trục đối xứng", "tâm đối xứng", "phép đối xứng"]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "grade": 10,
+  "name": "Toán Lớp 10 — Vectơ và phương pháp toạ độ trong mặt phẳng",
+  "level": "high",
+  "description": "Vectơ và các phép toán; tích vô hướng của hai vectơ; hệ trục toạ độ Oxy; phương trình đường thẳng, đường tròn và ba đường conic.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "line",
+    "ray",
+    "circle",
+    "triangle",
+    "polygon",
+    "slider",
+    "midpoint",
+    "perpendicular",
+    "parallel",
+    "angle_bisector",
+    "perpendicular_bisector",
+    "intersection",
+    "circumcircle",
+    "incircle",
+    "tangent",
+    "locus",
+    "measure_distance",
+    "measure_angle",
+    "measure_area",
+    "measure_perimeter",
+    "translate",
+    "rotate",
+    "reflect",
+    "homothety"
+  ],
+  "concepts": [
+    {
+      "id": "g10_vectors",
+      "grade": 10,
+      "name": "Vectơ và các phép toán vectơ",
+      "category": "Vectơ",
+      "description": "Định nghĩa vectơ, hai vectơ cùng phương, cùng hướng, bằng nhau; phép cộng, trừ vectơ và nhân vectơ với một số.",
+      "requiredTools": ["point", "segment", "translate"],
+      "dimension": 2,
+      "keywords": ["vectơ", "cùng phương", "độ dài vectơ", "tổng vectơ"]
+    },
+    {
+      "id": "g10_dot_product",
+      "grade": 10,
+      "name": "Tích vô hướng của hai vectơ và ứng dụng",
+      "category": "Vectơ & Góc",
+      "description": "Định nghĩa tích vô hướng a·b = |a||b|cos(a,b); tính góc giữa hai vectơ và điều kiện vuông góc.",
+      "requiredTools": ["measure_angle", "measure_distance", "perpendicular"],
+      "dimension": 2,
+      "keywords": ["tích vô hướng", "góc giữa hai vectơ", "vuông góc"]
+    },
+    {
+      "id": "g10_coordinate_lines",
+      "grade": 10,
+      "name": "Phương pháp toạ độ và Phương trình đường thẳng",
+      "category": "Toạ độ Oxy",
+      "description": "Toạ độ điểm và vectơ trên mặt phẳng Oxy; vectơ chỉ phương, vectơ pháp tuyến; phương trình tham số và tổng quát của đường thẳng.",
+      "requiredTools": ["point", "line", "parallel", "perpendicular"],
+      "dimension": 2,
+      "keywords": ["hệ toạ độ Oxy", "vectơ pháp tuyến", "phương trình đường thẳng"]
+    },
+    {
+      "id": "g10_circle_conics",
+      "grade": 10,
+      "name": "Phương trình đường tròn và Ba đường conic",
+      "category": "Đường cong & Conic",
+      "description": "Phương trình chính tắc của đường tròn; nhận diện và khảo sát elip, hypebol, parabol dưới dạng quỹ tích hình học.",
+      "requiredTools": ["circle", "locus", "slider"],
+      "dimension": 2,
+      "keywords": ["đường tròn", "elip", "hypebol", "parabol", "conic", "quỹ tích"]
+    }
+  ]
+}

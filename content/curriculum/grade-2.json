@@ -1,0 +1,48 @@
+{
+  "grade": 2,
+  "name": "Toán Lớp 2 — Đo độ dài và đường gấp khúc",
+  "level": "primary",
+  "description": "Đo độ dài đoạn thẳng (cm, dm, m), vẽ đường gấp khúc, tính độ dài đường gấp khúc và nhận biết hình tròn.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "triangle",
+    "polygon",
+    "circle",
+    "measure_distance"
+  ],
+  "concepts": [
+    {
+      "id": "g2_measure_segment",
+      "grade": 2,
+      "name": "Đo và vẽ đoạn thẳng có độ dài cho trước",
+      "category": "Đo lường",
+      "description": "Sử dụng thước thẳng để đo khoảng cách giữa hai điểm và vẽ đoạn thẳng theo số đo.",
+      "requiredTools": ["point", "segment", "measure_distance"],
+      "dimension": 2,
+      "keywords": ["đo độ dài", "khoảng cách", "thước", "đoạn thẳng"]
+    },
+    {
+      "id": "g2_polyline",
+      "grade": 2,
+      "name": "Đường gấp khúc và độ dài đường gấp khúc",
+      "category": "Hình phẳng",
+      "description": "Vẽ đường gấp khúc gồm nhiều đoạn thẳng nối tiếp nhau và tính tổng độ dài.",
+      "requiredTools": ["point", "segment", "measure_distance"],
+      "dimension": 2,
+      "keywords": ["đường gấp khúc", "nối tiếp", "độ dài"]
+    },
+    {
+      "id": "g2_circle_basic",
+      "grade": 2,
+      "name": "Hình tròn, tâm và bán kính trực quan",
+      "category": "Hình phẳng",
+      "description": "Nhận biết hình tròn, tâm và bán kính trực quan.",
+      "requiredTools": ["point", "circle"],
+      "dimension": 2,
+      "keywords": ["hình tròn", "tâm", "bán kính"]
+    }
+  ]
+}

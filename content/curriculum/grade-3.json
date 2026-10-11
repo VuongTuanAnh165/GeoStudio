@@ -1,0 +1,64 @@
+{
+  "grade": 3,
+  "name": "Toán Lớp 3 — Góc vuông, trung điểm, chu vi và diện tích",
+  "level": "primary",
+  "description": "Làm quen góc vuông và góc không vuông bằng ê-ke, xác định trung điểm của đoạn thẳng, tính chu vi và diện tích hình chữ nhật, hình vuông.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "line",
+    "circle",
+    "triangle",
+    "polygon",
+    "midpoint",
+    "perpendicular",
+    "measure_distance",
+    "measure_angle",
+    "measure_perimeter",
+    "measure_area"
+  ],
+  "concepts": [
+    {
+      "id": "g3_right_angle",
+      "grade": 3,
+      "name": "Góc vuông và góc không vuông",
+      "category": "Góc & Đo lường",
+      "description": "Nhận biết góc vuông bằng ê-ke, kiểm tra hai đường vuông góc và đo góc.",
+      "requiredTools": ["line", "perpendicular", "measure_angle"],
+      "dimension": 2,
+      "keywords": ["góc vuông", "ê-ke", "vuông góc", "đo góc"]
+    },
+    {
+      "id": "g3_midpoint",
+      "grade": 3,
+      "name": "Điểm ở giữa và trung điểm của đoạn thẳng",
+      "category": "Dựng hình cơ bản",
+      "description": "Xác định điểm nằm giữa và trung điểm chia đôi đoạn thẳng thành hai phần bằng nhau.",
+      "requiredTools": ["segment", "midpoint", "measure_distance"],
+      "dimension": 2,
+      "keywords": ["trung điểm", "chia đôi", "đoạn thẳng"]
+    },
+    {
+      "id": "g3_perimeter",
+      "grade": 3,
+      "name": "Chu vi hình tam giác, hình tứ giác, hình chữ nhật, hình vuông",
+      "category": "Đo lường",
+      "description": "Tính chu vi hình bằng tổng độ dài các cạnh bao quanh.",
+      "requiredTools": ["triangle", "polygon", "measure_perimeter", "measure_distance"],
+      "dimension": 2,
+      "keywords": ["chu vi", "tổng độ dài cạnh"]
+    },
+    {
+      "id": "g3_area_rect_square",
+      "grade": 3,
+      "name": "Diện tích hình chữ nhật và hình vuông",
+      "category": "Đo lường",
+      "description": "Khái niệm diện tích bề mặt (cm², dm², m²), tính diện tích hình chữ nhật và hình vuông.",
+      "requiredTools": ["polygon", "measure_area"],
+      "dimension": 2,
+      "keywords": ["diện tích", "hình chữ nhật", "hình vuông"]
+    }
+  ]
+}

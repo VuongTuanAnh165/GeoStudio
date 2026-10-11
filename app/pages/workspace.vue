@@ -19,6 +19,28 @@
         </div>
       </div>
            <div class="flex items-center gap-3">
+        <!-- Grade Selector / GDPT 2018 Curriculum Browser -->
+        <button 
+          @click="curriculumStore.openBrowser()" 
+          class="px-2.5 py-1 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 border"
+          :class="curriculumStore.selectedGrade !== null 
+            ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-700 shadow-sm font-semibold' 
+            : 'text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border-slate-200/60 dark:border-slate-700/60'"
+          :title="$t('curriculum.title', 'Chương trình GDPT 2018 (Lớp 1–12)')"
+        >
+          <Icon name="lucide:graduation-cap" class="w-3.5 h-3.5 text-blue-500 shrink-0" />
+          <span>{{ curriculumStore.gradeLabel }}</span>
+          <span 
+            v-if="curriculumStore.selectedGrade !== null" 
+            @click.stop="curriculumStore.setGrade(null)"
+            class="hover:text-red-500 rounded-full p-0.5 ml-0.5"
+            title="Bỏ lọc lớp (xem tất cả)"
+          >
+            <Icon name="lucide:x" class="w-3 h-3" />
+          </span>
+          <Icon v-else name="lucide:chevron-down" class="w-3 h-3 opacity-60" />
+        </button>
+
         <!-- 2D / 3D Mode Switcher -->
         <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200/60 dark:border-slate-700/60">
           <button 
@@ -162,6 +184,9 @@
     <!-- Construction Replay & Presentation Components -->
     <ConstructionSteps />
     <PresentationOverlay />
+
+    <!-- Curriculum Browser (GDPT 2018) -->
+    <CurriculumBrowser />
   </div>
 </template>
 
@@ -186,6 +211,8 @@ import PresentationOverlay from '../components/PresentationOverlay.vue';
 import GeoCanvas from '../components/GeoCanvas.vue';
 import Canvas3D from '../components/Canvas3D.vue';
 import { useReplayStore } from '../stores/replay';
+import CurriculumBrowser from '../components/CurriculumBrowser.vue';
+import { useCurriculumStore } from '../stores/curriculum';
 
 import { useGestureEngine } from '../composables/useGestureEngine';
 
@@ -193,6 +220,7 @@ const { toggleTheme, isDark } = useTheme();
 const store = useGeometryStore();
 const gestureStore = useGestureStore();
 const replayStore = useReplayStore();
+const curriculumStore = useCurriculumStore();
 const { isSaving, lastSaved } = useDocument();
 const { locale, setLocale } = useI18n();
 useKeyboard();

@@ -1,0 +1,77 @@
+{
+  "grade": 9,
+  "name": "Toán Lớp 9 — Hệ thức lượng, đường tròn, tiếp tuyến và khối tròn xoay",
+  "level": "secondary",
+  "description": "Hệ thức lượng trong tam giác vuông; đường tròn, tiếp tuyến của đường tròn; góc nội tiếp, tứ giác nội tiếp; hình trụ, hình nón, hình cầu.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "line",
+    "ray",
+    "circle",
+    "triangle",
+    "polygon",
+    "slider",
+    "midpoint",
+    "perpendicular",
+    "parallel",
+    "angle_bisector",
+    "perpendicular_bisector",
+    "intersection",
+    "circumcircle",
+    "incircle",
+    "tangent",
+    "locus",
+    "measure_distance",
+    "measure_angle",
+    "measure_area",
+    "measure_perimeter",
+    "reflect",
+    "homothety",
+    "view_3d"
+  ],
+  "concepts": [
+    {
+      "id": "g9_right_triangle_relations",
+      "grade": 9,
+      "name": "Hệ thức lượng và tỉ số lượng giác trong tam giác vuông",
+      "category": "Tam giác vuông",
+      "description": "Các hệ thức giữa cạnh và đường cao; định nghĩa sin, cos, tan, cot của góc nhọn.",
+      "requiredTools": ["triangle", "perpendicular", "measure_distance", "measure_angle"],
+      "dimension": 2,
+      "keywords": ["hệ thức lượng", "lượng giác", "sin", "cos", "tam giác vuông"]
+    },
+    {
+      "id": "g9_circle_tangents",
+      "grade": 9,
+      "name": "Đường tròn và Tiếp tuyến của đường tròn",
+      "category": "Đường tròn",
+      "description": "Dựng tiếp tuyến từ một điểm đến đường tròn; tính chất hai tiếp tuyến cắt nhau.",
+      "requiredTools": ["circle", "tangent", "perpendicular", "measure_distance"],
+      "dimension": 2,
+      "keywords": ["tiếp tuyến", "bán kính vuông góc", "hai tiếp tuyến cắt nhau"]
+    },
+    {
+      "id": "g9_inscribed_angles_quadrilaterals",
+      "grade": 9,
+      "name": "Góc nội tiếp và Tứ giác nội tiếp",
+      "category": "Đường tròn",
+      "description": "Số đo góc nội tiếp bằng nửa số đo cung bị chắn; điều kiện để một tứ giác nội tiếp đường tròn.",
+      "requiredTools": ["circle", "circumcircle", "polygon", "measure_angle"],
+      "dimension": 2,
+      "keywords": ["góc nội tiếp", "cung bị chắn", "tứ giác nội tiếp"]
+    },
+    {
+      "id": "g9_rotational_solids",
+      "grade": 9,
+      "name": "Hình trụ, hình nón và hình cầu",
+      "category": "Hình học không gian",
+      "description": "Mô hình hoá và tính diện tích xung quanh, thể tích các khối tròn xoay trong không gian 3D.",
+      "requiredTools": ["view_3d"],
+      "dimension": 3,
+      "keywords": ["hình trụ", "hình nón", "hình cầu", "khối tròn xoay"]
+    }
+  ]
+}

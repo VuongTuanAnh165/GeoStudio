@@ -1,0 +1,75 @@
+{
+  "grade": 8,
+  "name": "Toán Lớp 8 — Tứ giác, định lý Thalès và tam giác đồng dạng",
+  "level": "secondary",
+  "description": "Các loại tứ giác đặc biệt; định lý Thalès; tam giác đồng dạng; hình lăng trụ đứng và hình chóp đều trong không gian 3D.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "line",
+    "ray",
+    "circle",
+    "triangle",
+    "polygon",
+    "slider",
+    "midpoint",
+    "perpendicular",
+    "parallel",
+    "angle_bisector",
+    "perpendicular_bisector",
+    "intersection",
+    "circumcircle",
+    "incircle",
+    "measure_distance",
+    "measure_angle",
+    "measure_area",
+    "measure_perimeter",
+    "reflect",
+    "homothety",
+    "view_3d"
+  ],
+  "concepts": [
+    {
+      "id": "g8_quadrilaterals",
+      "grade": 8,
+      "name": "Hình bình hành, hình chữ nhật, hình thoi, hình vuông",
+      "category": "Tứ giác",
+      "description": "Tính chất các cạnh, góc, đường chéo và dấu hiệu nhận biết các tứ giác đặc biệt.",
+      "requiredTools": ["polygon", "parallel", "perpendicular", "measure_distance", "measure_angle"],
+      "dimension": 2,
+      "keywords": ["hình bình hành", "hình chữ nhật", "hình thoi", "hình vuông", "đường chéo"]
+    },
+    {
+      "id": "g8_thales_theorem",
+      "grade": 8,
+      "name": "Định lý Thalès trong tam giác",
+      "category": "Định lý hình học",
+      "description": "Nếu một đường thẳng song song với một cạnh của tam giác và cắt hai cạnh còn lại thì nó định ra trên hai cạnh đó những đoạn thẳng tương ứng tỉ lệ.",
+      "requiredTools": ["triangle", "parallel", "measure_distance", "slider"],
+      "dimension": 2,
+      "keywords": ["Thalès", "đoạn thẳng tỉ lệ", "song song"]
+    },
+    {
+      "id": "g8_similar_triangles",
+      "grade": 8,
+      "name": "Tam giác đồng dạng và phép vị tự",
+      "category": "Tam giác đồng dạng",
+      "description": "Định nghĩa tam giác đồng dạng, các trường hợp đồng dạng (c-c-c, c-g-c, g-g) và phóng to/thu nhỏ hình theo tỉ số k.",
+      "requiredTools": ["triangle", "homothety", "measure_distance", "measure_angle"],
+      "dimension": 2,
+      "keywords": ["đồng dạng", "vị tự", "tỉ số đồng dạng"]
+    },
+    {
+      "id": "g8_3d_prism_pyramid",
+      "grade": 8,
+      "name": "Hình lăng trụ đứng và Hình chóp đều",
+      "category": "Hình học không gian",
+      "description": "Quan sát đỉnh, cạnh bên, mặt đáy, diện tích xung quanh và thể tích của hình lăng trụ đứng và hình chóp đều trong không gian 3D.",
+      "requiredTools": ["view_3d"],
+      "dimension": 3,
+      "keywords": ["lăng trụ đứng", "hình chóp", "diện tích xung quanh", "thể tích"]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "grade": 1,
+  "name": "Toán Lớp 1 — Làm quen với hình học trực quan",
+  "level": "primary",
+  "description": "Nhận dạng các hình hình học phẳng cơ bản: điểm, đoạn thẳng, hình tam giác, hình vuông, hình chữ nhật, hình tròn.",
+  "allowedTools": [
+    "select",
+    "delete",
+    "point",
+    "segment",
+    "triangle",
+    "polygon"
+  ],
+  "concepts": [
+    {
+      "id": "g1_point_segment",
+      "grade": 1,
+      "name": "Điểm và Đoạn thẳng",
+      "category": "Hình phẳng",
+      "description": "Nhận biết điểm và đoạn thẳng trực quan; vẽ đoạn thẳng nối hai điểm.",
+      "requiredTools": ["point", "segment"],
+      "dimension": 2,
+      "keywords": ["điểm", "đoạn thẳng", "nối điểm"]
+    },
+    {
+      "id": "g1_basic_shapes",
+      "grade": 1,
+      "name": "Hình tam giác, hình vuông, hình chữ nhật",
+      "category": "Hình phẳng",
+      "description": "Nhận dạng và gọi tên đúng các hình hình học trực quan quen thuộc.",
+      "requiredTools": ["triangle", "polygon"],
+      "dimension": 2,
+      "keywords": ["tam giác", "hình vuông", "hình chữ nhật"]
+    }
+  ]
+}
