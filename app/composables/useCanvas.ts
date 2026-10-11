@@ -13,6 +13,7 @@ import { SelectTool } from '../../core/ui/tools/SelectTool';
 import { DeleteTool } from '../../core/ui/tools/DeleteTool';
 import { SliderTool } from '../../core/ui/tools/SliderTool';
 import { ConstructionTool } from '../../core/ui/tools/ConstructionTool';
+import { TransformTool } from '../../core/ui/tools/TransformTool';
 import type { Tool } from '../../core/ui/tools/Tool';
 import { SnapEngine } from '../../core/engine/SnapEngine';
 import type { SnapResult } from '../../core/engine/SnapEngine';
@@ -50,6 +51,13 @@ export function useCanvas() {
   const measurementTypes = ['measure_distance', 'measure_angle', 'measure_area', 'measure_perimeter'];
   measurementTypes.forEach(m => {
     tools.set(`construct_${m}`, new ConstructionTool(m));
+  });
+
+  const transformTypes: Array<'translate' | 'rotate' | 'reflect' | 'homothety'> = ['translate', 'rotate', 'reflect', 'homothety'];
+  transformTypes.forEach(t => {
+    const tool = new TransformTool(t);
+    tools.set(`transform_${t}`, tool);
+    tools.set(`construct_${t}`, tool);
   });
 
   const init = (id: string) => {

@@ -36,7 +36,15 @@
     "slider": "Slider",
     "slider_desc": "Create a numerical slider to dynamically control radius, length or parameters",
     "locus": "Locus",
-    "locus_desc": "Select target point then driver point or slider to generate locus curve"
+    "locus_desc": "Select target point then driver point or slider to generate locus curve",
+    "translate": "Translation",
+    "translate_desc": "Translate object by vector or two points",
+    "rotate": "Rotation",
+    "rotate_desc": "Rotate object around center point by angle",
+    "reflect": "Reflection",
+    "reflect_desc": "Reflect object across line or center point",
+    "homothety": "Homothety",
+    "homothety_desc": "Scale object from center point with ratio"
   },
   "context": {
     "properties": "Properties",

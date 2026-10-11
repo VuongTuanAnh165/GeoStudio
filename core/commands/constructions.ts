@@ -45,7 +45,18 @@ export class CreateConstructionCommand implements GeometryCommand {
       metadata: {}
     };
 
-    if (this.objectType === 'point') {
+    if (this.constructionKind === 'transform') {
+      const parent0 = state.document.objects.find(o => o.id === this.parentIds[0]);
+      const parentLabel = (parent0?.metadata?.label as string) || '';
+      if (parentLabel) {
+        newObject.metadata!.label = `${parentLabel}'`;
+      } else if (this.objectType === 'point') {
+        newObject.metadata!.label = NameGenerator.getNextPointName(state);
+      }
+      if (this.extraDef?.label) {
+        newObject.metadata!.label = String(this.extraDef.label);
+      }
+    } else if (this.objectType === 'point') {
       const specialKinds = ['midpoint', 'orthocenter', 'circumcenter', 'incenter', 'centroid'];
       if (specialKinds.includes(this.constructionKind)) {
         newObject.metadata!.label = NameGenerator.getSpecialPointName(

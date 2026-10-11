@@ -708,11 +708,11 @@ Mỗi construction:
   - [x] Exit button
 
 #### 7.5 — Transformation Tools
-- [ ] Translation tool (chọn object + vector)
-- [ ] Rotation tool (chọn object + center + angle)
-- [ ] Reflection tool (chọn object + line of reflection)
-- [ ] Homothety tool (chọn object + center + ratio)
-- [ ] Mỗi transform → tạo image objects trong graph
+- [x] Translation tool (chọn object + vector)
+- [x] Rotation tool (chọn object + center + angle)
+- [x] Reflection tool (chọn object + line of reflection)
+- [x] Homothety tool (chọn object + center + ratio)
+- [x] Mỗi transform → tạo image objects trong graph
 
 ### Deliverables
 - ✅ Slider hoạt động + animation

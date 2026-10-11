@@ -1,5 +1,6 @@
 import type { ConstructionNode, GeometryObject } from '../../types/geometry';
 import type { ConstructionGraph } from './ConstructionGraph';
+import { TransformEngine } from '../transformations/TransformEngine';
 
 /**
  * Standard evaluator for Construction Graph nodes.
@@ -93,5 +94,10 @@ export function defaultConstructionEvaluator(node: ConstructionNode, graph: Cons
         }
       }
     }
+  }
+
+  // 4. Geometric Transformation image objects
+  if (obj.definition?.kind === 'transform') {
+    TransformEngine.evaluate(node, graph);
   }
 }

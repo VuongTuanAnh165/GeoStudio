@@ -258,4 +258,164 @@ export const registerBuiltinConstructions = () => {
       });
     }
   });
+
+  // Transformations
+  registry.register({
+    id: 'translate',
+    name: 'Translate by Vector',
+    icon: 'lucide:move',
+    description: 'Select object, then vector (or segment, or two points)',
+    match: (objects) => {
+      if (objects.length === 2) {
+        // Can be target + vector/segment, or target + point
+        return true;
+      }
+      if (objects.length === 3) {
+        // Target + 2 points
+        const points = objects.slice(1).filter(o => o.type === 'point');
+        return points.length === 2;
+      }
+      return false;
+    },
+    createCommand: (objects, generateId) => {
+      let targetObj = objects[0]!;
+      let paramObjs = objects.slice(1);
+
+      // If first object is a vector and second is not, swap
+      if (targetObj.type === 'vector' && paramObjs[0] && paramObjs[0].type !== 'vector') {
+        const tmp = targetObj;
+        targetObj = paramObjs[0];
+        paramObjs = [tmp];
+      }
+
+      const parentIds = [targetObj.id, ...paramObjs.map(o => o.id)];
+      return new CreateConstructionCommand(targetObj.type, 'transform', parentIds, generateId(targetObj.type), {
+        transformType: 'translation',
+        sourceId: targetObj.id
+      });
+    }
+  });
+
+  registry.register({
+    id: 'rotate',
+    name: 'Rotate around Point',
+    icon: 'lucide:rotate-cw',
+    description: 'Select object, center point, and optionally slider for angle',
+    match: (objects) => {
+      if (objects.length === 2) {
+        return objects.some(o => o.type === 'point');
+      }
+      if (objects.length === 3) {
+        const hasPoint = objects.some(o => o.type === 'point');
+        const hasSlider = objects.some(o => o.type === 'slider');
+        return hasPoint && hasSlider;
+      }
+      return false;
+    },
+    createCommand: (objects, generateId) => {
+      // Find center point and slider if any
+      let targetObj = objects[0]!;
+      let centerObj = objects.find((o, idx) => idx !== 0 && o.type === 'point');
+      const sliderObj = objects.find(o => o.type === 'slider');
+
+      if (!centerObj) {
+        // If objects[0] is point and objects[1] is not, objects[1] is target
+        if (objects[0]?.type === 'point' && objects[1] && objects[1].type !== 'point') {
+          targetObj = objects[1];
+          centerObj = objects[0];
+        } else {
+          centerObj = objects[1]!;
+        }
+      }
+
+      const parentIds = [targetObj.id, centerObj.id];
+      if (sliderObj && !parentIds.includes(sliderObj.id)) {
+        parentIds.push(sliderObj.id);
+      }
+
+      return new CreateConstructionCommand(targetObj.type, 'transform', parentIds, generateId(targetObj.type), {
+        transformType: 'rotation',
+        sourceId: targetObj.id,
+        angle: Math.PI / 4,
+        angleDegrees: 45
+      });
+    }
+  });
+
+  registry.register({
+    id: 'reflect',
+    name: 'Reflect across Line / Point',
+    icon: 'lucide:flip-horizontal-2',
+    description: 'Select object and line of reflection (or center point)',
+    match: (objects) => {
+      if (objects.length === 2) {
+        return true;
+      }
+      if (objects.length === 3) {
+        // Target + 2 points defining mirror line
+        return objects.slice(1).every(o => o.type === 'point');
+      }
+      return false;
+    },
+    createCommand: (objects, generateId) => {
+      let targetObj = objects[0]!;
+      let mirrorObjs = objects.slice(1);
+
+      // If first object is a line and second is not, swap
+      if (['line', 'segment', 'ray'].includes(targetObj.type) && mirrorObjs[0] && !['line', 'segment', 'ray'].includes(mirrorObjs[0].type)) {
+        const tmp = targetObj;
+        targetObj = mirrorObjs[0];
+        mirrorObjs = [tmp];
+      }
+
+      const parentIds = [targetObj.id, ...mirrorObjs.map(o => o.id)];
+      return new CreateConstructionCommand(targetObj.type, 'transform', parentIds, generateId(targetObj.type), {
+        transformType: 'reflection',
+        sourceId: targetObj.id
+      });
+    }
+  });
+
+  registry.register({
+    id: 'homothety',
+    name: 'Homothety (Dilation)',
+    icon: 'lucide:maximize-2',
+    description: 'Select object, center point, and optionally slider for ratio',
+    match: (objects) => {
+      if (objects.length === 2) {
+        return objects.some(o => o.type === 'point');
+      }
+      if (objects.length === 3) {
+        const hasPoint = objects.some(o => o.type === 'point');
+        const hasSlider = objects.some(o => o.type === 'slider');
+        return hasPoint && hasSlider;
+      }
+      return false;
+    },
+    createCommand: (objects, generateId) => {
+      let targetObj = objects[0]!;
+      let centerObj = objects.find((o, idx) => idx !== 0 && o.type === 'point');
+      const sliderObj = objects.find(o => o.type === 'slider');
+
+      if (!centerObj) {
+        if (objects[0]?.type === 'point' && objects[1] && objects[1].type !== 'point') {
+          targetObj = objects[1];
+          centerObj = objects[0];
+        } else {
+          centerObj = objects[1]!;
+        }
+      }
+
+      const parentIds = [targetObj.id, centerObj.id];
+      if (sliderObj && !parentIds.includes(sliderObj.id)) {
+        parentIds.push(sliderObj.id);
+      }
+
+      return new CreateConstructionCommand(targetObj.type, 'transform', parentIds, generateId(targetObj.type), {
+        transformType: 'homothety',
+        sourceId: targetObj.id,
+        ratio: 2
+      });
+    }
+  });
 };

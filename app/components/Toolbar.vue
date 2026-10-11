@@ -194,6 +194,36 @@
         />
       </div>
 
+      <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
+
+      <!-- Transformations -->
+      <div class="flex flex-col gap-1 w-full items-center">
+        <ToolButton 
+          icon="lucide:move" 
+          :label="$t('tools.translate')" 
+          :active="store.activeToolType === 'transform_translate' || store.activeToolType === 'construct_translate'"
+          @click="selectTool('transform_translate')" 
+        />
+        <ToolButton 
+          icon="lucide:rotate-cw" 
+          :label="$t('tools.rotate')" 
+          :active="store.activeToolType === 'transform_rotate' || store.activeToolType === 'construct_rotate'"
+          @click="selectTool('transform_rotate')" 
+        />
+        <ToolButton 
+          icon="lucide:flip-horizontal-2" 
+          :label="$t('tools.reflect')" 
+          :active="store.activeToolType === 'transform_reflect' || store.activeToolType === 'construct_reflect'"
+          @click="selectTool('transform_reflect')" 
+        />
+        <ToolButton 
+          icon="lucide:maximize-2" 
+          :label="$t('tools.homothety')" 
+          :active="store.activeToolType === 'transform_homothety' || store.activeToolType === 'construct_homothety'"
+          @click="selectTool('transform_homothety')" 
+        />
+      </div>
+
     </div>
   </div>
 </template>

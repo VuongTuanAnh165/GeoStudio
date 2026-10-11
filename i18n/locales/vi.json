@@ -36,7 +36,15 @@
     "slider": "Thanh trượt số",
     "slider_desc": "Tạo thanh trượt số để điều khiển kích thước, bán kính hoặc tham số",
     "locus": "Quỹ tích",
-    "locus_desc": "Chọn điểm theo dõi rồi chọn điểm điều khiển (hoặc thanh trượt) để vẽ đường quỹ tích"
+    "locus_desc": "Chọn điểm theo dõi rồi chọn điểm điều khiển (hoặc thanh trượt) để vẽ đường quỹ tích",
+    "translate": "Phép tịnh tiến",
+    "translate_desc": "Tịnh tiến đối tượng theo vectơ hoặc hai điểm",
+    "rotate": "Phép quay",
+    "rotate_desc": "Quay đối tượng quanh tâm một góc xác định",
+    "reflect": "Phép đối xứng",
+    "reflect_desc": "Đối xứng đối tượng qua trục hoặc tâm",
+    "homothety": "Phép vị tự",
+    "homothety_desc": "Vị tự đối tượng từ tâm theo tỉ số k"
   },
   "context": {
     "properties": "Thuộc tính",

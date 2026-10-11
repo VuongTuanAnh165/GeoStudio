@@ -275,4 +275,8 @@ export class ConstructionGraph {
     this.nodes.clear();
     this.dirtyQueue.clear();
   }
+
+  recomputeDirty(): void {
+    this.recalculate();
+  }
 }

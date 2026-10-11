@@ -154,7 +154,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
     attrs.id = obj.id; // Assign ID to find it later in hit tests
 
     try {
-      const isConstructed = obj.parents && obj.parents.length > 0;
+      const isConstructed = obj.parents && obj.parents.length > 0 && obj.definition?.kind !== 'transform';
 
       if (isConstructed) {
         const args: any[] = [...(obj.parents as string[])].map(id => this.jxgObjects.get(id)).filter(Boolean);
@@ -566,7 +566,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
       jxgEl.setAttribute({ [key]: val });
     }
 
-    const isConstructed = obj.parents && obj.parents.length > 0;
+    const isConstructed = obj.parents && obj.parents.length > 0 && obj.definition?.kind !== 'transform';
     if (isConstructed) {
       if (obj.type === 'locus' && jxgEl && jxgEl.elType === 'curve') {
         const samples = ((obj.definition as any).samples as Array<{ x: number; y: number }>) || [];
