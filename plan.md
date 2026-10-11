@@ -764,12 +764,13 @@ Mỗi construction:
 - [x] Unit tests
 
 #### 8.4 — 3D Renderer
-- [ ] JSXGraph View3D integration (`Canvas3D.vue`)
-- [ ] Orbit camera (rotate, zoom, pan)
-- [ ] Wireframe / Solid rendering toggle
-- [ ] Transparency for planes
-- [ ] Cross-section visualization
-- [ ] Net (hình khai triển) — flatten 3D → 2D
+- [x] JSXGraph View3D integration (`Canvas3D.vue`)
+- [x] Orbit camera (rotate, zoom, pan)
+- [x] Wireframe / Solid rendering toggle
+- [x] Transparency for planes
+- [x] Cross-section visualization
+- [x] Net (hình khai triển) — flatten 3D → 2D
+- [x] Unit tests
 
 #### 8.5 — 3D Constructions
 - [ ] Section plane (mặt cắt)
