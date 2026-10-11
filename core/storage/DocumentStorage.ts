@@ -2,8 +2,9 @@ import { openDB, type IDBPDatabase } from 'idb';
 import type { GeoDocument } from '../types/document';
 
 const DB_NAME = 'GeoStudioDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = 'documents';
+const LESSONS_STORE_NAME = 'lessons';
 
 export class DocumentStorage {
   private dbPromise: Promise<IDBPDatabase> | null = null;
@@ -15,6 +16,11 @@ export class DocumentStorage {
           if (!db.objectStoreNames.contains(STORE_NAME)) {
             const store = db.createObjectStore(STORE_NAME, { keyPath: 'metadata.id' });
             store.createIndex('updatedAt', 'metadata.updatedAt');
+          }
+          if (!db.objectStoreNames.contains(LESSONS_STORE_NAME)) {
+            const lessonStore = db.createObjectStore(LESSONS_STORE_NAME, { keyPath: 'id' });
+            lessonStore.createIndex('updatedAt', 'updatedAt');
+            lessonStore.createIndex('grade', 'grade');
           }
         },
       });

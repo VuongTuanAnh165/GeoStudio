@@ -812,12 +812,12 @@ Mỗi construction:
 - [x] Curriculum browser UI
 
 #### 9.2 — Lesson Builder
-- [ ] Create lesson (title, grade, description)
-- [ ] Add construction steps with annotations
-- [ ] Add text/formula annotations
-- [ ] Reorder steps
-- [ ] Preview lesson
-- [ ] Save lesson to IndexedDB
+- [x] Create lesson (title, grade, description)
+- [x] Add construction steps with annotations
+- [x] Add text/formula annotations
+- [x] Reorder steps
+- [x] Preview lesson
+- [x] Save lesson to IndexedDB
 
 #### 9.3 — Lesson Player
 - [ ] Load lesson

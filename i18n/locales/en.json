@@ -249,5 +249,30 @@
     "active_grade_banner": "Filtering tools according to Grade {grade} curriculum. Unrelated tools are hidden to keep teaching focused.",
     "tools_unlocked_summary": "{count} tools available",
     "concepts_in_grade": "{count} concepts in this grade"
+  },
+  "lesson": {
+    "builder_title": "Lesson Builder",
+    "builder_subtitle": "Build interactive lessons with construction steps, annotations and formulas",
+    "lesson_title": "Lesson Title",
+    "grade": "Grade Level",
+    "description": "Description",
+    "tags": "Tags (comma separated)",
+    "steps_tab": "Construction Steps",
+    "preview_tab": "Preview",
+    "saved_tab": "Saved Lessons",
+    "sync_from_canvas": "Sync from Canvas",
+    "add_step": "Add Step",
+    "step_prefix": "Step",
+    "step_title": "Step Title",
+    "step_desc": "Description / Action",
+    "step_annotation": "Pedagogical Note",
+    "step_formula": "KaTeX Formula (e.g. AH \\perp BC)",
+    "no_steps": "No construction steps",
+    "no_steps_hint": "Click 'Sync from Canvas' or 'Add Step' to begin.",
+    "save_btn": "Save Lesson",
+    "saved_success": "Lesson saved successfully!",
+    "delete_lesson": "Delete",
+    "load_lesson": "Open",
+    "no_saved_lessons": "No saved lessons found in local storage."
   }
 }

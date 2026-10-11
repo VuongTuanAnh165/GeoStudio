@@ -80,6 +80,14 @@
           <span class="hidden md:inline">{{ $t('replay.steps_btn', 'Các bước') }}</span>
         </button>
         <button 
+          @click="lessonStore.openBuilder()" 
+          class="px-2.5 py-1.5 text-xs font-medium rounded-md transition-all flex items-center gap-1.5 text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700"
+          :title="$t('lesson.builder_title', 'Soạn thảo bài giảng')"
+        >
+          <Icon name="lucide:presentation" class="w-4 h-4 text-indigo-500" />
+          <span class="hidden md:inline">{{ $t('lesson.builder_title', 'Bài giảng') }}</span>
+        </button>
+        <button 
           @click="gestureStore.toggleCamera()" 
           class="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md"
           :class="gestureStore.showCamera ? 'text-green-600 dark:text-green-400 border-green-300 dark:border-green-600 bg-green-50 dark:bg-green-900/30' : 'text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'"
@@ -187,6 +195,9 @@
 
     <!-- Curriculum Browser (GDPT 2018) -->
     <CurriculumBrowser />
+
+    <!-- Lesson Builder -->
+    <LessonBuilder />
   </div>
 </template>
 
@@ -213,6 +224,8 @@ import Canvas3D from '../components/Canvas3D.vue';
 import { useReplayStore } from '../stores/replay';
 import CurriculumBrowser from '../components/CurriculumBrowser.vue';
 import { useCurriculumStore } from '../stores/curriculum';
+import LessonBuilder from '../components/LessonBuilder.vue';
+import { useLessonStore } from '../stores/lesson';
 
 import { useGestureEngine } from '../composables/useGestureEngine';
 
@@ -221,6 +234,7 @@ const store = useGeometryStore();
 const gestureStore = useGestureStore();
 const replayStore = useReplayStore();
 const curriculumStore = useCurriculumStore();
+const lessonStore = useLessonStore();
 const { isSaving, lastSaved } = useDocument();
 const { locale, setLocale } = useI18n();
 useKeyboard();

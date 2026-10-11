@@ -249,5 +249,30 @@
     "active_grade_banner": "Đang lọc công cụ theo chương trình {grade}. Các công cụ ngoài chương trình đã được ẩn để giáo viên và học sinh tập trung.",
     "tools_unlocked_summary": "{count} công cụ đang khả dụng",
     "concepts_in_grade": "{count} bài học / khái niệm trong lớp này"
+  },
+  "lesson": {
+    "builder_title": "Soạn thảo bài giảng",
+    "builder_subtitle": "Xây dựng bài học tương tác với các bước dựng hình, giải thích và công thức",
+    "lesson_title": "Tiêu đề bài giảng",
+    "grade": "Khối lớp",
+    "description": "Mô tả bài giảng",
+    "tags": "Thẻ phân loại (cách nhau bởi dấu phẩy)",
+    "steps_tab": "Soạn các bước",
+    "preview_tab": "Xem trước bài học",
+    "saved_tab": "Bài giảng đã lưu",
+    "sync_from_canvas": "Lấy từ hình vẽ hiện tại",
+    "add_step": "Thêm bước",
+    "step_prefix": "Bước",
+    "step_title": "Tên bước",
+    "step_desc": "Mô tả / Thao tác thực hiện",
+    "step_annotation": "Chú thích sư phạm",
+    "step_formula": "Công thức KaTeX (ví dụ: AH \\perp BC)",
+    "no_steps": "Chưa có bước dựng nào",
+    "no_steps_hint": "Nhấn 'Lấy từ hình vẽ hiện tại' hoặc 'Thêm bước' để bắt đầu.",
+    "save_btn": "Lưu bài giảng",
+    "saved_success": "Đã lưu bài giảng thành công!",
+    "delete_lesson": "Xóa",
+    "load_lesson": "Mở",
+    "no_saved_lessons": "Chưa có bài giảng nào được lưu trong máy."
   }
 }
