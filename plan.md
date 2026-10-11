@@ -753,14 +753,15 @@ Mỗi construction:
 - [x] Unit tests
 
 #### 8.3 — 3D Measurements
-- [ ] Distance point-line (3D)
-- [ ] Distance point-plane
-- [ ] Distance line-line (skew lines)
-- [ ] Angle line-line (3D)
-- [ ] Angle line-plane
-- [ ] Angle plane-plane (dihedral angle)
-- [ ] Volume
-- [ ] Surface area
+- [x] Distance point-line (3D)
+- [x] Distance point-plane
+- [x] Distance line-line (skew lines)
+- [x] Angle line-line (3D)
+- [x] Angle line-plane
+- [x] Angle plane-plane (dihedral angle)
+- [x] Volume
+- [x] Surface area
+- [x] Unit tests
 
 #### 8.4 — 3D Renderer
 - [ ] JSXGraph View3D integration (`Canvas3D.vue`)

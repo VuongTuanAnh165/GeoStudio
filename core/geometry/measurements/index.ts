@@ -85,3 +85,6 @@ export function arcLength(arc: Arc): number {
 export function sectorArea(arc: Arc): number {
   return 0.5 * arc.radius * arc.radius * arcSpan(arc.startAngle, arc.endAngle);
 }
+
+// 3D Measurements
+export * from '../3d/Measurements3D';
