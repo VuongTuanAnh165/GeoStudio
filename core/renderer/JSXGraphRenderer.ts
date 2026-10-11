@@ -11,7 +11,9 @@ export class JSXGraphRenderer implements GeometryRenderer {
   init(container: string | HTMLElement): void {
     // Increase hit detection tolerance for easier selection of lines/curves
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (JXG.Options as any).precision.hasPoint = 15;
+    if ((JXG as any)?.Options?.precision) {
+      (JXG as any).Options.precision.hasPoint = 15;
+    }
 
     // Determine the container id
     const containerId = typeof container === 'string' ? container : container.id;

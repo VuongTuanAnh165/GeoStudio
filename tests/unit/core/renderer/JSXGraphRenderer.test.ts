@@ -8,6 +8,11 @@ vi.mock('jsxgraph', () => {
     default: {
       COORDS_BY_USER: 1,
       COORDS_BY_SCREEN: 2,
+      Options: {
+        precision: {
+          hasPoint: 4
+        }
+      },
       JSXGraph: {
         initBoard: vi.fn().mockReturnValue({
           create: vi.fn().mockImplementation((type, coords, attrs) => {
@@ -55,7 +60,10 @@ describe('JSXGraphRenderer', () => {
       id: 'pt1',
       type: 'point',
       dimension: 2,
-      definition: { coords: { x: 1, y: 2 } },
+      definition: {
+        kind: 'point',
+        coords: { x: 1, y: 2 }
+      },
       style: { color: 'red' }
     };
 
@@ -73,13 +81,19 @@ describe('JSXGraphRenderer', () => {
       id: 'pt1',
       type: 'point',
       dimension: 2,
-      definition: { coords: { x: 1, y: 2 } }
+      definition: {
+        kind: 'point',
+        coords: { x: 1, y: 2 }
+      }
     };
 
     renderer.renderObject(pt);
     
     // Update
-    pt.definition.coords = { x: 5, y: 5 };
+    pt.definition = {
+      kind: 'point',
+      coords: { x: 5, y: 5 }
+    };
     renderer.updateObject('pt1', pt);
     
     // We can't deeply test JSXGraph internals without mocking it, 
@@ -95,7 +109,10 @@ describe('JSXGraphRenderer', () => {
       id: 'pt1',
       type: 'point',
       dimension: 2,
-      definition: { coords: { x: 1, y: 2 } }
+      definition: {
+        kind: 'point',
+        coords: { x: 1, y: 2 }
+      }
     };
 
     renderer.renderObject(pt);

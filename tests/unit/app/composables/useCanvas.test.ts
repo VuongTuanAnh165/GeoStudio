@@ -10,6 +10,11 @@ vi.mock('jsxgraph', () => {
     default: {
       COORDS_BY_USER: 1,
       COORDS_BY_SCREEN: 2,
+      Options: {
+        precision: {
+          hasPoint: 4
+        }
+      },
       JSXGraph: {
         initBoard: vi.fn().mockReturnValue({
           create: vi.fn().mockImplementation((type, coords, attrs) => {

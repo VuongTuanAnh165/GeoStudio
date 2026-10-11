@@ -176,7 +176,7 @@ describe('Command JSON Serialization', () => {
 
   it('should restore mutation state if provided', () => {
     const cmd = new MovePointCommand('p1', 10, 10);
-    cmd.execute({ document: { objects: [{ id: 'p1', type: 'point', definition: { coords: {x: 0, y: 0} } }] } } as unknown as GeometryState);
+    cmd.execute({ document: { objects: [{ id: 'p1', type: 'point', definition: { kind: 'point', coords: {x: 0, y: 0} } }] } } as unknown as GeometryState);
     
     const json = cmd.toJSON();
     const restored = createCommandFromJSON(json) as MovePointCommand;

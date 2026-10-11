@@ -1,4 +1,4 @@
-import { ref, watch, onUnmounted } from 'vue';
+import { ref, watch, onUnmounted, getCurrentInstance } from 'vue';
 import { JSXGraphRenderer } from '../../core/renderer/JSXGraphRenderer';
 import { useGeometryStore } from '../stores/geometry';
 import { MouseHandler } from '../../core/ui/MouseHandler';
@@ -153,9 +153,11 @@ export function useCanvas() {
     { deep: true }
   );
 
-  onUnmounted(() => {
-    clear();
-  });
+  if (getCurrentInstance()) {
+    onUnmounted(() => {
+      clear();
+    });
+  }
 
   return {
     init,
