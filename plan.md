@@ -733,12 +733,12 @@ Mỗi construction:
 ### Tasks
 
 #### 8.1 — 3D Primitives
-- [ ] `Point3D` — điểm trong không gian
-- [ ] `Line3D` — đường thẳng 3D
-- [ ] `Segment3D` — đoạn thẳng 3D
-- [ ] `Plane` — mặt phẳng (3 điểm, hoặc điểm + vector pháp tuyến)
-- [ ] `Vector3D`
-- [ ] Unit tests
+- [x] `Point3D` — điểm trong không gian
+- [x] `Line3D` — đường thẳng 3D
+- [x] `Segment3D` — đoạn thẳng 3D
+- [x] `Plane` — mặt phẳng (3 điểm, hoặc điểm + vector pháp tuyến)
+- [x] `Vector3D`
+- [x] Unit tests
 
 #### 8.2 — 3D Solids
 - [ ] `Prism` — hình lăng trụ
