@@ -3,7 +3,7 @@
     <VirtualCursor />
     <GestureGuide />
     <!-- Header của workspace -->
-    <header class="h-12 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between px-4 shrink-0 transition-colors z-20 shadow-sm">
+    <header v-if="!replayStore.isPresentationMode" class="h-12 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between px-4 shrink-0 transition-colors z-20 shadow-sm">
       <div class="flex items-center gap-3">
         <NuxtLink to="/" class="w-8 h-8 flex items-center justify-center rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
           <Icon name="lucide:arrow-left" class="w-4 h-4" />
@@ -26,6 +26,15 @@
         >
           <Icon name="lucide:folder-open" class="w-4 h-4" />
           {{ $t('document.open') }}
+        </button>
+        <button 
+          @click="replayStore.startReplay()" 
+          class="px-2.5 py-1.5 text-xs font-medium rounded-md transition-all flex items-center gap-1.5"
+          :class="replayStore.isActive ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 shadow-sm' : 'text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          :title="$t('replay.title', 'Các bước dựng hình')"
+        >
+          <Icon name="lucide:history" class="w-4 h-4" />
+          <span class="hidden md:inline">{{ $t('replay.steps_btn', 'Các bước') }}</span>
         </button>
         <button 
           @click="gestureStore.toggleCamera()" 
@@ -69,7 +78,7 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-row overflow-hidden">
       <!-- Toolbar (Left) -->
-      <Toolbar v-if="!gestureStore.isGestureActive" />
+      <Toolbar v-if="!gestureStore.isGestureActive && !replayStore.isPresentationMode" />
 
       <!-- Canvas Area (Center) -->
       <div class="flex-1 relative h-full overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors">
@@ -81,11 +90,11 @@
       </div>
 
       <!-- Object Panel (Right) -->
-      <ObjectPanel v-if="!gestureStore.isGestureActive" />
+      <ObjectPanel v-if="!gestureStore.isGestureActive && !replayStore.isPresentationMode" />
     </div>
 
     <!-- Status Bar (Bottom) -->
-    <StatusBar />
+    <StatusBar v-if="!replayStore.isPresentationMode" />
 
     <!-- Rename Modal -->
     <div v-if="showRenameModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
@@ -125,6 +134,10 @@
 
     <!-- Settings Modal -->
     <SettingsModal v-model="showSettingsModal" />
+
+    <!-- Construction Replay & Presentation Components -->
+    <ConstructionSteps />
+    <PresentationOverlay />
   </div>
 </template>
 
@@ -144,12 +157,16 @@ import CameraView from '../components/CameraView.vue';
 import GestureHUD from '../components/GestureHUD.vue';
 import CalibrationModal from '../components/CalibrationModal.vue';
 import SettingsModal from '../components/SettingsModal.vue';
+import ConstructionSteps from '../components/ConstructionSteps.vue';
+import PresentationOverlay from '../components/PresentationOverlay.vue';
+import { useReplayStore } from '../stores/replay';
 
 import { useGestureEngine } from '../composables/useGestureEngine';
 
 const { toggleTheme, isDark } = useTheme();
 const store = useGeometryStore();
 const gestureStore = useGestureStore();
+const replayStore = useReplayStore();
 const { isSaving, lastSaved } = useDocument();
 const { locale, setLocale } = useI18n();
 useKeyboard();
@@ -240,14 +257,20 @@ const confirmRename = () => {
   renameError.value = '';
 };
 
+const handleTogglePresentation = () => {
+  replayStore.togglePresentation();
+};
+
 onMounted(() => {
   window.addEventListener('geostudio:rename-object', handleRenameEvent);
   window.addEventListener('geostudio:open-settings', handleOpenSettingsEvent);
+  window.addEventListener('geostudio:toggle-presentation', handleTogglePresentation);
 });
 
 onUnmounted(() => {
   window.removeEventListener('geostudio:rename-object', handleRenameEvent);
   window.removeEventListener('geostudio:open-settings', handleOpenSettingsEvent);
+  window.removeEventListener('geostudio:toggle-presentation', handleTogglePresentation);
 });
 
 definePageMeta({

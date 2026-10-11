@@ -696,16 +696,16 @@ Mỗi construction:
 - [x] `AnimationConfig` trong Settings
 
 #### 7.4 — Construction Replay
-- [ ] `ConstructionSteps.vue` — hiển thị danh sách bước dựng hình
-  - [ ] Mỗi bước: mô tả + highlight objects
-  - [ ] Previous/Next navigation
-  - [ ] Auto-play với speed control
-  - [ ] Step indicators
-- [ ] Presentation mode:
-  - [ ] Fullscreen canvas
-  - [ ] Step navigation (arrow keys + buttons)
-  - [ ] Auto-hide UI
-  - [ ] Exit button
+- [x] `ConstructionSteps.vue` — hiển thị danh sách bước dựng hình
+  - [x] Mỗi bước: mô tả + highlight objects
+  - [x] Previous/Next navigation
+  - [x] Auto-play với speed control
+  - [x] Step indicators
+- [x] Presentation mode:
+  - [x] Fullscreen canvas
+  - [x] Step navigation (arrow keys + buttons)
+  - [x] Auto-hide UI
+  - [x] Exit button
 
 #### 7.5 — Transformation Tools
 - [ ] Translation tool (chọn object + vector)

@@ -126,8 +126,8 @@ export function useKeyboard() {
         window.dispatchEvent(new CustomEvent('geostudio:zoom-fit'));
         break;
       case 'F11':
-        // Fullscreen toggle. Browsers handle F11 natively, but we can prevent default and do our own if preferred.
-        // Let's rely on native F11 unless we need strict control.
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent('geostudio:toggle-presentation'));
         break;
     }
   };

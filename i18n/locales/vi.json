@@ -198,5 +198,26 @@
     "grid_axis": "Lưới & Trục toạ độ",
     "smart_snap": "Hút điểm thông minh (Snap)",
     "reset_defaults": "Khôi phục mặc định"
+  },
+  "replay": {
+    "title": "Các bước dựng hình",
+    "steps_btn": "Các bước",
+    "step": "Bước",
+    "no_steps": "Chưa có bước dựng nào",
+    "no_steps_desc": "Chưa có đối tượng hình học nào trong tài liệu.",
+    "presentation_mode": "Chế độ trình chiếu toàn màn hình (F11)",
+    "presentation_btn": "Trình chiếu",
+    "exit_presentation": "Thoát chế độ trình chiếu (Esc)",
+    "exit": "Thoát",
+    "current_step": "Bước hiện tại",
+    "first_step": "Bước đầu tiên",
+    "prev_step": "Bước trước (←)",
+    "next_step": "Bước tiếp theo (→)",
+    "last_step": "Bước cuối cùng",
+    "play": "Tự động phát (P)",
+    "pause": "Tạm dừng (P)",
+    "speed": "Tốc độ:",
+    "edit_annotation": "Thêm / sửa chú thích bài giảng",
+    "close": "Đóng"
   }
 }

@@ -17,11 +17,13 @@ import type { Tool } from '../../core/ui/tools/Tool';
 import { SnapEngine } from '../../core/engine/SnapEngine';
 import type { SnapResult } from '../../core/engine/SnapEngine';
 import { UpdateSliderValueCommand } from '../../core/commands/mutations';
+import { useReplayStore } from '../stores/replay';
 
 export function useCanvas() {
   const containerId = ref<string>('jxgbox');
   const renderer = new JSXGraphRenderer();
   const store = useGeometryStore();
+  const replayStore = useReplayStore();
   let initialized = false;
   
   const snapEngine = new SnapEngine(renderer);
@@ -130,12 +132,27 @@ export function useCanvas() {
     if (!initialized) return;
 
     const currentIds = new Set<string>();
+    const isReplay = replayStore.isActive;
+    const visibleIds = replayStore.visibleObjectIds;
 
     // 1. Render or Update existing objects
     for (const [id, obj] of store.objects.entries()) {
       currentIds.add(id);
       const isSelected = store.selectedIds.has(id);
-      renderer.updateObject(id, obj, isSelected);
+
+      if (isReplay) {
+        const isVisibleInStep = visibleIds.has(id);
+        const projectedObj = {
+          ...obj,
+          style: {
+            ...obj.style,
+            visible: isVisibleInStep && obj.style?.visible !== false
+          }
+        };
+        renderer.updateObject(id, projectedObj, isSelected);
+      } else {
+        renderer.updateObject(id, obj, isSelected);
+      }
     }
 
     // 2. Remove deleted objects
@@ -163,6 +180,13 @@ export function useCanvas() {
       syncToRenderer();
     },
     { deep: true }
+  );
+
+  watch(
+    () => [replayStore.isActive, replayStore.currentStepIndex],
+    () => {
+      syncToRenderer();
+    }
   );
 
   watch(

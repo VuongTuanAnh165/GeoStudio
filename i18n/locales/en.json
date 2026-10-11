@@ -198,5 +198,26 @@
     "grid_axis": "Grid & Coordinate Axes",
     "smart_snap": "Smart Snapping",
     "reset_defaults": "Reset to Defaults"
+  },
+  "replay": {
+    "title": "Construction Steps",
+    "steps_btn": "Steps",
+    "step": "Step",
+    "no_steps": "No construction steps",
+    "no_steps_desc": "No geometric objects in document yet.",
+    "presentation_mode": "Fullscreen Presentation Mode (F11)",
+    "presentation_btn": "Present",
+    "exit_presentation": "Exit Presentation Mode (Esc)",
+    "exit": "Exit",
+    "current_step": "Current Step",
+    "first_step": "First Step",
+    "prev_step": "Previous Step (←)",
+    "next_step": "Next Step (→)",
+    "last_step": "Last Step",
+    "play": "Auto Play (P)",
+    "pause": "Pause (P)",
+    "speed": "Speed:",
+    "edit_annotation": "Add / Edit pedagogical note",
+    "close": "Close"
   }
 }
