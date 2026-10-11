@@ -843,13 +843,13 @@ Mỗi construction:
 - [x] Hide/show annotations
 
 #### 9.6 — Coordinate Geometry
-- [ ] Cartesian plane toggle (hiện/ẩn trục tọa độ)
-- [ ] Grid customization (size, style)
-- [ ] Plot function: y = f(x)
-- [ ] Line equation display
-- [ ] Circle equation display
-- [ ] Equation input → geometry
-- [ ] Geometry → equation display
+- [x] Cartesian plane toggle (hiện/ẩn trục tọa độ)
+- [x] Grid customization (size, style)
+- [x] Plot function: y = f(x)
+- [x] Line equation display
+- [x] Circle equation display
+- [x] Equation input → geometry
+- [x] Geometry → equation display
 
 #### 9.7 — Export Enhancements
 - [ ] Export PDF (via jsPDF + SVG)

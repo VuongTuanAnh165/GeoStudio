@@ -49,7 +49,8 @@
     "annotate_formula": "Công thức KaTeX",
     "annotate_arrow": "Mũi tên chỉ dẫn",
     "annotate_step_label": "Nhãn bước dựng",
-    "annotate_highlight": "Điểm nhấn nổi bật"
+    "annotate_highlight": "Điểm nhấn nổi bật",
+    "coordinate_geometry": "Tọa độ & Hàm số"
   },
   "context": {
     "properties": "Thuộc tính",
@@ -117,18 +118,19 @@
     "object_count": "Số lượng đối tượng"
   },
   "panel": {
-    "objects": "Các đối tượng",
-    "toggle_visibility": "Bật/tắt hiển thị",
+    "objects": "Danh sách đối tượng",
+    "toggle_visibility": "Ẩn/Hiện",
     "delete_object": "Xóa đối tượng",
     "no_objects": "Chưa có đối tượng nào",
     "properties": "Thuộc tính",
     "no_object_selected": "Chưa chọn đối tượng nào",
-    "label": "Tên nhãn",
+    "label": "Tên hiển thị",
     "color": "Màu sắc",
     "line_width": "Độ dày nét",
-    "show_label": "Hiển thị nhãn",
+    "show_label": "Hiện tên",
+    "trace": "Chế độ vết (Trace Mode)",
     "constraints": "Ràng buộc",
-    "measurements": "Đo lường",
+    "measurements": "Bảng đo lường",
     "no_measurements": "Chưa có phép đo nào"
   },
   "document": {
@@ -171,22 +173,6 @@
     "back": "Quay lại",
     "next_step": "Tiếp tục",
     "save_finish": "Lưu & Kết thúc"
-  },
-  "panel": {
-    "properties": "Thuộc tính",
-    "no_object_selected": "Chưa chọn đối tượng nào",
-    "label": "Tên hiển thị",
-    "color": "Màu sắc",
-    "line_width": "Độ dày nét",
-    "show_label": "Hiện tên",
-    "trace": "Chế độ vết (Trace Mode)",
-    "constraints": "Ràng buộc",
-    "objects": "Danh sách đối tượng",
-    "toggle_visibility": "Ẩn/Hiện",
-    "delete_object": "Xóa đối tượng",
-    "no_objects": "Chưa có đối tượng nào",
-    "measurements": "Bảng đo lường",
-    "no_measurements": "Chưa có phép đo nào"
   },
   "common": {
     "done": "Hoàn tất"
@@ -337,5 +323,16 @@
     "delete": "Xóa",
     "edit": "Chỉnh sửa",
     "step_prefix": "Bước"
+  },
+  "coordinate": {
+    "btn": "Tọa độ & Phương trình",
+    "title": "Tọa độ & Phương trình",
+    "input_label": "Nhập phương trình đường thẳng, đường tròn hoặc hàm số",
+    "examples": "Mẫu phương trình gợi ý",
+    "plot_btn": "Vẽ lên bảng hình học",
+    "no_selection": "Chưa chọn đối tượng nào",
+    "grid_label": "Lưới tọa độ",
+    "axis_label": "Trục tọa độ",
+    "cartesian_plane": "Mặt phẳng tọa độ Cartesian"
   }
 }

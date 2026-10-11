@@ -303,6 +303,20 @@
         </div>
       </template>
 
+      <!-- Coordinate Geometry (Phase 9.6) -->
+      <template v-if="hasVisibleTools(['coordinate_geometry'])">
+        <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
+        <div class="flex flex-col gap-1 w-full items-center">
+          <ToolButton 
+            v-if="curriculumStore.isToolVisible('coordinate_geometry')"
+            icon="lucide:function-square" 
+            :label="$t('tools.coordinate_geometry', 'Tọa độ & Hàm số')" 
+            :active="coordStore.isPanelOpen"
+            @click="coordStore.togglePanel()" 
+          />
+        </div>
+      </template>
+
       <!-- View Mode Toggle (2D / 3D) -->
       <template v-if="curriculumStore.isToolVisible('view_3d')">
         <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
@@ -324,12 +338,14 @@
 import { useGeometryStore } from '../stores/geometry';
 import { useCurriculumStore } from '../stores/curriculum';
 import { useAnnotationStore } from '../stores/annotation';
+import { useCoordinateStore } from '../stores/coordinate';
 import type { AnnotationType } from '../../core/types/annotation';
 import ToolButton from './ToolButton.vue';
 
 const store = useGeometryStore();
 const curriculumStore = useCurriculumStore();
 const annotationStore = useAnnotationStore();
+const coordStore = useCoordinateStore();
 
 const hasVisibleTools = (tools: string[]) => {
   return tools.some(tool => curriculumStore.isToolVisible(tool));

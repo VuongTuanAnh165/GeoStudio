@@ -255,3 +255,37 @@ export class CreateSliderCommand extends BaseCreateCommand {
   }
 }
 
+export class CreateFunctionGraphCommand extends BaseCreateCommand {
+  override type = 'CREATE_FUNCTION_GRAPH';
+
+  constructor(
+    public expression: string,
+    public name?: string,
+    public objectId?: string
+  ) {
+    super();
+    this.args = { expression, name, objectId };
+  }
+
+  override createPrimitive(_state: GeometryState): GeometryObject {
+    const id = this.objectId || `fn_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const label = this.name || `f(x) = ${this.expression}`;
+    return {
+      id,
+      type: 'function_graph',
+      dimension: 2,
+      definition: {
+        kind: 'function_graph',
+        expression: this.expression
+      },
+      metadata: {
+        label
+      },
+      style: {
+        color: '#2563eb',
+        strokeWidth: 2.5
+      }
+    };
+  }
+}
+

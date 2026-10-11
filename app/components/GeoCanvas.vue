@@ -80,7 +80,19 @@
       >
         <Icon name="lucide:message-square-quote" class="w-5 h-5" />
       </button>
+      <div class="w-px bg-slate-200 dark:bg-slate-700 my-1 mx-1" />
+      <button 
+        class="p-2 rounded transition-colors tooltip-trigger"
+        :title="$t('coordinate.btn', 'Tọa độ & Phương trình')"
+        :class="coordStore.isPanelOpen ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/50 dark:text-indigo-400' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'"
+        @click="coordStore.togglePanel()"
+      >
+        <Icon name="lucide:function-square" class="w-5 h-5" />
+      </button>
     </div>
+
+    <!-- Coordinate Geometry & Equation Panel -->
+    <CoordinatePanel />
 
     <ContextMenu v-if="!gestureStore.isGestureActive" />
     <SpatialRadialMenu v-else />
@@ -94,16 +106,19 @@ import { useCanvas } from '../composables/useCanvas';
 import { useGeometryStore } from '../stores/geometry';
 import { useGestureStore } from '../stores/gesture';
 import { useAnnotationStore } from '../stores/annotation';
+import { useCoordinateStore } from '../stores/coordinate';
 import { useContextMenu } from '../composables/useContextMenu';
 import ContextMenu from './ContextMenu.vue';
 import SpatialRadialMenu from './SpatialRadialMenu.vue';
 import CanvasOverlay from './CanvasOverlay.vue';
 import SliderOverlay from './SliderOverlay.vue';
 import AnnotationOverlay from './AnnotationOverlay.vue';
+import CoordinatePanel from './CoordinatePanel.vue';
 
 const store = useGeometryStore();
 const gestureStore = useGestureStore();
 const annotationStore = useAnnotationStore();
+const coordStore = useCoordinateStore();
 const { init, renderer, currentSnapResult, clearTraces } = useCanvas();
 const { showMenu } = useContextMenu();
 
@@ -179,6 +194,23 @@ watch(() => store.settings.gridVisible, (visible) => {
 watch(() => store.settings.axisVisible, (visible) => {
   renderer.setAxisVisible(visible);
 });
+
+// Watch for coordinate grid / axis customization changes
+watch(() => coordStore.gridConfig, (config) => {
+  // @ts-ignore
+  if (renderer && typeof renderer.setGridConfig === 'function') {
+    // @ts-ignore
+    renderer.setGridConfig(config);
+  }
+}, { deep: true });
+
+watch(() => coordStore.axisConfig, (config) => {
+  // @ts-ignore
+  if (renderer && typeof renderer.setAxisConfig === 'function') {
+    // @ts-ignore
+    renderer.setAxisConfig(config);
+  }
+}, { deep: true });
 
 // Actions
 const toggleGrid = () => {

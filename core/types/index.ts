@@ -5,3 +5,4 @@ export * from './input';
 export * from './document';
 export * from './template';
 export * from './annotation';
+export * from './coordinate';

@@ -2,6 +2,8 @@ import type { GeometryRenderer } from '../types/renderer';
 import type { GeometryObject, Coords2D } from '../types/geometry';
 import type { AnimationConfig } from '../types/animation';
 import { AnimationSystem } from '../animation/AnimationSystem';
+import { compileMathExpression } from '../geometry/coordinate/FunctionEvaluator';
+import type { GridConfig, AxisConfig } from '../types/coordinate';
 import JXG from 'jsxgraph';
 
 export class JSXGraphRenderer implements GeometryRenderer {
@@ -441,6 +443,21 @@ export class JSXGraphRenderer implements GeometryRenderer {
             }
             break;
           }
+          case 'function_graph': {
+            const def = obj.definition as Record<string, unknown>;
+            const expr = (def.expression as string) || 'x';
+            try {
+              const fn = compileMathExpression(expr);
+              jxgEl = this.board.create('functiongraph', [fn], {
+                ...attrs,
+                strokeColor: styleInfo.baseColor,
+                strokeWidth: (obj.style?.strokeWidth as number) || 2.5
+              });
+            } catch (e) {
+              console.error('Failed to create functiongraph:', e);
+            }
+            break;
+          }
         }
       }
 
@@ -636,6 +653,19 @@ export class JSXGraphRenderer implements GeometryRenderer {
         }
         break;
       }
+      case 'function_graph': {
+        const def = obj.definition as Record<string, unknown>;
+        const expr = (def.expression as string) || 'x';
+        try {
+          const fn = compileMathExpression(expr);
+          if (typeof jxgEl.setFct === 'function') {
+            jxgEl.setFct(fn);
+          }
+        } catch (e) {
+          console.error('Failed to update functiongraph:', e);
+        }
+        break;
+      }
     }
 
     this.board.update();
@@ -712,6 +742,60 @@ export class JSXGraphRenderer implements GeometryRenderer {
             axis.showElement();
           } else {
             axis.hideElement();
+          }
+        }
+      }
+      this.board.update();
+    }
+  }
+
+  setGridConfig(config: Partial<GridConfig>): void {
+    if (!this.board) return;
+    const isVisible = config.visible !== false;
+    this.setGridVisible(isVisible);
+    if (!isVisible) return;
+
+    const size = config.size || 1;
+    const style = config.style || 'lines';
+
+    if (this.board.grids) {
+      for (const grid of this.board.grids) {
+        if (typeof grid.setAttribute === 'function') {
+          grid.setAttribute({
+            gridX: size,
+            gridY: size,
+            dash: style === 'dots' ? 2 : 0,
+            strokeColor: config.color || '#cbd5e1',
+            strokeOpacity: config.opacity ?? 0.6
+          });
+        }
+      }
+      this.board.update();
+    }
+  }
+
+  setAxisConfig(config: Partial<AxisConfig>): void {
+    if (!this.board) return;
+    const isVisible = config.visible !== false;
+    this.setAxisVisible(isVisible);
+    if (!isVisible) return;
+
+    if (this.board.defaultAxes) {
+      const axes = [this.board.defaultAxes.x, this.board.defaultAxes.y];
+      for (const axis of axes) {
+        if (axis && typeof axis.setAttribute === 'function') {
+          axis.setAttribute({
+            withLabel: config.showLabels !== false,
+            strokeColor: config.color || '#64748b'
+          });
+          if (axis.ticks && Array.isArray(axis.ticks)) {
+            for (const tick of axis.ticks) {
+              if (typeof tick.setAttribute === 'function') {
+                tick.setAttribute({
+                  drawLabels: config.showLabels !== false
+                });
+              }
+            }
           }
         }
       }

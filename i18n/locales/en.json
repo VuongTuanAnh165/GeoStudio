@@ -49,7 +49,8 @@
     "annotate_formula": "KaTeX Formula",
     "annotate_arrow": "Arrow Pointer",
     "annotate_step_label": "Step Badge",
-    "annotate_highlight": "Highlight Marker"
+    "annotate_highlight": "Highlight Marker",
+    "coordinate_geometry": "Coordinates & Functions"
   },
   "context": {
     "properties": "Properties",
@@ -127,6 +128,7 @@
     "color": "Color",
     "line_width": "Line Width",
     "show_label": "Show Label",
+    "trace": "Trace Mode",
     "constraints": "Constraints",
     "measurements": "Measurements",
     "no_measurements": "No measurements yet"
@@ -171,22 +173,6 @@
     "back": "Back",
     "next_step": "Next Step",
     "save_finish": "Save & Finish"
-  },
-  "panel": {
-    "properties": "Properties",
-    "no_object_selected": "No object selected",
-    "label": "Label",
-    "color": "Color",
-    "line_width": "Line Width",
-    "show_label": "Show Label",
-    "trace": "Trace Mode",
-    "constraints": "Constraints",
-    "objects": "Objects",
-    "toggle_visibility": "Toggle Visibility",
-    "delete_object": "Delete Object",
-    "no_objects": "No objects",
-    "measurements": "Measurements",
-    "no_measurements": "No measurements yet"
   },
   "common": {
     "done": "Done"
@@ -337,5 +323,16 @@
     "delete": "Delete",
     "edit": "Edit",
     "step_prefix": "Step"
+  },
+  "coordinate": {
+    "btn": "Coordinates & Equations",
+    "title": "Coordinates & Equations",
+    "input_label": "Enter line, circle equation, or function plot",
+    "examples": "Sample Equations",
+    "plot_btn": "Plot on Geometry Canvas",
+    "no_selection": "No object selected",
+    "grid_label": "Coordinate Grid",
+    "axis_label": "Coordinate Axes",
+    "cartesian_plane": "Cartesian Coordinate Plane"
   }
 }

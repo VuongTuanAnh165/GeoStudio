@@ -145,8 +145,8 @@ export class CurriculumEngine {
 
     const normalized = this.normalizeToolId(toolId);
 
-    // Công cụ cơ bản và chú thích luôn được phép
-    if (normalized === 'select' || normalized === 'delete' || normalized.startsWith('annotate_')) {
+    // Công cụ cơ bản, chú thích và hình học tọa độ luôn được phép
+    if (normalized === 'select' || normalized === 'delete' || normalized.startsWith('annotate_') || normalized === 'coordinate_geometry') {
       return true;
     }
 
