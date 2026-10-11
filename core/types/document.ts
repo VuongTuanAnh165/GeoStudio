@@ -14,12 +14,15 @@ export const GeoDocumentMetadataSchema = z.object({
   locale: z.string().optional()
 });
 
+import { AnimationConfigSchema, DEFAULT_ANIMATION_CONFIG, type AnimationConfig } from './animation';
+
 export const GeoDocumentSettingsSchema = z.object({
   theme: z.string().default('light'),
   gridVisible: z.boolean().default(true),
   axisVisible: z.boolean().default(true),
   snapEnabled: z.boolean().default(true),
-  dimension: z.union([z.literal(2), z.literal(3)]).default(2)
+  dimension: z.union([z.literal(2), z.literal(3)]).default(2),
+  animation: AnimationConfigSchema.optional()
 });
 
 export const GeoDocumentViewportSchema = z.object({
@@ -64,6 +67,7 @@ export const GeoDocumentSchema = z.object({
 export type GeoDocumentMetadata = z.infer<typeof GeoDocumentMetadataSchema>;
 export type GeoDocumentSettings = z.infer<typeof GeoDocumentSettingsSchema>;
 export type GeoDocumentViewport = z.infer<typeof GeoDocumentViewportSchema>;
+export type { AnimationConfig, AnimationEasing } from './animation';
 
 // Full interface mapping to the schema
 import type { GeometryConstraint } from './geometry';

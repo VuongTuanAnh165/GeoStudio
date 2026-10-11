@@ -174,5 +174,29 @@
     "no_objects": "No objects",
     "measurements": "Measurements",
     "no_measurements": "No measurements yet"
+  },
+  "common": {
+    "done": "Done"
+  },
+  "settings": {
+    "title": "System Settings",
+    "subtitle": "Customize animations, canvas display and user experience",
+    "animation_tab": "Animation",
+    "canvas_tab": "Canvas & Display",
+    "enable_animations": "Enable Animations",
+    "enable_animations_desc": "Smooth construction, transitions and deletion effects",
+    "duration": "Animation Duration:",
+    "easing": "Easing Curve:",
+    "easing_ease_in_out": "Ease In Out (Smooth both ends - Recommended)",
+    "easing_ease_out": "Ease Out (Gradual deceleration - Natural)",
+    "easing_ease_in": "Ease In (Gradual acceleration)",
+    "easing_linear": "Linear (Constant speed)",
+    "effects": "Applied Effects",
+    "anim_construction": "Fade-in & progressive draw on creation",
+    "anim_transform": "Smooth transition on point moves",
+    "anim_delete": "Fade-out on object deletion",
+    "grid_axis": "Grid & Coordinate Axes",
+    "smart_snap": "Smart Snapping",
+    "reset_defaults": "Reset to Defaults"
   }
 }

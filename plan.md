@@ -689,11 +689,11 @@ Mỗi construction:
 - [x] Clear trace
 
 #### 7.3 — Animation System
-- [ ] Construction animation (fade in, progressive draw)
-- [ ] Transform animation (smooth transition)
-- [ ] Delete animation (fade out)
-- [ ] Animation config (enable/disable, duration, easing)
-- [ ] `AnimationConfig` trong Settings
+- [x] Construction animation (fade in, progressive draw)
+- [x] Transform animation (smooth transition)
+- [x] Delete animation (fade out)
+- [x] Animation config (enable/disable, duration, easing)
+- [x] `AnimationConfig` trong Settings
 
 #### 7.4 — Construction Replay
 - [ ] `ConstructionSteps.vue` — hiển thị danh sách bước dựng hình

@@ -118,6 +118,11 @@
         <span class="flex items-center gap-3"><Icon name="mdi:axis-arrow" class="w-4 h-4 text-slate-400"/> {{ $t('context.axis', 'Axis') }}</span>
         <Icon v-if="store.settings.axisVisible" name="lucide:check" class="w-4 h-4 text-blue-500" />
       </button>
+      <div class="h-px bg-slate-200/50 dark:bg-slate-700/50 my-1 mx-2"></div>
+      <button @click="handleAction('settings')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 transition-colors">
+        <Icon name="lucide:settings" class="w-4 h-4 text-slate-400"/> 
+        {{ $t('settings.title', 'Settings') }}
+      </button>
     </template>
   </div>
 </template>
@@ -241,6 +246,9 @@ const handleAction = (action: string) => {
       break;
     case 'axis':
       store.settings.axisVisible = !store.settings.axisVisible;
+      break;
+    case 'settings':
+      window.dispatchEvent(new CustomEvent('geostudio:open-settings'));
       break;
   }
   

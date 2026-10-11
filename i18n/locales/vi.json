@@ -174,5 +174,29 @@
     "no_objects": "Chưa có đối tượng nào",
     "measurements": "Bảng đo lường",
     "no_measurements": "Chưa có phép đo nào"
+  },
+  "common": {
+    "done": "Hoàn tất"
+  },
+  "settings": {
+    "title": "Cài đặt hệ thống",
+    "subtitle": "Tùy chỉnh hoạt ảnh, bảng vẽ và trải nghiệm",
+    "animation_tab": "Hoạt ảnh (Animation)",
+    "canvas_tab": "Bảng vẽ & Hiển thị",
+    "enable_animations": "Bật hiệu ứng chuyển động",
+    "enable_animations_desc": "Hiệu ứng tạo hình mượt mà, biến đổi và xóa",
+    "duration": "Thời lượng chuyển động:",
+    "easing": "Đường cong gia tốc (Easing):",
+    "easing_ease_in_out": "Ease In Out (Mượt mà hai đầu - Khuyên dùng)",
+    "easing_ease_out": "Ease Out (Giảm tốc dần - Tự nhiên)",
+    "easing_ease_in": "Ease In (Tăng tốc dần)",
+    "easing_linear": "Linear (Đều - Tuyến tính)",
+    "effects": "Các hiệu ứng áp dụng",
+    "anim_construction": "Hiện mượt khi tạo hình (Fade-in & Progressive draw)",
+    "anim_transform": "Chuyển động mượt khi dời điểm (Transition)",
+    "anim_delete": "Mờ dần khi xóa đối tượng (Fade-out)",
+    "grid_axis": "Lưới & Trục toạ độ",
+    "smart_snap": "Hút điểm thông minh (Snap)",
+    "reset_defaults": "Khôi phục mặc định"
   }
 }

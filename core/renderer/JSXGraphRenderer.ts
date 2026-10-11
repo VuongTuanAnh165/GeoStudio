@@ -1,5 +1,7 @@
 import type { GeometryRenderer } from '../types/renderer';
 import type { GeometryObject, Coords2D } from '../types/geometry';
+import type { AnimationConfig } from '../types/animation';
+import { AnimationSystem } from '../animation/AnimationSystem';
 import JXG from 'jsxgraph';
 
 export class JSXGraphRenderer implements GeometryRenderer {
@@ -7,6 +9,8 @@ export class JSXGraphRenderer implements GeometryRenderer {
   private board: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private jxgObjects: Map<string, any> = new Map();
+  private animationSystem = new AnimationSystem();
+  public isInteractivelyDragging = false;
   public onSliderChange?: (id: string, value: number) => void;
 
   init(container: string | HTMLElement): void {
@@ -49,6 +53,56 @@ export class JSXGraphRenderer implements GeometryRenderer {
     }
   }
 
+  setAnimationConfig(config: Partial<AnimationConfig>): void {
+    this.animationSystem.setConfig(config);
+  }
+
+  getAnimationConfig(): AnimationConfig {
+    return this.animationSystem.getConfig();
+  }
+
+  async animateObjectMove(id: string, targetCoords: Coords2D, duration?: number): Promise<void> {
+    const jxgEl = this.jxgObjects.get(id);
+    if (!jxgEl) return;
+    const animConfig = this.animationSystem.getConfig();
+    const dur = duration ?? animConfig.duration;
+    if (dur <= 0 || !animConfig.enabled) {
+      if (typeof jxgEl.setPosition === 'function') {
+        jxgEl.setPosition(JXG.COORDS_BY_USER, [targetCoords.x, targetCoords.y]);
+      }
+      this.board?.update();
+      return;
+    }
+
+    return new Promise((resolve) => {
+      let resolved = false;
+      const finish = () => {
+        if (resolved) return;
+        resolved = true;
+        resolve();
+      };
+
+      const fallbackTimer = setTimeout(finish, dur + 50);
+
+      if (typeof jxgEl.moveTo === 'function') {
+        jxgEl.moveTo([targetCoords.x, targetCoords.y], dur, {
+          effect: this.animationSystem.getJSXGraphEasingEffect(),
+          callback: () => {
+            clearTimeout(fallbackTimer);
+            finish();
+          }
+        });
+      } else {
+        clearTimeout(fallbackTimer);
+        if (typeof jxgEl.setPosition === 'function') {
+          jxgEl.setPosition(JXG.COORDS_BY_USER, [targetCoords.x, targetCoords.y]);
+        }
+        this.board?.update();
+        finish();
+      }
+    });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getStyleAttributes(obj: GeometryObject, isSelected: boolean = false): Record<string, any> {
     const baseColor = obj.style?.color || '#3b82f6';
@@ -81,7 +135,14 @@ export class JSXGraphRenderer implements GeometryRenderer {
 
   renderObject(obj: GeometryObject, isSelected: boolean = false): void {
     if (!this.board) return;
-    if (this.jxgObjects.has(obj.id)) {
+    const existing = this.jxgObjects.get(obj.id);
+    if (existing) {
+      if (existing.__isDeleting) {
+        existing.__isDeleting = false;
+        if (typeof existing.setAttribute === 'function') {
+          existing.setAttribute({ fixed: false, highlight: true });
+        }
+      }
       this.updateObject(obj.id, obj, isSelected);
       return;
     }
@@ -385,6 +446,28 @@ export class JSXGraphRenderer implements GeometryRenderer {
 
       if (jxgEl) {
         this.jxgObjects.set(obj.id, jxgEl);
+
+        const animConfig = this.animationSystem.getConfig();
+        if (animConfig.enabled && animConfig.constructionFadeIn && typeof jxgEl.animate === 'function' && animConfig.duration > 0) {
+          const easingEffect = this.animationSystem.getJSXGraphEasingEffect();
+          if (obj.type === 'point') {
+            if (typeof jxgEl.setAttribute === 'function') {
+              jxgEl.setAttribute({ size: 0, strokeOpacity: 0, fillOpacity: 0 });
+            }
+            jxgEl.animate({ size: styleInfo.size, strokeOpacity: 1, fillOpacity: 1 }, animConfig.duration, { effect: easingEffect });
+          } else if (obj.type === 'polygon') {
+            const targetFillOpacity = styleInfo.isSelected ? 0.3 : 0.1;
+            if (typeof jxgEl.setAttribute === 'function') {
+              jxgEl.setAttribute({ strokeOpacity: 0, fillOpacity: 0 });
+            }
+            jxgEl.animate({ strokeOpacity: 1, fillOpacity: targetFillOpacity }, animConfig.duration, { effect: easingEffect });
+          } else {
+            if (typeof jxgEl.setAttribute === 'function') {
+              jxgEl.setAttribute({ strokeOpacity: 0 });
+            }
+            jxgEl.animate({ strokeOpacity: 1 }, animConfig.duration, { effect: easingEffect });
+          }
+        }
       }
     } catch (e) {
       console.error(`Failed to render object ${obj.id}:`, e);
@@ -408,16 +491,46 @@ export class JSXGraphRenderer implements GeometryRenderer {
     return '';
   }
 
-  removeObject(id: string): void {
+  removeObject(id: string, options?: { animate?: boolean }): void {
     if (!this.board) return;
     const jxgEl = this.jxgObjects.get(id);
-    if (jxgEl) {
+    if (!jxgEl) return;
+
+    const animConfig = this.animationSystem.getConfig();
+    const shouldAnimate = options?.animate ?? (animConfig.enabled && animConfig.deleteFadeOut);
+
+    if (shouldAnimate && typeof jxgEl.animate === 'function' && animConfig.duration > 0) {
+      jxgEl.__isDeleting = true;
+      if (typeof jxgEl.setAttribute === 'function') {
+        jxgEl.setAttribute({ fixed: true, highlight: false });
+      }
+
+      let deleted = false;
+      const finalizeRemoval = () => {
+        if (deleted) return;
+        deleted = true;
+        if (jxgEl.__isDeleting) {
+          this.board?.removeObject(jxgEl);
+          this.jxgObjects.delete(id);
+        }
+      };
+
+      const fallbackTimer = setTimeout(finalizeRemoval, animConfig.duration + 50);
+
+      jxgEl.animate({ strokeOpacity: 0, fillOpacity: 0 }, animConfig.duration, {
+        effect: this.animationSystem.getJSXGraphEasingEffect(),
+        callback: () => {
+          clearTimeout(fallbackTimer);
+          finalizeRemoval();
+        }
+      });
+    } else {
       this.board.removeObject(jxgEl);
       this.jxgObjects.delete(id);
     }
   }
 
-  updateObject(id: string, obj: GeometryObject, isSelected: boolean = false): void {
+  updateObject(id: string, obj: GeometryObject, isSelected: boolean = false, options?: { animate?: boolean }): void {
     if (!this.board) return;
     const jxgEl = this.jxgObjects.get(id);
 
@@ -468,7 +581,16 @@ export class JSXGraphRenderer implements GeometryRenderer {
     switch (obj.type) {
       case 'point': {
         const coords = obj.definition.coords as Coords2D;
-        jxgEl.setPosition(JXG.COORDS_BY_USER, [coords.x, coords.y]);
+        const animConfig = this.animationSystem.getConfig();
+        const shouldAnimate = options?.animate ?? (animConfig.enabled && animConfig.transformTransition && !this.isInteractivelyDragging);
+
+        if (shouldAnimate && typeof jxgEl.moveTo === 'function' && animConfig.duration > 0) {
+          jxgEl.moveTo([coords.x, coords.y], animConfig.duration, {
+            effect: this.animationSystem.getJSXGraphEasingEffect()
+          });
+        } else {
+          jxgEl.setPosition(JXG.COORDS_BY_USER, [coords.x, coords.y]);
+        }
         break;
       }
       case 'segment': {
@@ -527,7 +649,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
     // JSXGraph usually stores elements in board.objects
     // But we have our map, we can iterate to see which one contains the mouse
     for (const [id, jxgEl] of this.jxgObjects.entries()) {
-      if (jxgEl.hasPoint && jxgEl.hasPoint(screenPos.x, screenPos.y)) {
+      if (!jxgEl.__isDeleting && jxgEl.hasPoint && jxgEl.hasPoint(screenPos.x, screenPos.y)) {
         hitId = id;
         // Prioritize points over lines/polygons
         if (jxgEl.elType === 'point') {
@@ -540,7 +662,9 @@ export class JSXGraphRenderer implements GeometryRenderer {
   }
 
   getRenderedIds(): string[] {
-    return Array.from(this.jxgObjects.keys());
+    return Array.from(this.jxgObjects.entries())
+      .filter(([_, el]) => !el.__isDeleting)
+      .map(([id]) => id);
   }
 
   getScreenPosition(mathPos: Coords2D): Coords2D {

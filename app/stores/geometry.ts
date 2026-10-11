@@ -5,6 +5,7 @@ import { ConstructionGraph } from '../../core/geometry/graph/ConstructionGraph';
 import type { GeometryObject, GeometryConstraint } from '../../core/types/geometry';
 import type { GeometryCommand } from '../../core/types/commands';
 import type { SnapSettings } from '../../core/engine/SnapEngine';
+import { DEFAULT_ANIMATION_CONFIG, type AnimationConfig } from '../../core/types/animation';
 
 export const useGeometryStore = defineStore('geometry', () => {
   const engine = new CommandEngine({
@@ -22,7 +23,8 @@ export const useGeometryStore = defineStore('geometry', () => {
         gridVisible: true, 
         axisVisible: true, 
         snapEnabled: true, 
-        dimension: 2 
+        dimension: 2,
+        animation: { ...DEFAULT_ANIMATION_CONFIG }
       },
       viewport: { xMin: -10, xMax: 10, yMin: -10, yMax: 10 },
       objects: [],
@@ -202,6 +204,17 @@ export const useGeometryStore = defineStore('geometry', () => {
     loadDocument,
     beginBatch,
     endBatch,
+    updateAnimationConfig: (config: Partial<AnimationConfig>) => {
+      if (!settings.value.animation) {
+        settings.value.animation = { ...DEFAULT_ANIMATION_CONFIG };
+      }
+      settings.value.animation = {
+        ...settings.value.animation,
+        ...config
+      };
+      engine.currentState.document.settings.animation = { ...settings.value.animation };
+      lastModified.value++;
+    },
     
     // Expose engine current state directly if components need raw doc
     currentDocument,

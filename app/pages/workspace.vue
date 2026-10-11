@@ -50,6 +50,13 @@
           {{ locale }}
         </button>
         <button 
+          @click="showSettingsModal = true" 
+          class="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all hover:shadow-md"
+          :title="$t('settings.title') || 'Settings'"
+        >
+          <Icon name="lucide:settings" class="w-4 h-4" />
+        </button>
+        <button 
           @click="showExportModal = true"
           class="px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-md transition-colors flex items-center gap-1.5"
         >
@@ -115,6 +122,9 @@
 
     <!-- Calibration Modal -->
     <CalibrationModal />
+
+    <!-- Settings Modal -->
+    <SettingsModal v-model="showSettingsModal" />
   </div>
 </template>
 
@@ -133,6 +143,7 @@ import ExportDialog from '../components/ExportDialog.vue';
 import CameraView from '../components/CameraView.vue';
 import GestureHUD from '../components/GestureHUD.vue';
 import CalibrationModal from '../components/CalibrationModal.vue';
+import SettingsModal from '../components/SettingsModal.vue';
 
 import { useGestureEngine } from '../composables/useGestureEngine';
 
@@ -148,6 +159,11 @@ const { startEngine, stopEngine } = useGestureEngine();
 const currentTitle = computed(() => store.currentDocument?.metadata?.title || 'Untitled Document');
 const dialogsRef = ref<InstanceType<typeof DocumentDialogs> | null>(null);
 const showExportModal = ref(false);
+const showSettingsModal = ref(false);
+
+const handleOpenSettingsEvent = () => {
+  showSettingsModal.value = true;
+};
 
 const onVideoReady = async (video: HTMLVideoElement) => {
   try {
@@ -226,10 +242,12 @@ const confirmRename = () => {
 
 onMounted(() => {
   window.addEventListener('geostudio:rename-object', handleRenameEvent);
+  window.addEventListener('geostudio:open-settings', handleOpenSettingsEvent);
 });
 
 onUnmounted(() => {
   window.removeEventListener('geostudio:rename-object', handleRenameEvent);
+  window.removeEventListener('geostudio:open-settings', handleOpenSettingsEvent);
 });
 
 definePageMeta({

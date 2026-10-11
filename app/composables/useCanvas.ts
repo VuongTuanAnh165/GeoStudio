@@ -54,6 +54,10 @@ export function useCanvas() {
     containerId.value = id;
     renderer.init(id);
     initialized = true;
+
+    if (typeof renderer.setAnimationConfig === 'function' && store.settings.animation) {
+      renderer.setAnimationConfig(store.settings.animation);
+    }
     
     // Expose renderer to window for components that need to query JSXGraph state directly (like MeasurementPanel)
     (window as any).__geostudio_renderer = renderer;
@@ -161,6 +165,16 @@ export function useCanvas() {
     { deep: true }
   );
 
+  watch(
+    () => store.settings.animation,
+    (animConfig) => {
+      if (animConfig && typeof renderer.setAnimationConfig === 'function') {
+        renderer.setAnimationConfig(animConfig);
+      }
+    },
+    { deep: true }
+  );
+
   if (getCurrentInstance()) {
     onUnmounted(() => {
       clear();
@@ -173,6 +187,13 @@ export function useCanvas() {
     }
   };
 
+  const animateObjectMove = (id: string, targetCoords: any, duration?: number) => {
+    if (typeof renderer.animateObjectMove === 'function') {
+      return renderer.animateObjectMove(id, targetCoords, duration);
+    }
+    return Promise.resolve();
+  };
+
   return {
     init,
     clear,
@@ -182,6 +203,7 @@ export function useCanvas() {
     zoomOut,
     resetZoom,
     clearTraces,
+    animateObjectMove,
     currentSnapResult
   };
 }
