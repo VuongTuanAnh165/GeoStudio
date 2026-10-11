@@ -1,5 +1,6 @@
 import { ConstructionRegistry } from './ConstructionRegistry';
 import { CreateConstructionCommand } from '../../commands/constructions';
+import { registerBuiltin3DConstructions } from './builtins3d';
 
 export const registerBuiltinConstructions = () => {
   const registry = ConstructionRegistry.getInstance();
@@ -418,4 +419,9 @@ export const registerBuiltinConstructions = () => {
       });
     }
   });
+
+  // Register 3D constructions
+  registerBuiltin3DConstructions();
 };
+
+export { registerBuiltin3DConstructions } from './builtins3d';

@@ -773,12 +773,13 @@ Mỗi construction:
 - [x] Unit tests
 
 #### 8.5 — 3D Constructions
-- [ ] Section plane (mặt cắt)
-- [ ] Cross section (thiết diện)
-- [ ] Perpendicular from point to plane
-- [ ] Parallel plane through point
-- [ ] Intersection of 2 planes → line
-- [ ] Projection of point onto plane
+- [x] Section plane (mặt cắt)
+- [x] Cross section (thiết diện)
+- [x] Perpendicular from point to plane
+- [x] Parallel plane through point
+- [x] Intersection of 2 planes → line
+- [x] Projection of point onto plane
+- [x] Unit tests
 
 #### 8.6 — 2D ↔ 3D
 - [ ] Toggle giữa 2D view và 3D view

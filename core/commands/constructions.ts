@@ -27,11 +27,13 @@ export class CreateConstructionCommand implements GeometryCommand {
     const newId = this.objectId || crypto.randomUUID();
     this.createdObjectId = newId;
     
+    const is3D = this.objectType === 'plane' || this.extraDef?.dimension === 3 || this.parentIds.some(pid => state.document.objects.find(o => o.id === pid)?.dimension === 3);
+
     // Create the new constructed object
     const newObject: GeometryObject = {
       id: newId,
       type: this.objectType,
-      dimension: 2,
+      dimension: is3D ? 3 : 2,
       parents: [...this.parentIds],
       children: [],
       definition: {
