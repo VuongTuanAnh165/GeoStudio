@@ -22,6 +22,14 @@ export const useLessonStore = defineStore('lesson', () => {
   const errorMessage = ref<string | null>(null);
   const successMessage = ref<string | null>(null);
 
+  // Player State
+  const isPlayerActive = ref(false);
+  const isPlayerFullscreen = ref(false);
+  const playerCurrentStepIndex = ref(0);
+  const isAutoPlaying = ref(false);
+  const playerSpeed = ref<0.5 | 1 | 1.5 | 2>(1);
+  let autoPlayTimer: ReturnType<typeof setTimeout> | null = null;
+
   // Getters
   const steps = computed<LessonStep[]>(() => {
     return currentLesson.value?.steps || [];
@@ -52,6 +60,39 @@ export const useLessonStore = defineStore('lesson', () => {
       }
     }
     return visible;
+  });
+
+  const playerCurrentStep = computed<LessonStep | null>(() => {
+    if (!currentLesson.value || playerCurrentStepIndex.value <= 0 || playerCurrentStepIndex.value > steps.value.length) {
+      return null;
+    }
+    return steps.value[playerCurrentStepIndex.value - 1] ?? null;
+  });
+
+  const playerVisibleObjectIds = computed<Set<string>>(() => {
+    const visible = new Set<string>();
+    if (!currentLesson.value || playerCurrentStepIndex.value <= 0) {
+      return visible;
+    }
+
+    const maxIdx = Math.min(playerCurrentStepIndex.value, steps.value.length);
+    for (let i = 0; i < maxIdx; i++) {
+      const step = steps.value[i];
+      if (step) {
+        for (const id of step.objectIds) {
+          visible.add(id);
+        }
+      }
+    }
+    return visible;
+  });
+
+  const playerActiveObjectIds = computed<string[]>(() => {
+    if (!currentLesson.value || playerCurrentStepIndex.value <= 0 || playerCurrentStepIndex.value > steps.value.length) {
+      return [];
+    }
+    const step = steps.value[playerCurrentStepIndex.value - 1];
+    return step ? step.objectIds : [];
   });
 
   // Actions
@@ -329,6 +370,162 @@ export const useLessonStore = defineStore('lesson', () => {
     previewStepIndex.value = Math.max(1, Math.min(totalSteps.value, index));
   };
 
+  // Player Actions
+  const clearAutoPlayTimer = () => {
+    if (autoPlayTimer) {
+      clearTimeout(autoPlayTimer);
+      autoPlayTimer = null;
+    }
+  };
+
+  const syncPlayerSelection = () => {
+    const active = playerActiveObjectIds.value;
+    const targetId = active.length > 0 && active[0] ? active[0] : null;
+    geometryStore.selectObject(targetId);
+  };
+
+  const scheduleNextAutoPlayStep = () => {
+    clearAutoPlayTimer();
+    if (!isAutoPlaying.value) return;
+
+    if (playerCurrentStepIndex.value >= totalSteps.value) {
+      isAutoPlaying.value = false;
+      return;
+    }
+
+    const currentStep = playerCurrentStep.value;
+    const baseDuration = currentStep?.duration || 2000;
+    const interval = Math.round(baseDuration / playerSpeed.value);
+
+    autoPlayTimer = setTimeout(() => {
+      if (isAutoPlaying.value) {
+        playerNextStep();
+        if (playerCurrentStepIndex.value < totalSteps.value) {
+          scheduleNextAutoPlayStep();
+        } else {
+          isAutoPlaying.value = false;
+        }
+      }
+    }, interval);
+  };
+
+  const startPlayer = async (lessonIdOrLesson?: string | Lesson) => {
+    if (typeof lessonIdOrLesson === 'string') {
+      await loadLesson(lessonIdOrLesson, true);
+    } else if (lessonIdOrLesson && typeof lessonIdOrLesson === 'object') {
+      currentLesson.value = lessonIdOrLesson;
+      if (lessonIdOrLesson.document) {
+        geometryStore.loadDocument(lessonIdOrLesson.document);
+      }
+    } else if (!currentLesson.value) {
+      await fetchSavedLessons();
+      if (savedLessons.value.length > 0 && savedLessons.value[0]) {
+        await loadLesson(savedLessons.value[0].id, true);
+      } else {
+        createNewLesson();
+      }
+    }
+
+    isPlayerActive.value = true;
+    playerCurrentStepIndex.value = totalSteps.value > 0 ? 1 : 0;
+    syncPlayerSelection();
+  };
+
+  const stopPlayer = () => {
+    pauseAutoPlay();
+    isPlayerActive.value = false;
+    exitPlayerFullscreen();
+    geometryStore.selectObject(null);
+  };
+
+  const playerGoToStep = (index: number) => {
+    playerCurrentStepIndex.value = Math.max(0, Math.min(totalSteps.value, index));
+    syncPlayerSelection();
+    if (isAutoPlaying.value) {
+      scheduleNextAutoPlayStep();
+    }
+  };
+
+  const playerNextStep = () => {
+    if (playerCurrentStepIndex.value < totalSteps.value) {
+      playerGoToStep(playerCurrentStepIndex.value + 1);
+    } else {
+      pauseAutoPlay();
+    }
+  };
+
+  const playerPrevStep = () => {
+    pauseAutoPlay();
+    if (playerCurrentStepIndex.value > 1) {
+      playerGoToStep(playerCurrentStepIndex.value - 1);
+    }
+  };
+
+  const playerFirstStep = () => {
+    pauseAutoPlay();
+    playerGoToStep(totalSteps.value > 0 ? 1 : 0);
+  };
+
+  const playerLastStep = () => {
+    pauseAutoPlay();
+    playerGoToStep(totalSteps.value);
+  };
+
+  const startAutoPlay = () => {
+    if (totalSteps.value === 0) return;
+    if (playerCurrentStepIndex.value >= totalSteps.value) {
+      playerGoToStep(1);
+    }
+    isAutoPlaying.value = true;
+    scheduleNextAutoPlayStep();
+  };
+
+  const pauseAutoPlay = () => {
+    isAutoPlaying.value = false;
+    clearAutoPlayTimer();
+  };
+
+  const toggleAutoPlay = () => {
+    if (isAutoPlaying.value) {
+      pauseAutoPlay();
+    } else {
+      startAutoPlay();
+    }
+  };
+
+  const setPlayerSpeed = (s: 0.5 | 1 | 1.5 | 2) => {
+    playerSpeed.value = s;
+    if (isAutoPlaying.value) {
+      scheduleNextAutoPlayStep();
+    }
+  };
+
+  const enterPlayerFullscreen = () => {
+    isPlayerFullscreen.value = true;
+    try {
+      if (typeof document !== 'undefined' && document.documentElement && !document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    } catch (e) {}
+  };
+
+  const exitPlayerFullscreen = () => {
+    isPlayerFullscreen.value = false;
+    try {
+      if (typeof document !== 'undefined' && document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    } catch (e) {}
+  };
+
+  const togglePlayerFullscreen = () => {
+    if (isPlayerFullscreen.value) {
+      exitPlayerFullscreen();
+    } else {
+      enterPlayerFullscreen();
+    }
+  };
+
   return {
     // State
     isBuilderOpen,
@@ -341,11 +538,21 @@ export const useLessonStore = defineStore('lesson', () => {
     errorMessage,
     successMessage,
 
+    // Player State
+    isPlayerActive,
+    isPlayerFullscreen,
+    playerCurrentStepIndex,
+    isAutoPlaying,
+    playerSpeed,
+
     // Getters
     steps,
     totalSteps,
     currentPreviewStep,
     visibleObjectIdsInPreview,
+    playerCurrentStep,
+    playerVisibleObjectIds,
+    playerActiveObjectIds,
 
     // Actions
     createNewLesson,
@@ -367,6 +574,22 @@ export const useLessonStore = defineStore('lesson', () => {
     stopPreview,
     nextPreviewStep,
     prevPreviewStep,
-    goToPreviewStep
+    goToPreviewStep,
+
+    // Player Actions
+    startPlayer,
+    stopPlayer,
+    playerGoToStep,
+    playerNextStep,
+    playerPrevStep,
+    playerFirstStep,
+    playerLastStep,
+    startAutoPlay,
+    pauseAutoPlay,
+    toggleAutoPlay,
+    setPlayerSpeed,
+    enterPlayerFullscreen,
+    exitPlayerFullscreen,
+    togglePlayerFullscreen
   };
 });

@@ -820,11 +820,11 @@ Mỗi construction:
 - [x] Save lesson to IndexedDB
 
 #### 9.3 — Lesson Player
-- [ ] Load lesson
-- [ ] Step-by-step navigation
-- [ ] Auto-play mode
-- [ ] Teacher annotations hiển thị
-- [ ] Fullscreen presentation
+- [x] Load lesson
+- [x] Step-by-step navigation
+- [x] Auto-play mode
+- [x] Teacher annotations hiển thị
+- [x] Fullscreen presentation
 
 #### 9.4 — Template Library
 - [ ] Pre-built templates:

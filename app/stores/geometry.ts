@@ -91,7 +91,7 @@ export const useGeometryStore = defineStore('geometry', () => {
 
     // 4. Sync settings
     settings.value = state.document.settings;
-    if (state.document.settings.dimension === 3) {
+    if (state.document.settings?.dimension === 3) {
       viewMode.value = '3d';
     } else {
       viewMode.value = '2d';

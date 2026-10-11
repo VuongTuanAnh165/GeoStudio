@@ -220,4 +220,177 @@ describe('useLessonStore', () => {
       expect(lessonStore.errorMessage).toBeTruthy();
     });
   });
+
+  describe('Lesson Player (Task 9.3)', () => {
+    beforeEach(() => {
+      lessonStore.createNewLesson({
+        title: 'Bài giảng tam giác',
+        grade: 7,
+        description: 'Mô tả bài giảng tam giác'
+      });
+    });
+
+    it('starts player with current lesson', async () => {
+      expect(lessonStore.isPlayerActive).toBe(false);
+      await lessonStore.startPlayer();
+
+      expect(lessonStore.isPlayerActive).toBe(true);
+      expect(lessonStore.playerCurrentStepIndex).toBe(1);
+      expect(lessonStore.playerCurrentStep).toBeDefined();
+      expect(lessonStore.playerCurrentStep?.title).toBe(lessonStore.steps[0]?.title);
+    });
+
+    it('starts player with direct Lesson object snapshot', async () => {
+      const mockLesson = {
+        id: 'mock-lesson-99',
+        title: 'Custom Snap Lesson',
+        grade: 8,
+        description: 'Direct lesson',
+        tags: [],
+        steps: [
+          {
+            id: 's-custom-1',
+            stepNumber: 1,
+            title: 'Bước A',
+            description: 'Vẽ A',
+            objectIds: ['custom-obj-1'],
+            duration: 1500
+          }
+        ],
+        document: {
+          id: 'custom-doc-1',
+          version: '1.0.0',
+          metadata: { title: 'Custom Snap', createdAt: 1, updatedAt: 1 },
+          settings: { dimension: 2, gridVisible: true, axisVisible: true, snapEnabled: true, theme: 'light' },
+          viewport: { xMin: -5, xMax: 5, yMin: -5, yMax: 5 },
+          objects: [
+            {
+              id: 'custom-obj-1',
+              type: 'point',
+              dimension: 2,
+              definition: { kind: 'point', coords: { x: 10, y: 10 } }
+            }
+          ]
+        },
+        createdAt: 1,
+        updatedAt: 1
+      };
+
+      await lessonStore.startPlayer(mockLesson as any);
+      expect(lessonStore.isPlayerActive).toBe(true);
+      expect(lessonStore.currentLesson?.title).toBe('Custom Snap Lesson');
+      expect(geometryStore.objects.has('custom-obj-1')).toBe(true);
+      expect(lessonStore.playerCurrentStepIndex).toBe(1);
+    });
+
+    it('navigates through steps with next, prev, first, last, goToStep', async () => {
+      await lessonStore.startPlayer();
+      expect(lessonStore.playerCurrentStepIndex).toBe(1);
+
+      lessonStore.playerNextStep();
+      expect(lessonStore.playerCurrentStepIndex).toBe(2);
+
+      lessonStore.playerNextStep();
+      expect(lessonStore.playerCurrentStepIndex).toBe(3);
+
+      // Boundary: cannot advance past totalSteps
+      lessonStore.playerNextStep();
+      expect(lessonStore.playerCurrentStepIndex).toBe(3);
+
+      lessonStore.playerPrevStep();
+      expect(lessonStore.playerCurrentStepIndex).toBe(2);
+
+      lessonStore.playerFirstStep();
+      expect(lessonStore.playerCurrentStepIndex).toBe(1);
+
+      // Boundary: cannot go before step 1 via prevStep
+      lessonStore.playerPrevStep();
+      expect(lessonStore.playerCurrentStepIndex).toBe(1);
+
+      lessonStore.playerLastStep();
+      expect(lessonStore.playerCurrentStepIndex).toBe(3);
+
+      lessonStore.playerGoToStep(2);
+      expect(lessonStore.playerCurrentStepIndex).toBe(2);
+    });
+
+    it('calculates playerVisibleObjectIds progressively', async () => {
+      await lessonStore.startPlayer();
+
+      lessonStore.playerGoToStep(1);
+      expect(lessonStore.playerVisibleObjectIds.has('p1')).toBe(true);
+      expect(lessonStore.playerVisibleObjectIds.has('p2')).toBe(false);
+      expect(lessonStore.playerVisibleObjectIds.has('s1')).toBe(false);
+      expect(lessonStore.playerActiveObjectIds).toEqual(['p1']);
+
+      lessonStore.playerGoToStep(2);
+      expect(lessonStore.playerVisibleObjectIds.has('p1')).toBe(true);
+      expect(lessonStore.playerVisibleObjectIds.has('p2')).toBe(true);
+      expect(lessonStore.playerVisibleObjectIds.has('s1')).toBe(false);
+      expect(lessonStore.playerActiveObjectIds).toEqual(['p2']);
+
+      lessonStore.playerGoToStep(3);
+      expect(lessonStore.playerVisibleObjectIds.has('p1')).toBe(true);
+      expect(lessonStore.playerVisibleObjectIds.has('p2')).toBe(true);
+      expect(lessonStore.playerVisibleObjectIds.has('s1')).toBe(true);
+      expect(lessonStore.playerActiveObjectIds).toEqual(['s1']);
+    });
+
+    it('manages auto-play mode and speed settings', () => {
+      expect(lessonStore.isAutoPlaying).toBe(false);
+      expect(lessonStore.playerSpeed).toBe(1);
+
+      lessonStore.startAutoPlay();
+      expect(lessonStore.isAutoPlaying).toBe(true);
+
+      lessonStore.setPlayerSpeed(1.5);
+      expect(lessonStore.playerSpeed).toBe(1.5);
+
+      lessonStore.pauseAutoPlay();
+      expect(lessonStore.isAutoPlaying).toBe(false);
+
+      lessonStore.toggleAutoPlay();
+      expect(lessonStore.isAutoPlaying).toBe(true);
+
+      lessonStore.toggleAutoPlay();
+      expect(lessonStore.isAutoPlaying).toBe(false);
+
+      // Navigation automatically pauses autoplay
+      lessonStore.startAutoPlay();
+      lessonStore.playerPrevStep();
+      expect(lessonStore.isAutoPlaying).toBe(false);
+    });
+
+    it('manages fullscreen mode', () => {
+      expect(lessonStore.isPlayerFullscreen).toBe(false);
+
+      lessonStore.enterPlayerFullscreen();
+      expect(lessonStore.isPlayerFullscreen).toBe(true);
+
+      lessonStore.exitPlayerFullscreen();
+      expect(lessonStore.isPlayerFullscreen).toBe(false);
+
+      lessonStore.togglePlayerFullscreen();
+      expect(lessonStore.isPlayerFullscreen).toBe(true);
+
+      lessonStore.togglePlayerFullscreen();
+      expect(lessonStore.isPlayerFullscreen).toBe(false);
+    });
+
+    it('stops player and resets state cleanly', async () => {
+      await lessonStore.startPlayer();
+      lessonStore.startAutoPlay();
+      lessonStore.enterPlayerFullscreen();
+
+      expect(lessonStore.isPlayerActive).toBe(true);
+      expect(lessonStore.isAutoPlaying).toBe(true);
+      expect(lessonStore.isPlayerFullscreen).toBe(true);
+
+      lessonStore.stopPlayer();
+
+      expect(lessonStore.isPlayerActive).toBe(false);
+      expect(lessonStore.isAutoPlaying).toBe(false);
+      expect(lessonStore.isPlayerFullscreen).toBe(false);
+    });
+  });
 });

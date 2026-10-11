@@ -426,6 +426,14 @@
                     </span>
                     <div class="flex items-center gap-2">
                       <button 
+                        @click="lessonStore.startPlayer(lesson.id)"
+                        class="px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 rounded-lg transition-colors flex items-center gap-1"
+                        :title="$t('lesson.player_title', 'Trình chiếu bài giảng')"
+                      >
+                        <Icon name="lucide:play" class="w-3.5 h-3.5" />
+                        <span>{{ $t('lesson.play_btn', 'Phát') }}</span>
+                      </button>
+                      <button 
                         @click="handleLoadLesson(lesson.id)"
                         class="px-3 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 rounded-lg transition-colors"
                       >
@@ -464,6 +472,14 @@
 
             <!-- Actions -->
             <div class="flex items-center gap-2">
+              <button 
+                @click="lessonStore.startPlayer()"
+                class="px-3.5 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 rounded-lg transition-colors flex items-center gap-1.5"
+                :title="$t('lesson.player_title', 'Trình chiếu bài giảng')"
+              >
+                <Icon name="lucide:presentation" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span>{{ $t('lesson.play_presentation', 'Trình chiếu') }}</span>
+              </button>
               <button 
                 @click="handleSave"
                 :disabled="lessonStore.isSaving"

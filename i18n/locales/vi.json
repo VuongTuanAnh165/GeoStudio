@@ -273,6 +273,20 @@
     "saved_success": "Đã lưu bài giảng thành công!",
     "delete_lesson": "Xóa",
     "load_lesson": "Mở",
-    "no_saved_lessons": "Chưa có bài giảng nào được lưu trong máy."
+    "no_saved_lessons": "Chưa có bài giảng nào được lưu trong máy.",
+    "player_title": "Trình chiếu bài giảng",
+    "player_btn": "Phát bài giảng",
+    "play_btn": "Phát",
+    "play_presentation": "Trình chiếu",
+    "select_lesson": "Chọn bài giảng...",
+    "step_progress": "Bước {current} / {total}",
+    "auto_play": "Tự động phát (P)",
+    "pause": "Tạm dừng (P)",
+    "speed": "Tốc độ",
+    "teacher_notes": "Chú thích sư phạm",
+    "formula_label": "Công thức áp dụng",
+    "fullscreen": "Toàn màn hình",
+    "exit_fullscreen": "Thu nhỏ",
+    "exit_player": "Đóng trình chiếu"
   }
 }

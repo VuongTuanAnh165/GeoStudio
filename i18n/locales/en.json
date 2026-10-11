@@ -273,6 +273,20 @@
     "saved_success": "Lesson saved successfully!",
     "delete_lesson": "Delete",
     "load_lesson": "Open",
-    "no_saved_lessons": "No saved lessons found in local storage."
+    "no_saved_lessons": "No saved lessons found in local storage.",
+    "player_title": "Lesson Player",
+    "player_btn": "Play Lesson",
+    "play_btn": "Play",
+    "play_presentation": "Present",
+    "select_lesson": "Select lesson...",
+    "step_progress": "Step {current} / {total}",
+    "auto_play": "Auto Play (P)",
+    "pause": "Pause (P)",
+    "speed": "Speed",
+    "teacher_notes": "Pedagogical Note",
+    "formula_label": "Applied Formula",
+    "fullscreen": "Fullscreen",
+    "exit_fullscreen": "Exit Fullscreen",
+    "exit_player": "Close Player"
   }
 }

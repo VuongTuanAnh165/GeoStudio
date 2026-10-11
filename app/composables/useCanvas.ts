@@ -19,12 +19,14 @@ import { SnapEngine } from '../../core/engine/SnapEngine';
 import type { SnapResult } from '../../core/engine/SnapEngine';
 import { UpdateSliderValueCommand } from '../../core/commands/mutations';
 import { useReplayStore } from '../stores/replay';
+import { useLessonStore } from '../stores/lesson';
 
 export function useCanvas() {
   const containerId = ref<string>('jxgbox');
   const renderer = new JSXGraphRenderer();
   const store = useGeometryStore();
   const replayStore = useReplayStore();
+  const lessonStore = useLessonStore();
   let initialized = false;
   
   const snapEngine = new SnapEngine(renderer);
@@ -140,15 +142,15 @@ export function useCanvas() {
     if (!initialized) return;
 
     const currentIds = new Set<string>();
-    const isReplay = replayStore.isActive;
-    const visibleIds = replayStore.visibleObjectIds;
+    const isStepFiltering = replayStore.isActive || lessonStore.isPlayerActive;
+    const visibleIds = lessonStore.isPlayerActive ? lessonStore.playerVisibleObjectIds : replayStore.visibleObjectIds;
 
     // 1. Render or Update existing objects
     for (const [id, obj] of store.objects.entries()) {
       currentIds.add(id);
       const isSelected = store.selectedIds.has(id);
 
-      if (isReplay) {
+      if (isStepFiltering) {
         const isVisibleInStep = visibleIds.has(id);
         const projectedObj = {
           ...obj,
@@ -191,7 +193,12 @@ export function useCanvas() {
   );
 
   watch(
-    () => [replayStore.isActive, replayStore.currentStepIndex],
+    () => [
+      replayStore.isActive,
+      replayStore.currentStepIndex,
+      lessonStore.isPlayerActive,
+      lessonStore.playerCurrentStepIndex
+    ],
     () => {
       syncToRenderer();
     }

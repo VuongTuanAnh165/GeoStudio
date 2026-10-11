@@ -3,7 +3,7 @@
     <VirtualCursor />
     <GestureGuide />
     <!-- Header của workspace -->
-    <header v-if="!replayStore.isPresentationMode" class="h-12 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between px-4 shrink-0 transition-colors z-20 shadow-sm">
+    <header v-if="!replayStore.isPresentationMode && !lessonStore.isPlayerFullscreen" class="h-12 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between px-4 shrink-0 transition-colors z-20 shadow-sm">
       <div class="flex items-center gap-3">
         <NuxtLink to="/" class="w-8 h-8 flex items-center justify-center rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
           <Icon name="lucide:arrow-left" class="w-4 h-4" />
@@ -88,6 +88,15 @@
           <span class="hidden md:inline">{{ $t('lesson.builder_title', 'Bài giảng') }}</span>
         </button>
         <button 
+          @click="lessonStore.startPlayer()" 
+          class="px-2.5 py-1.5 text-xs font-medium rounded-md transition-all flex items-center gap-1.5"
+          :class="lessonStore.isPlayerActive ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-700 shadow-sm font-semibold' : 'text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          :title="$t('lesson.player_title', 'Trình chiếu bài giảng')"
+        >
+          <Icon name="lucide:play-circle" class="w-4 h-4 text-emerald-500" />
+          <span class="hidden md:inline">{{ $t('lesson.player_btn', 'Phát bài') }}</span>
+        </button>
+        <button 
           @click="gestureStore.toggleCamera()" 
           class="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md"
           :class="gestureStore.showCamera ? 'text-green-600 dark:text-green-400 border-green-300 dark:border-green-600 bg-green-50 dark:bg-green-900/30' : 'text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'"
@@ -129,7 +138,7 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-row overflow-hidden">
       <!-- Toolbar (Left) -->
-      <Toolbar v-if="!gestureStore.isGestureActive && !replayStore.isPresentationMode" />
+      <Toolbar v-if="!gestureStore.isGestureActive && !replayStore.isPresentationMode && !lessonStore.isPlayerFullscreen" />
 
       <!-- Canvas Area (Center) -->
       <div class="flex-1 relative h-full overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors">
@@ -144,11 +153,11 @@
       </div>
 
       <!-- Object Panel (Right) -->
-      <ObjectPanel v-if="!gestureStore.isGestureActive && !replayStore.isPresentationMode" />
+      <ObjectPanel v-if="!gestureStore.isGestureActive && !replayStore.isPresentationMode && !lessonStore.isPlayerFullscreen" />
     </div>
 
     <!-- Status Bar (Bottom) -->
-    <StatusBar v-if="!replayStore.isPresentationMode" />
+    <StatusBar v-if="!replayStore.isPresentationMode && !lessonStore.isPlayerFullscreen" />
 
     <!-- Rename Modal -->
     <div v-if="showRenameModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
@@ -196,8 +205,9 @@
     <!-- Curriculum Browser (GDPT 2018) -->
     <CurriculumBrowser />
 
-    <!-- Lesson Builder -->
+    <!-- Lesson Builder & Player -->
     <LessonBuilder />
+    <LessonPlayer />
   </div>
 </template>
 
@@ -225,6 +235,7 @@ import { useReplayStore } from '../stores/replay';
 import CurriculumBrowser from '../components/CurriculumBrowser.vue';
 import { useCurriculumStore } from '../stores/curriculum';
 import LessonBuilder from '../components/LessonBuilder.vue';
+import LessonPlayer from '../components/LessonPlayer.vue';
 import { useLessonStore } from '../stores/lesson';
 
 import { useGestureEngine } from '../composables/useGestureEngine';
