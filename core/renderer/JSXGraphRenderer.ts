@@ -7,6 +7,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
   private board: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private jxgObjects: Map<string, any> = new Map();
+  public onSliderChange?: (id: string, value: number) => void;
 
   init(container: string | HTMLElement): void {
     // Increase hit detection tolerance for easier selection of lines/curves
@@ -42,6 +43,12 @@ export class JSXGraphRenderer implements GeometryRenderer {
     return this.jxgObjects.get(id);
   }
 
+  clearTraces(): void {
+    if (this.board && typeof this.board.clearTraces === 'function') {
+      this.board.clearTraces();
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getStyleAttributes(obj: GeometryObject, isSelected: boolean = false): Record<string, any> {
     const baseColor = obj.style?.color || '#3b82f6';
@@ -61,6 +68,7 @@ export class JSXGraphRenderer implements GeometryRenderer {
       name: obj.metadata?.label || '',
       withLabel: obj.style?.showLabel === true,
       visible: obj.style?.visible !== false,
+      trace: obj.style?.trace === true,
       strokeColor,
       strokeWidth,
       shadow: isSelected, // adds a drop shadow for highlight
@@ -276,6 +284,25 @@ export class JSXGraphRenderer implements GeometryRenderer {
             });
             break;
           }
+          case 'locus': {
+            try {
+              jxgEl = this.board.create('locus', args, {
+                strokeColor: styleInfo.baseColor,
+                strokeWidth: (obj.style?.strokeWidth as number) || 2,
+                ...specificAttrs
+              });
+            } catch {
+              const samples = ((obj.definition as any).samples as Array<{ x: number; y: number }>) || [];
+              const xArr = samples.map(s => s.x);
+              const yArr = samples.map(s => s.y);
+              jxgEl = this.board.create('curve', [xArr, yArr], {
+                strokeColor: styleInfo.baseColor,
+                strokeWidth: (obj.style?.strokeWidth as number) || 2,
+                ...specificAttrs
+              });
+            }
+            break;
+          }
           default:
             jxgEl = this.board.create(obj.definition.kind, args, specificAttrs);
             break;
@@ -317,6 +344,40 @@ export class JSXGraphRenderer implements GeometryRenderer {
             const points = obj.definition.points as Coords2D[];
             const coordArrays = points.map(p => [p.x, p.y]);
             jxgEl = this.board.create('polygon', coordArrays, { ...attrs, hasInnerPoints: true, fillColor: styleInfo.baseColor, fillOpacity: styleInfo.isSelected ? 0.3 : 0.1 });
+            break;
+          }
+          case 'slider': {
+            const def = obj.definition as Record<string, unknown>;
+            const p1 = (def.p1 as Coords2D) || { x: -8, y: 8 };
+            const p2 = (def.p2 as Coords2D) || { x: -3, y: 8 };
+            const min = Number(def.min ?? 0);
+            const val = Number(def.value ?? 5);
+            const max = Number(def.max ?? 10);
+            const step = Number(def.step ?? 0.1);
+            const name = (def.name as string) || (obj.metadata?.label as string) || 's';
+
+            jxgEl = this.board.create('slider', [
+              [p1.x, p1.y],
+              [p2.x, p2.y],
+              [min, val, max]
+            ], {
+              ...attrs,
+              name,
+              snapWidth: step,
+              baseline: { strokeColor: styleInfo.baseColor, strokeWidth: 2 },
+              highline: { strokeColor: styleInfo.baseColor, strokeWidth: 3 },
+              fillColor: styleInfo.baseColor,
+              strokeColor: styleInfo.baseColor
+            });
+
+            if (jxgEl && typeof jxgEl.on === 'function') {
+              jxgEl.on('drag', () => {
+                const currentVal = typeof jxgEl.Value === 'function' ? jxgEl.Value() : val;
+                if (this.onSliderChange) {
+                  this.onSliderChange(obj.id, Number(currentVal.toFixed(4)));
+                }
+              });
+            }
             break;
           }
         }
@@ -394,7 +455,12 @@ export class JSXGraphRenderer implements GeometryRenderer {
 
     const isConstructed = obj.parents && obj.parents.length > 0;
     if (isConstructed) {
-      // Constructed objects update automatically in JSXGraph when parents change
+      if (obj.type === 'locus' && jxgEl && jxgEl.elType === 'curve') {
+        const samples = ((obj.definition as any).samples as Array<{ x: number; y: number }>) || [];
+        jxgEl.dataX = samples.map(s => s.x);
+        jxgEl.dataY = samples.map(s => s.y);
+        this.board.update();
+      }
       return;
     }
 
@@ -434,6 +500,16 @@ export class JSXGraphRenderer implements GeometryRenderer {
         for (let i = 0; i < points.length; i++) {
           if (jxgEl.vertices[i]) {
             jxgEl.vertices[i].setPosition(JXG.COORDS_BY_USER, [points[i]!.x, points[i]!.y]);
+          }
+        }
+        break;
+      }
+      case 'slider': {
+        const def = obj.definition as Record<string, unknown>;
+        const val = Number(def.value ?? 0);
+        if (typeof jxgEl.setValue === 'function' && typeof jxgEl.Value === 'function') {
+          if (Math.abs(jxgEl.Value() - val) > 1e-4) {
+            jxgEl.setValue(val);
           }
         }
         break;

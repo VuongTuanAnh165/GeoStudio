@@ -231,4 +231,31 @@ export const registerBuiltinConstructions = () => {
       return new CreateConstructionCommand('measurement', 'measurement', parents, generateId('measure'), { measureType: 'perimeter', targetIds: parents });
     }
   });
+
+  registry.register({
+    id: 'locus',
+    name: 'Locus',
+    icon: 'lucide:activity',
+    description: 'Select moving/target point, then driver element (glider, point or slider)',
+    match: (objects) => {
+      if (objects.length === 2) {
+        const hasPoint = objects.some(o => o.type === 'point');
+        const hasDriver = objects.some(o => o.type === 'point' || o.type === 'slider');
+        return hasPoint && hasDriver;
+      }
+      return false;
+    },
+    createCommand: (objects, generateId) => {
+      let targetObj = objects[0]!;
+      let driverObj = objects[1]!;
+      if (targetObj.type === 'slider' && driverObj.type === 'point') {
+        targetObj = objects[1]!;
+        driverObj = objects[0]!;
+      }
+      return new CreateConstructionCommand('locus', 'locus', [targetObj.id, driverObj.id], generateId('loc'), {
+        targetId: targetObj.id,
+        driverId: driverObj.id
+      });
+    }
+  });
 };

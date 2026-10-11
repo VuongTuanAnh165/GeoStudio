@@ -1,5 +1,6 @@
 import type { GeometryCommand, GeometryState, ValidationResult } from '../types/commands';
 import type { GeometryObject } from '../types/geometry';
+import type { SliderDef } from '../geometry/primitives/2d';
 
 export abstract class BaseMutationCommand implements GeometryCommand {
   id: string;
@@ -169,4 +170,62 @@ export class RenameObjectCommand extends BaseMutationCommand {
     return obj;
   }
 }
+
+export class UpdateSliderValueCommand extends BaseMutationCommand {
+  override type = 'UPDATE_SLIDER_VALUE';
+
+  constructor(objectId: string, public newValue: number) {
+    super(objectId);
+    this.args = { newValue };
+  }
+
+  override mutate(obj: GeometryObject): GeometryObject {
+    if (obj.type !== 'slider') {
+      throw new Error(`Object ${this.objectId} is not a slider`);
+    }
+    const def = obj.definition as SliderDef;
+    let val = Math.max(def.min, Math.min(def.max, this.newValue));
+    if (def.step > 0) {
+      const steps = Math.round(Number(((val - def.min) / def.step).toFixed(8)));
+      val = steps * def.step + def.min;
+      val = Number(val.toFixed(6));
+    }
+    obj.definition = {
+      ...def,
+      value: val
+    };
+    return obj;
+  }
+
+  override validate(state: GeometryState): ValidationResult {
+    const v = super.validate(state);
+    if (!v.valid) return v;
+
+    const obj = state.document.objects.find(o => o.id === this.objectId);
+    if (obj?.type !== 'slider') {
+      return { valid: false, error: `Object ${this.objectId} is not a slider` };
+    }
+
+    return { valid: true };
+  }
+}
+
+export class LinkObjectToSliderCommand extends BaseMutationCommand {
+  override type = 'LINK_OBJECT_TO_SLIDER';
+
+  constructor(objectId: string, public sliderId: string | null, public baseParentIds: string[] = []) {
+    super(objectId);
+    this.args = { sliderId, baseParentIds };
+  }
+
+  override mutate(obj: GeometryObject): GeometryObject {
+    if (this.sliderId) {
+      obj.parents = [...this.baseParentIds, this.sliderId];
+    } else {
+      obj.parents = [...this.baseParentIds];
+    }
+    return obj;
+  }
+}
+
 

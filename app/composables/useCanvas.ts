@@ -11,10 +11,12 @@ import { PolygonTool } from '../../core/ui/tools/PolygonTool';
 import { TriangleTool } from '../../core/ui/tools/TriangleTool';
 import { SelectTool } from '../../core/ui/tools/SelectTool';
 import { DeleteTool } from '../../core/ui/tools/DeleteTool';
+import { SliderTool } from '../../core/ui/tools/SliderTool';
 import { ConstructionTool } from '../../core/ui/tools/ConstructionTool';
 import type { Tool } from '../../core/ui/tools/Tool';
 import { SnapEngine } from '../../core/engine/SnapEngine';
 import type { SnapResult } from '../../core/engine/SnapEngine';
+import { UpdateSliderValueCommand } from '../../core/commands/mutations';
 
 export function useCanvas() {
   const containerId = ref<string>('jxgbox');
@@ -36,8 +38,9 @@ export function useCanvas() {
   tools.set('triangle', new TriangleTool());
   tools.set('select', new SelectTool());
   tools.set('delete', new DeleteTool());
+  tools.set('slider', new SliderTool());
   
-  const constructionTypes = ['midpoint', 'perpendicular', 'parallel', 'angle_bisector', 'perpendicular_bisector', 'intersection', 'circumcircle', 'incircle', 'tangent'];
+  const constructionTypes = ['midpoint', 'perpendicular', 'parallel', 'angle_bisector', 'perpendicular_bisector', 'intersection', 'circumcircle', 'incircle', 'tangent', 'locus'];
   constructionTypes.forEach(c => {
     tools.set(`construct_${c}`, new ConstructionTool(c));
   });
@@ -92,6 +95,11 @@ export function useCanvas() {
         store.zoomLevel = renderer.getZoom();
       }
     });
+
+    // Listen to native JSXGraph slider drag events
+    renderer.onSliderChange = (sliderId: string, val: number) => {
+      store.executeCommand(new UpdateSliderValueCommand(sliderId, val));
+    };
   };
 
   const clear = () => {
@@ -159,6 +167,12 @@ export function useCanvas() {
     });
   }
 
+  const clearTraces = () => {
+    if (typeof renderer.clearTraces === 'function') {
+      renderer.clearTraces();
+    }
+  };
+
   return {
     init,
     clear,
@@ -167,6 +181,7 @@ export function useCanvas() {
     zoomIn,
     zoomOut,
     resetZoom,
+    clearTraces,
     currentSnapResult
   };
 }

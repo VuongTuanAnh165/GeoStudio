@@ -251,3 +251,59 @@ export class Polygon extends BasePrimitive {
     return `Polygon(${this.points.length} points)`;
   }
 }
+
+export interface SliderDef extends GeometryObjectDefinition {
+  kind: 'slider';
+  name: string;
+  min: number;
+  max: number;
+  value: number;
+  step: number;
+  p1?: Coords2D;
+  p2?: Coords2D;
+}
+
+export class Slider extends BasePrimitive {
+  public type = 'slider' as const;
+
+  constructor(
+    public name: string,
+    public min: number,
+    public max: number,
+    public value: number,
+    public step: number = 0.1,
+    public p1: Coords2D = { x: -8, y: 8 },
+    public p2: Coords2D = { x: -3, y: 8 },
+    id?: string
+  ) {
+    super(id);
+    this.setValue(value);
+  }
+
+  setValue(val: number): void {
+    let clamped = Math.max(this.min, Math.min(this.max, val));
+    if (this.step > 0) {
+      const steps = Math.round(Number(((clamped - this.min) / this.step).toFixed(8)));
+      clamped = steps * this.step + this.min;
+      clamped = Number(clamped.toFixed(6));
+    }
+    this.value = clamped;
+  }
+
+  get definition(): SliderDef {
+    return {
+      kind: 'slider',
+      name: this.name,
+      min: this.min,
+      max: this.max,
+      value: this.value,
+      step: this.step,
+      p1: this.p1,
+      p2: this.p2
+    };
+  }
+
+  toString(): string {
+    return `Slider(${this.name} = ${this.value} [${this.min}, ${this.max}], step=${this.step})`;
+  }
+}

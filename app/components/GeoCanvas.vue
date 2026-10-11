@@ -9,6 +9,9 @@
     <!-- Custom Overlay for Snap and Measurement Indicators -->
     <CanvasOverlay :snap-result="currentSnapResult" :renderer="renderer" />
 
+    <!-- Interactive Slider Overlay on Canvas -->
+    <SliderOverlay />
+
     <!-- View Controls Overlay (Bottom Right) -->
     <div class="absolute bottom-6 right-6 flex gap-1 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl shadow-lg shadow-black/5 rounded-2xl p-1.5 border border-slate-200/50 dark:border-slate-700/50 transition-colors">
       <button 
@@ -49,6 +52,14 @@
       >
         <Icon name="mdi:fit-to-screen" class="w-5 h-5" />
       </button>
+      <div class="w-px bg-slate-200 dark:bg-slate-700 my-1 mx-1" />
+      <button 
+        class="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300 tooltip-trigger"
+        :title="$t('context.clear_trace', 'Clear Trace')"
+        @click="clearTraces"
+      >
+        <Icon name="lucide:brush" class="w-5 h-5" />
+      </button>
     </div>
 
     <ContextMenu v-if="!gestureStore.isGestureActive" />
@@ -66,10 +77,11 @@ import { useContextMenu } from '../composables/useContextMenu';
 import ContextMenu from './ContextMenu.vue';
 import SpatialRadialMenu from './SpatialRadialMenu.vue';
 import CanvasOverlay from './CanvasOverlay.vue';
+import SliderOverlay from './SliderOverlay.vue';
 
 const store = useGeometryStore();
 const gestureStore = useGestureStore();
-const { init, renderer, currentSnapResult } = useCanvas();
+const { init, renderer, currentSnapResult, clearTraces } = useCanvas();
 const { showMenu } = useContextMenu();
 
 // Handle right click manually since JSXGraph doesn't expose it nicely
@@ -123,6 +135,9 @@ onMounted(() => {
   });
   window.addEventListener('geostudio:zoom-fit', () => {
     fitToView();
+  });
+  window.addEventListener('geostudio:clear-traces', () => {
+    clearTraces();
   });
   
   // Listen to context menu from MouseHandler (handles touch long-press & right clicks)

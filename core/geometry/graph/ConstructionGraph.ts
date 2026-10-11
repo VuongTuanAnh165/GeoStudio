@@ -1,4 +1,5 @@
 import type { GeometryObject, ConstructionNode } from '../../types/geometry';
+import { defaultConstructionEvaluator } from './ConstructionEvaluator';
 
 export class ConstructionGraph {
   private nodes: Map<string, ConstructionNode> = new Map();
@@ -7,7 +8,7 @@ export class ConstructionGraph {
   
   // Custom Evaluator registry could be passed in or handled outside.
   // It takes a node and the graph, recalculates the node's geometry definition.
-  public evaluator?: (node: ConstructionNode, graph: ConstructionGraph) => void;
+  public evaluator: (node: ConstructionNode, graph: ConstructionGraph) => void = defaultConstructionEvaluator;
 
   addNode(object: GeometryObject): void {
     if (this.nodes.has(object.id)) {

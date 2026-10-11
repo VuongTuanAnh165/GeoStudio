@@ -16,6 +16,15 @@
         <Icon name="lucide:settings" class="w-4 h-4 text-slate-400"/> 
         {{ $t('context.properties', 'Properties') }}
       </button>
+
+      <!-- Trace Toggle on Point -->
+      <button v-if="state.targetObject.type === 'point'" @click="handleAction('toggleTrace')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center justify-between transition-colors">
+        <span class="flex items-center gap-3">
+          <Icon name="lucide:sparkles" class="w-4 h-4 text-slate-400"/> 
+          {{ state.targetObject.style?.trace ? $t('context.trace_off', 'Trace Off') : $t('context.trace_on', 'Trace On') }}
+        </span>
+        <span v-if="state.targetObject.style?.trace" class="w-2 h-2 rounded-full bg-blue-500"></span>
+      </button>
       
       <!-- Construct Submenu -->
       <div class="relative group">
@@ -94,6 +103,10 @@
         <Icon name="lucide:maximize" class="w-4 h-4 text-slate-400"/> 
         {{ $t('context.reset_view', 'Reset View') }}
       </button>
+      <button @click="handleAction('clearTraces')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 flex items-center gap-3 transition-colors">
+        <Icon name="lucide:brush" class="w-4 h-4 text-slate-400"/> 
+        {{ $t('context.clear_trace', 'Clear Trace') }}
+      </button>
       
       <div class="h-px bg-slate-200/50 dark:bg-slate-700/50 my-1 mx-2"></div>
       
@@ -114,6 +127,7 @@ import { onMounted, onUnmounted, computed } from 'vue';
 import { useContextMenu } from '../composables/useContextMenu';
 import { useGeometryStore } from '../stores/geometry';
 import { DeleteObjectCommand } from '../../core/commands/deletions';
+import { SetStyleCommand } from '../../core/commands/mutations';
 import { ConstructionRegistry } from '../../core/geometry/constructions/ConstructionRegistry';
 import type { ConstructionDefinition } from '../../core/geometry/constructions/ConstructionRegistry';
 import type { GeometryObject } from '../../core/types/geometry';
@@ -209,6 +223,18 @@ const handleAction = (action: string) => {
       break;
     case 'resetZoom':
       window.dispatchEvent(new CustomEvent('geostudio:zoom-reset'));
+      break;
+    case 'toggleTrace':
+      if (state.value.targetObject) {
+        const current = state.value.targetObject.style?.trace === true;
+        store.executeCommand(new SetStyleCommand(state.value.targetObject.id, { trace: !current }));
+      }
+      break;
+    case 'clearTraces':
+      window.dispatchEvent(new CustomEvent('geostudio:clear-traces'));
+      if ((window as any).__geostudio_renderer && typeof (window as any).__geostudio_renderer.clearTraces === 'function') {
+        (window as any).__geostudio_renderer.clearTraces();
+      }
       break;
     case 'grid':
       store.settings.gridVisible = !store.settings.gridVisible;

@@ -670,23 +670,23 @@ Mỗi construction:
 ### Tasks
 
 #### 7.1 — Slider System
-- [ ] `Slider` primitive trong Geometry Core
-  - [ ] name, min, max, value, step
-  - [ ] Liên kết với objects (ví dụ: radius = slider value)
-- [ ] Slider UI component trên canvas
-  - [ ] Drag to change value
-  - [ ] Input box cho exact value
-  - [ ] Animation: play/pause/loop/bounce
-  - [ ] Speed control
-- [ ] Objects phụ thuộc slider → auto update qua Construction Graph
+- [x] `Slider` primitive trong Geometry Core
+  - [x] name, min, max, value, step
+  - [x] Liên kết với objects (ví dụ: radius = slider value)
+- [x] Slider UI component trên canvas
+  - [x] Drag to change value
+  - [x] Input box cho exact value
+  - [x] Animation: play/pause/loop/bounce
+  - [x] Speed control
+- [x] Objects phụ thuộc slider → auto update qua Construction Graph
 
 #### 7.2 — Locus (Quỹ tích)
-- [ ] `Locus` construction
-  - [ ] Chọn điểm theo dõi + điểm driver
-  - [ ] Sample positions khi driver di chuyển
-  - [ ] Vẽ curve qua sample points
-- [ ] Trace mode: toggle "trace" cho bất kỳ điểm nào
-- [ ] Clear trace
+- [x] `Locus` construction
+  - [x] Chọn điểm theo dõi + điểm driver
+  - [x] Sample positions khi driver di chuyển
+  - [x] Vẽ curve qua sample points
+- [x] Trace mode: toggle "trace" cho bất kỳ điểm nào
+- [x] Clear trace
 
 #### 7.3 — Animation System
 - [ ] Construction animation (fade in, progressive draw)

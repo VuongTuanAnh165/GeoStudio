@@ -13,6 +13,9 @@ export type GeometryObjectType =
   | 'vector'
   | 'plane'
   | 'solid'
+  | 'slider'
+  | 'locus'
+  | 'curve'
   | string; // allow extension
 
 export interface GeometryObjectDefinition {

@@ -1,11 +1,11 @@
 import type { GeometryObject } from '../../types/geometry';
 import {
-  Point, Line, Segment, Ray, Circle, Arc, Angle, Vector, Polygon,
-  type PointDef, type LineDef, type SegmentDef, type RayDef, type CircleDef, type ArcDef, type AngleDef, type VectorDef, type PolygonDef
+  Point, Line, Segment, Ray, Circle, Arc, Angle, Vector, Polygon, Slider,
+  type PointDef, type LineDef, type SegmentDef, type RayDef, type CircleDef, type ArcDef, type AngleDef, type VectorDef, type PolygonDef, type SliderDef
 } from './2d';
 
-export function createPrimitiveFromJSON(json: GeometryObject): Point | Line | Segment | Ray | Circle | Arc | Angle | Vector | Polygon {
-  let instance: Point | Line | Segment | Ray | Circle | Arc | Angle | Vector | Polygon;
+export function createPrimitiveFromJSON(json: GeometryObject): Point | Line | Segment | Ray | Circle | Arc | Angle | Vector | Polygon | Slider {
+  let instance: Point | Line | Segment | Ray | Circle | Arc | Angle | Vector | Polygon | Slider;
 
   switch (json.type) {
     case 'point': {
@@ -51,6 +51,11 @@ export function createPrimitiveFromJSON(json: GeometryObject): Point | Line | Se
     case 'polygon': {
       const def = json.definition as PolygonDef;
       instance = new Polygon(def.points, json.id);
+      break;
+    }
+    case 'slider': {
+      const def = json.definition as SliderDef;
+      instance = new Slider(def.name, def.min, def.max, def.value, def.step, def.p1, def.p2, json.id);
       break;
     }
     default:

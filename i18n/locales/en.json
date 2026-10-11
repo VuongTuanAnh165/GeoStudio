@@ -32,7 +32,11 @@
     "measure_angle": "Measure Angle",
     "measure_area": "Measure Area",
     "measure_perimeter": "Measure Perimeter",
-    "text": "Text"
+    "text": "Text",
+    "slider": "Slider",
+    "slider_desc": "Create a numerical slider to dynamically control radius, length or parameters",
+    "locus": "Locus",
+    "locus_desc": "Select target point then driver point or slider to generate locus curve"
   },
   "context": {
     "properties": "Properties",
@@ -44,7 +48,10 @@
     "axis": "Axis",
     "copy": "Copy",
     "paste": "Paste",
-    "duplicate": "Duplicate"
+    "duplicate": "Duplicate",
+    "trace_on": "Trace On",
+    "trace_off": "Trace Off",
+    "clear_trace": "Clear Trace"
   },
   "snap": {
     "intersection": "Intersection of {obj1} and {obj2}",
@@ -151,5 +158,21 @@
     "back": "Back",
     "next_step": "Next Step",
     "save_finish": "Save & Finish"
+  },
+  "panel": {
+    "properties": "Properties",
+    "no_object_selected": "No object selected",
+    "label": "Label",
+    "color": "Color",
+    "line_width": "Line Width",
+    "show_label": "Show Label",
+    "trace": "Trace Mode",
+    "constraints": "Constraints",
+    "objects": "Objects",
+    "toggle_visibility": "Toggle Visibility",
+    "delete_object": "Delete Object",
+    "no_objects": "No objects",
+    "measurements": "Measurements",
+    "no_measurements": "No measurements yet"
   }
 }

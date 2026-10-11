@@ -32,7 +32,11 @@
     "measure_angle": "Đo góc",
     "measure_area": "Đo diện tích",
     "measure_perimeter": "Đo chu vi",
-    "text": "Chèn chữ"
+    "text": "Chèn chữ",
+    "slider": "Thanh trượt số",
+    "slider_desc": "Tạo thanh trượt số để điều khiển kích thước, bán kính hoặc tham số",
+    "locus": "Quỹ tích",
+    "locus_desc": "Chọn điểm theo dõi rồi chọn điểm điều khiển (hoặc thanh trượt) để vẽ đường quỹ tích"
   },
   "context": {
     "properties": "Thuộc tính",
@@ -44,7 +48,10 @@
     "axis": "Trục toạ độ",
     "copy": "Sao chép",
     "paste": "Dán",
-    "duplicate": "Nhân bản"
+    "duplicate": "Nhân bản",
+    "trace_on": "Bật vết",
+    "trace_off": "Tắt vết",
+    "clear_trace": "Xóa vết"
   },
   "snap": {
     "intersection": "Giao điểm của {obj1} và {obj2}",
@@ -151,5 +158,21 @@
     "back": "Quay lại",
     "next_step": "Tiếp tục",
     "save_finish": "Lưu & Kết thúc"
+  },
+  "panel": {
+    "properties": "Thuộc tính",
+    "no_object_selected": "Chưa chọn đối tượng nào",
+    "label": "Tên hiển thị",
+    "color": "Màu sắc",
+    "line_width": "Độ dày nét",
+    "show_label": "Hiện tên",
+    "trace": "Chế độ vết (Trace Mode)",
+    "constraints": "Ràng buộc",
+    "objects": "Danh sách đối tượng",
+    "toggle_visibility": "Ẩn/Hiện",
+    "delete_object": "Xóa đối tượng",
+    "no_objects": "Chưa có đối tượng nào",
+    "measurements": "Bảng đo lường",
+    "no_measurements": "Chưa có phép đo nào"
   }
 }

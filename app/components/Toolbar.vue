@@ -31,6 +31,13 @@
           :active="store.activeToolType === 'point'"
           @click="selectTool('point')" 
         />
+        <ToolButton 
+          icon="lucide:sliders-horizontal" 
+          :label="$t('tools.slider')" 
+          shortcut="Alt+S"
+          :active="store.activeToolType === 'slider'"
+          @click="selectTool('slider')" 
+        />
       </div>
 
       <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
@@ -148,6 +155,12 @@
           :label="$t('tools.tangent')" 
           :active="store.activeToolType === 'construct_tangent'"
           @click="selectTool('construct_tangent')" 
+        />
+        <ToolButton 
+          icon="lucide:activity" 
+          :label="$t('tools.locus')" 
+          :active="store.activeToolType === 'construct_locus'"
+          @click="selectTool('construct_locus')" 
         />
       </div>
 

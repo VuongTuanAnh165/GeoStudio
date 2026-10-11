@@ -1,6 +1,6 @@
 import type { GeometryCommand, GeometryState, ValidationResult } from '../types/commands';
 import type { GeometryObject, Coords2D } from '../types/geometry';
-import { Point, Segment, Line, Ray, Circle, Polygon } from '../geometry/primitives/2d';
+import { Point, Segment, Line, Ray, Circle, Polygon, Slider } from '../geometry/primitives/2d';
 import { NameGenerator } from '../geometry/naming/NameGenerator';
 
 export abstract class BaseCreateCommand implements GeometryCommand {
@@ -226,6 +226,32 @@ export class PasteObjectsCommand implements GeometryCommand {
       undoable: this.undoable,
       objects: this.objects
     };
+  }
+}
+
+export class CreateSliderCommand extends BaseCreateCommand {
+  override type = 'CREATE_SLIDER';
+
+  constructor(
+    public name?: string,
+    public min: number = 0,
+    public max: number = 10,
+    public value: number = 5,
+    public step: number = 0.1,
+    public p1: Coords2D = { x: -8, y: 8 },
+    public p2: Coords2D = { x: -3, y: 8 },
+    public objectId?: string
+  ) {
+    super();
+    this.args = { name, min, max, value, step, p1, p2, objectId };
+  }
+
+  override createPrimitive(state: GeometryState): GeometryObject {
+    const sliderName = this.name || NameGenerator.getNextSliderName(state);
+    const slider = new Slider(sliderName, this.min, this.max, this.value, this.step, this.p1, this.p2, this.objectId);
+    slider.metadata.label = sliderName;
+    slider.style.showLabel = true;
+    return slider.toJSON();
   }
 }
 

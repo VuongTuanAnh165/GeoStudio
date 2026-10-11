@@ -8,6 +8,7 @@ import {
   CreateCircleCommand,
   CreatePolygonCommand,
   CreateTriangleCommand,
+  CreateSliderCommand,
   PasteObjectsCommand
 } from './primitives';
 import {
@@ -15,10 +16,13 @@ import {
   SetStyleCommand,
   ToggleVisibilityCommand,
   ShowLabelCommand,
-  HideLabelCommand
+  HideLabelCommand,
+  UpdateSliderValueCommand,
+  LinkObjectToSliderCommand
 } from './mutations';
 import { DeleteObjectCommand } from './deletions';
-import type { Coords2D, GeometryObject } from '../types/geometry';
+import { CreateConstructionCommand } from './constructions';
+import type { Coords2D, GeometryObject, GeometryObjectType } from '../types/geometry';
 
 export function createCommandFromJSON(json: Record<string, unknown>): GeometryCommand {
   const type = json.type as string;
@@ -60,6 +64,31 @@ export function createCommandFromJSON(json: Record<string, unknown>): GeometryCo
       cmd = new CreateTriangleCommand(args.p1 as Coords2D, args.p2 as Coords2D, args.p3 as Coords2D, args.objectId as string);
       break;
     
+    case 'CREATE_SLIDER':
+      cmd = new CreateSliderCommand(
+        args.name as string | undefined,
+        args.min as number | undefined,
+        args.max as number | undefined,
+        args.value as number | undefined,
+        args.step as number | undefined,
+        args.p1 as Coords2D | undefined,
+        args.p2 as Coords2D | undefined,
+        args.objectId as string | undefined
+      );
+      break;
+
+    case 'UPDATE_SLIDER_VALUE':
+      cmd = new UpdateSliderValueCommand((args.objectId || json.objectId) as string, args.newValue as number);
+      break;
+
+    case 'LINK_OBJECT_TO_SLIDER':
+      cmd = new LinkObjectToSliderCommand(
+        (args.objectId || json.objectId) as string,
+        args.sliderId as string | null,
+        (args.baseParentIds as string[]) || []
+      );
+      break;
+
     case 'MOVE_POINT':
       cmd = new MovePointCommand((args.objectId || json.objectId) as string, args.newX as number, args.newY as number);
       break;
@@ -86,6 +115,16 @@ export function createCommandFromJSON(json: Record<string, unknown>): GeometryCo
 
     case 'PASTE_OBJECTS':
       cmd = new PasteObjectsCommand(json.objects as GeometryObject[]);
+      break;
+
+    case 'CREATE_CONSTRUCTION':
+      cmd = new CreateConstructionCommand(
+        args.objectType as GeometryObjectType,
+        args.constructionKind as string,
+        (args.parentIds as string[]) || [],
+        (args.objectId || json.objectId) as string | undefined,
+        args.extraDef as Record<string, unknown> | undefined
+      );
       break;
 
     default:

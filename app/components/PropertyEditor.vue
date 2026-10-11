@@ -65,6 +65,50 @@
         <label :for="'showLabel_' + selectedObj.id" class="text-slate-700 dark:text-slate-300 cursor-pointer select-none">{{ $t('panel.show_label') }}</label>
       </div>
 
+      <!-- Trace Mode Toggle (Points) -->
+      <div v-if="selectedObj.type === 'point'" class="flex items-center gap-2 mt-1">
+        <input 
+          type="checkbox" 
+          :checked="selectedObj.style?.trace === true"
+          :id="'trace_' + selectedObj.id"
+          class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
+          @change="(e) => updateStyle('trace', (e.target as HTMLInputElement).checked)"
+        />
+        <label :for="'trace_' + selectedObj.id" class="text-slate-700 dark:text-slate-300 cursor-pointer select-none">{{ $t('panel.trace', 'Trace Mode') }}</label>
+      </div>
+
+      <!-- Circle Radius Link to Slider -->
+      <div v-if="selectedObj.type === 'circle' && availableSliders.length > 0" class="flex flex-col gap-1.5 pt-3 border-t border-slate-200 dark:border-slate-700">
+        <label class="text-slate-600 dark:text-slate-400 font-medium text-xs">Link Radius to Slider:</label>
+        <select 
+          class="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-md px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          :value="linkedSliderId"
+          @change="(e) => onCircleSliderLinkChange((e.target as HTMLSelectElement).value)"
+        >
+          <option value="">-- None (Fixed Radius) --</option>
+          <option v-for="sld in availableSliders" :key="sld.id" :value="sld.id">
+            Slider {{ sld.metadata?.label || (sld.definition as any).name }} (value: {{ (sld.definition as any).value }})
+          </option>
+        </select>
+      </div>
+
+      <!-- Slider Parameters (if slider selected) -->
+      <div v-if="selectedObj.type === 'slider'" class="flex flex-col gap-2 pt-3 border-t border-slate-200 dark:border-slate-700">
+        <label class="text-slate-600 dark:text-slate-400 font-medium text-xs">Slider Value:</label>
+        <div class="flex items-center gap-2">
+          <input 
+            type="range"
+            :min="(selectedObj.definition as any).min"
+            :max="(selectedObj.definition as any).max"
+            :step="(selectedObj.definition as any).step"
+            :value="(selectedObj.definition as any).value"
+            @input="(e) => onSliderValChange((e.target as HTMLInputElement).value)"
+            class="flex-1 accent-blue-600 cursor-pointer"
+          />
+          <span class="font-mono text-xs font-semibold">{{ Number((selectedObj.definition as any).value).toFixed(2) }}</span>
+        </div>
+      </div>
+
       <!-- Constraints -->
       <div v-if="selectedObj.constraints && selectedObj.constraints.length > 0" class="flex flex-col gap-1.5 mt-2 pt-4 border-t border-slate-200 dark:border-slate-700">
         <label class="text-slate-600 dark:text-slate-400 font-medium">{{ $t('panel.constraints') }}</label>
@@ -81,7 +125,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useGeometryStore } from '../stores/geometry';
-import { SetStyleCommand, ShowLabelCommand, HideLabelCommand } from '../../core/commands/mutations';
+import { SetStyleCommand, ShowLabelCommand, HideLabelCommand, UpdateSliderValueCommand, LinkObjectToSliderCommand } from '../../core/commands/mutations';
 
 const store = useGeometryStore();
 
@@ -92,7 +136,7 @@ const selectedObj = computed(() => {
   return store.objects.get(firstId) || null;
 });
 
-const updateStyle = (key: string, value: string | number) => {
+const updateStyle = (key: string, value: string | number | boolean) => {
   if (!selectedObj.value) return;
   const cmd = new SetStyleCommand(selectedObj.value.id, { [key]: value });
   store.executeCommand(cmd);
@@ -110,5 +154,29 @@ const toggleLabel = (show: boolean) => {
     ? new ShowLabelCommand(selectedObj.value.id)
     : new HideLabelCommand(selectedObj.value.id);
   store.executeCommand(cmd);
+};
+
+const availableSliders = computed(() => {
+  return Array.from(store.objects.values()).filter(o => o.type === 'slider');
+});
+
+const linkedSliderId = computed(() => {
+  if (!selectedObj.value || selectedObj.value.type !== 'circle') return '';
+  return selectedObj.value.parents?.find(pId => store.objects.get(pId)?.type === 'slider') || '';
+});
+
+const onCircleSliderLinkChange = (sliderId: string) => {
+  if (!selectedObj.value) return;
+  const nonSliderParents = (selectedObj.value.parents || []).filter(pId => store.objects.get(pId)?.type !== 'slider');
+  const cmd = new LinkObjectToSliderCommand(selectedObj.value.id, sliderId ? sliderId : null, nonSliderParents);
+  store.executeCommand(cmd);
+};
+
+const onSliderValChange = (valStr: string) => {
+  if (!selectedObj.value) return;
+  const val = parseFloat(valStr);
+  if (!isNaN(val)) {
+    store.executeCommand(new UpdateSliderValueCommand(selectedObj.value.id, val));
+  }
 };
 </script>
