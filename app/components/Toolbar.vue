@@ -224,6 +224,18 @@
         />
       </div>
 
+      <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
+
+      <!-- View Mode Toggle (2D / 3D) -->
+      <div class="flex flex-col gap-1 w-full items-center">
+        <ToolButton 
+          :icon="store.is3DMode ? 'lucide:layout-grid' : 'lucide:box'" 
+          :label="store.is3DMode ? '2D View' : '3D View'" 
+          :active="store.is3DMode"
+          @click="store.toggleViewMode()" 
+        />
+      </div>
+
     </div>
   </div>
 </template>

@@ -782,9 +782,9 @@ Mỗi construction:
 - [x] Unit tests
 
 #### 8.6 — 2D ↔ 3D
-- [ ] Toggle giữa 2D view và 3D view
-- [ ] 2D objects vẫn hoạt động trong 3D mode (z=0)
-- [ ] Smooth transition animation
+- [x] Toggle giữa 2D view và 3D view
+- [x] 2D objects vẫn hoạt động trong 3D mode (z=0)
+- [x] Smooth transition animation
 
 ### Deliverables
 - ✅ 3D primitives + solids hoạt động

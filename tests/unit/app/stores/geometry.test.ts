@@ -110,4 +110,25 @@ describe('Geometry Store', () => {
     store.redo();
     expect(store.objects.size).toBe(3);
   });
+
+  it('should support view mode toggle between 2D and 3D', () => {
+    const store = useGeometryStore();
+    expect(store.viewMode).toBe('2d');
+    expect(store.is3DMode).toBe(false);
+    expect(store.settings.dimension).toBe(2);
+
+    store.setViewMode('3d');
+    expect(store.viewMode).toBe('3d');
+    expect(store.is3DMode).toBe(true);
+    expect(store.settings.dimension).toBe(3);
+
+    store.toggleViewMode();
+    expect(store.viewMode).toBe('2d');
+    expect(store.is3DMode).toBe(false);
+    expect(store.settings.dimension).toBe(2);
+
+    store.toggleViewMode();
+    expect(store.viewMode).toBe('3d');
+    expect(store.is3DMode).toBe(true);
+  });
 });

@@ -7,6 +7,18 @@
     <div class="absolute top-4 right-4 flex flex-col gap-2 z-10">
       <!-- Rendering & Mode Toolbar -->
       <div class="flex items-center gap-1.5 bg-slate-800/85 backdrop-blur-xl shadow-xl rounded-2xl p-2 border border-slate-700/60 text-slate-200">
+        <!-- 2D View Switch Button -->
+        <button
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-md transition-all active:scale-95"
+          title="Quay lại không gian 2D"
+          @click="store.setViewMode('2d')"
+        >
+          <Icon name="lucide:layout-grid" class="w-4 h-4" />
+          <span>2D View</span>
+        </button>
+
+        <div class="w-px h-5 bg-slate-700 my-auto mx-0.5" />
+
         <!-- Wireframe / Solid Toggle -->
         <button
           class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all"
@@ -140,6 +152,15 @@
 
       <button
         class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl hover:bg-slate-700/70 transition-colors text-xs font-medium text-slate-300 hover:text-white"
+        title="Nhìn thẳng từ trên xuống (Mặt phẳng XY / 2D)"
+        @click="() => renderer.animateCamera(0, 1.52, 450)"
+      >
+        <Icon name="lucide:eye" class="w-3.5 h-3.5 text-indigo-400" />
+        <span>Top View (XY)</span>
+      </button>
+
+      <button
+        class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl hover:bg-slate-700/70 transition-colors text-xs font-medium text-slate-300 hover:text-white"
         title="Reset Camera (Isometric View)"
         @click="() => renderer.resetCamera()"
       >
@@ -157,11 +178,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, reactive } from 'vue';
+import { ref, onMounted, onUnmounted, reactive, watch } from 'vue';
 import { JSXGraph3DRenderer } from '../../core/renderer/JSXGraph3DRenderer';
-import { Cube, Pyramid } from '../../core/geometry/3d/Solids';
+import { Cube } from '../../core/geometry/3d/Solids';
 import { Plane } from '../../core/geometry/primitives/3d';
+import { useGeometryStore } from '../stores/geometry';
 
+const store = useGeometryStore();
 const renderer = reactive(new JSXGraph3DRenderer());
 
 const isCrossSectionActive = ref(false);
@@ -169,9 +192,24 @@ const isNetActive = ref(false);
 const netFoldRatio = ref(0.2);
 const planeOpacityValue = ref(0.35);
 
-// Demo 3D sample objects for initial interactive visualization
+// Demo 3D sample objects for initial interactive visualization if workspace is empty
 const demoCube = new Cube({ x: -1.5, y: -1.5, z: -1.5 }, 3, 'demo_cube');
 const demoPlane = Plane.fromEquation(1, 1, 1, 0, 'demo_plane');
+
+const renderAllObjects = () => {
+  renderer.clear();
+  if (store.objects.size === 0) {
+    renderer.renderObject(demoCube);
+  } else {
+    store.objects.forEach(obj => {
+      renderer.renderObject(obj, store.objects);
+    });
+  }
+  if (isCrossSectionActive.value) {
+    renderer.renderObject(demoPlane);
+    renderer.renderCrossSection(demoCube, demoPlane);
+  }
+};
 
 onMounted(() => {
   renderer.init('jxgbox3d', {
@@ -181,13 +219,23 @@ onMounted(() => {
     boxSize: 5
   });
 
-  // Render initial solids
-  renderer.renderObject(demoCube);
+  renderAllObjects();
+
+  // Smooth tilt transition animation from 2D plane (Top View) into 3D isometric perspective
+  renderer.setCameraAngles(0, Math.PI / 2 - 0.02);
+  renderer.animateCamera(0.8, 0.55, 600);
 });
 
 onUnmounted(() => {
   renderer.destroy();
 });
+
+watch(
+  () => store.lastModified,
+  () => {
+    renderAllObjects();
+  }
+);
 
 const toggleWireframe = () => {
   const nextMode = renderer.renderMode === 'wireframe' ? 'solid' : 'wireframe';
@@ -216,11 +264,7 @@ const toggleNet = () => {
     renderer.renderNet(demoCube, netFoldRatio.value);
   } else {
     renderer.clearNet();
-    renderer.renderObject(demoCube);
-    if (isCrossSectionActive.value) {
-      renderer.renderObject(demoPlane);
-      renderer.renderCrossSection(demoCube, demoPlane);
-    }
+    renderAllObjects();
   }
 };
 
@@ -234,7 +278,8 @@ defineExpose({
   renderer,
   toggleWireframe,
   toggleCrossSection,
-  toggleNet
+  toggleNet,
+  renderAllObjects
 });
 </script>
 

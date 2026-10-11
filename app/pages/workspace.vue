@@ -18,8 +18,29 @@
           <Icon v-else-if="lastSaved" name="lucide:check-circle-2" class="w-3.5 h-3.5 text-green-500" :title="'Last saved ' + lastSaved.toLocaleTimeString()" />
         </div>
       </div>
-      
-      <div class="flex items-center gap-3">
+           <div class="flex items-center gap-3">
+        <!-- 2D / 3D Mode Switcher -->
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200/60 dark:border-slate-700/60">
+          <button 
+            @click="store.setViewMode('2d')" 
+            class="px-2.5 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-1.5"
+            :class="!store.is3DMode ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm font-semibold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
+            title="Chế độ hình học phẳng 2D"
+          >
+            <Icon name="lucide:layout-grid" class="w-3.5 h-3.5" />
+            <span>2D</span>
+          </button>
+          <button 
+            @click="store.setViewMode('3d')" 
+            class="px-2.5 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-1.5"
+            :class="store.is3DMode ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm font-semibold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'"
+            title="Chế độ không gian 3D"
+          >
+            <Icon name="lucide:box" class="w-3.5 h-3.5" />
+            <span>3D</span>
+          </button>
+        </div>
+
         <button 
           @click="dialogsRef?.openLoadDialog()" 
           class="px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors flex items-center gap-1.5"
@@ -66,7 +87,7 @@
           <Icon name="lucide:settings" class="w-4 h-4" />
         </button>
         <button 
-          @click="showExportModal = true"
+          @click="showExportModal = true" 
           class="px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-md transition-colors flex items-center gap-1.5"
         >
           <Icon name="lucide:share" class="w-4 h-4" />
@@ -82,7 +103,10 @@
 
       <!-- Canvas Area (Center) -->
       <div class="flex-1 relative h-full overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors">
-        <GeoCanvas />
+        <Transition name="canvas-view" mode="out-in">
+          <Canvas3D v-if="store.is3DMode" key="canvas-3d" />
+          <GeoCanvas v-else key="canvas-2d" />
+        </Transition>
         <CameraView :model-value="gestureStore.showCamera" @update:model-value="val => gestureStore.setCamera(val)" @video-ready="onVideoReady" />
         <GestureHUD />
         <SpatialToolDock />
@@ -159,6 +183,8 @@ import CalibrationModal from '../components/CalibrationModal.vue';
 import SettingsModal from '../components/SettingsModal.vue';
 import ConstructionSteps from '../components/ConstructionSteps.vue';
 import PresentationOverlay from '../components/PresentationOverlay.vue';
+import GeoCanvas from '../components/GeoCanvas.vue';
+import Canvas3D from '../components/Canvas3D.vue';
 import { useReplayStore } from '../stores/replay';
 
 import { useGestureEngine } from '../composables/useGestureEngine';
@@ -279,6 +305,20 @@ definePageMeta({
 </script>
 
 <style scoped>
+/* Smooth 2D <-> 3D transition animation */
+.canvas-view-enter-active,
+.canvas-view-leave-active {
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.canvas-view-enter-from {
+  opacity: 0;
+  transform: scale(0.985);
+}
+.canvas-view-leave-to {
+  opacity: 0;
+  transform: scale(1.015);
+}
+
 /* Vite HMR cache fix */
 @media print {
   /* Hide everything except the canvas area */

@@ -60,6 +60,14 @@
       >
         <Icon name="lucide:brush" class="w-5 h-5" />
       </button>
+      <div class="w-px bg-slate-200 dark:bg-slate-700 my-1 mx-1" />
+      <button 
+        class="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-700 dark:text-slate-300 tooltip-trigger"
+        :title="$t('view.toggle_3d', 'Chuyển sang 3D View')"
+        @click="store.setViewMode('3d')"
+      >
+        <Icon name="lucide:box" class="w-5 h-5 text-indigo-500" />
+      </button>
     </div>
 
     <ContextMenu v-if="!gestureStore.isGestureActive" />

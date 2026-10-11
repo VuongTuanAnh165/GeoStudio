@@ -1,4 +1,5 @@
-import type { GeometryObject, Coords3D } from '../types/geometry';
+import type { GeometryObject, Coords3D, Coords2D } from '../types/geometry';
+import { Point, Segment, Line, Ray, Circle, Polygon, Vector } from '../geometry/primitives/2d';
 import { Point3D, Line3D, Segment3D, Plane, Vector3D } from '../geometry/primitives/3d';
 import { BaseSolid, PolyhedronSolid, Cube, Cuboid, Tetrahedron, Pyramid, Prism, PyramidalFrustum, Sphere, Cylinder, Cone, Frustum } from '../geometry/3d/Solids';
 import { computeCrossSection, type CrossSectionResult } from '../geometry/3d/CrossSection';
@@ -39,6 +40,7 @@ export class JSXGraph3DRenderer {
   private isDraggingCamera = false;
   private lastMouseX = 0;
   private lastMouseY = 0;
+  private cameraAnimationId: number | null = null;
 
   // Callback when camera moves
   public onCameraChange?: (az: number, el: number) => void;
@@ -84,6 +86,10 @@ export class JSXGraph3DRenderer {
   }
 
   destroy(): void {
+    if (this.cameraAnimationId !== null && typeof cancelAnimationFrame === 'function') {
+      cancelAnimationFrame(this.cameraAnimationId);
+      this.cameraAnimationId = null;
+    }
     if (this.board) {
       this.clear();
       JXG.JSXGraph.freeBoard(this.board);
@@ -170,6 +176,50 @@ export class JSXGraph3DRenderer {
     this.setCameraAngles(0.8, 0.55);
   }
 
+  public animateCamera(
+    targetAzimuth: number,
+    targetElevation: number,
+    duration: number = 500,
+    onComplete?: () => void
+  ): void {
+    if (this.cameraAnimationId !== null && typeof cancelAnimationFrame === 'function') {
+      cancelAnimationFrame(this.cameraAnimationId);
+      this.cameraAnimationId = null;
+    }
+
+    if (duration <= 0 || typeof requestAnimationFrame === 'undefined') {
+      this.setCameraAngles(targetAzimuth, targetElevation);
+      onComplete?.();
+      return;
+    }
+
+    const startAz = this.azimuth;
+    const startEl = this.elevation;
+    const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
+
+    const step = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, Math.max(0, elapsed / duration));
+      // Ease in-out cubic
+      const ease = progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      const currentAz = startAz + (targetAzimuth - startAz) * ease;
+      const currentEl = startEl + (targetElevation - startEl) * ease;
+      this.setCameraAngles(currentAz, currentEl);
+
+      if (progress < 1) {
+        this.cameraAnimationId = requestAnimationFrame(step);
+      } else {
+        this.cameraAnimationId = null;
+        onComplete?.();
+      }
+    };
+
+    this.cameraAnimationId = requestAnimationFrame(step);
+  }
+
   public zoomCamera(factor: number): void {
     if (!this.board) return;
     if (factor > 0 && typeof this.board.zoomIn === 'function') {
@@ -231,7 +281,31 @@ export class JSXGraph3DRenderer {
   // Object Rendering (Primitives & Solids)
   // ==========================================
 
-  public renderObject(obj: GeometryObject | BaseSolid | Point3D | Line3D | Segment3D | Plane): void {
+  public renderObjects(objects: Iterable<GeometryObject>, objectsMap?: Map<string, GeometryObject>): void {
+    const map = objectsMap || (objects instanceof Map ? (objects as Map<string, GeometryObject>) : undefined);
+    for (const obj of objects) {
+      this.renderObject(obj, map);
+    }
+  }
+
+  private resolveCoords2D(id: string | undefined, objectsMap?: Map<string, GeometryObject>): Coords2D | null {
+    if (!id || !objectsMap) return null;
+    const obj = objectsMap.get(id);
+    if (!obj) return null;
+    if ((obj.definition as any)?.coords) return (obj.definition as any).coords;
+    if (typeof (obj.definition as any)?.x === 'number' && typeof (obj.definition as any)?.y === 'number') {
+      return { x: (obj.definition as any).x, y: (obj.definition as any).y };
+    }
+    if ('x' in obj && 'y' in obj && typeof (obj as any).x === 'number') {
+      return { x: (obj as any).x, y: (obj as any).y };
+    }
+    return null;
+  }
+
+  public renderObject(
+    obj: GeometryObject | BaseSolid | Point3D | Line3D | Segment3D | Plane | Point | Segment | Line | Ray | Circle | Polygon | Vector,
+    objectsMap?: Map<string, GeometryObject>
+  ): void {
     if (!this.view || !this.board) return;
 
     // Remove existing if re-rendering
@@ -245,10 +319,42 @@ export class JSXGraph3DRenderer {
     if (obj instanceof Point3D || obj.type === 'point3d' || (obj.type === 'point' && obj.dimension === 3)) {
       const coords = 'coords' in obj ? (obj.coords as Coords3D) : (obj.definition as any).coords;
       const p = this.view.create('point3d', [coords.x, coords.y, coords.z], {
-        name: obj.id,
+        name: (obj as any).metadata?.label || obj.id,
         size: 4,
-        strokeColor: '#2563eb',
-        fillColor: '#60a5fa'
+        strokeColor: (obj.style?.color as string) || '#2563eb',
+        fillColor: (obj.style?.fillColor as string) || '#60a5fa'
+      });
+      created.push(p);
+    }
+    // 1b. Point (2D) -> map to (x, y, 0)
+    else if (obj instanceof Point || obj.type === 'point') {
+      let x = 0;
+      let y = 0;
+      if ('x' in obj && 'y' in obj && typeof (obj as any).x === 'number') {
+        x = (obj as any).x;
+        y = (obj as any).y;
+      } else if ((obj.definition as any)?.coords) {
+        x = (obj.definition as any).coords.x;
+        y = (obj.definition as any).coords.y;
+      } else if (typeof (obj.definition as any)?.x === 'number') {
+        x = (obj.definition as any).x;
+        y = (obj.definition as any).y;
+      } else if (obj.parents && obj.parents.length >= 2 && objectsMap) {
+        if (obj.definition?.kind === 'midpoint') {
+          const p1 = this.resolveCoords2D(obj.parents[0], objectsMap);
+          const p2 = this.resolveCoords2D(obj.parents[1], objectsMap);
+          if (p1 && p2) {
+            x = (p1.x + p2.x) / 2;
+            y = (p1.y + p2.y) / 2;
+          }
+        }
+      }
+      const label = (obj as any).metadata?.label || obj.id;
+      const p = this.view.create('point3d', [x, y, 0], {
+        name: label,
+        size: 4,
+        strokeColor: (obj.style?.color as string) || '#2563eb',
+        fillColor: (obj.style?.fillColor as string) || '#60a5fa'
       });
       created.push(p);
     }
@@ -257,10 +363,26 @@ export class JSXGraph3DRenderer {
       const p1 = 'p1' in obj ? (obj.p1 as Coords3D) : (obj.definition as any).p1;
       const p2 = 'p2' in obj ? (obj.p2 as Coords3D) : (obj.definition as any).p2;
       const seg = this.view.create('line3d', [[p1.x, p1.y, p1.z], [p2.x, p2.y, p2.z]], {
-        strokeColor: '#3b82f6',
-        strokeWidth: 2
+        strokeColor: (obj.style?.color as string) || '#3b82f6',
+        strokeWidth: (obj.style?.strokeWidth as number) || 2
       });
       created.push(seg);
+    }
+    // 2b. Segment (2D) -> map to z=0
+    else if (obj instanceof Segment || obj.type === 'segment') {
+      let p1 = (obj.definition as any)?.p1 || (obj as any).p1;
+      let p2 = (obj.definition as any)?.p2 || (obj as any).p2;
+      if ((!p1 || !p2) && obj.parents && obj.parents.length >= 2 && objectsMap) {
+        p1 = this.resolveCoords2D(obj.parents[0], objectsMap);
+        p2 = this.resolveCoords2D(obj.parents[1], objectsMap);
+      }
+      if (p1 && p2) {
+        const seg = this.view.create('line3d', [[p1.x, p1.y, 0], [p2.x, p2.y, 0]], {
+          strokeColor: (obj.style?.color as string) || '#3b82f6',
+          strokeWidth: (obj.style?.strokeWidth as number) || 2
+        });
+        created.push(seg);
+      }
     }
     // 3. Line3D
     else if (obj instanceof Line3D || obj.type === 'line3d' || (obj.type === 'line' && obj.dimension === 3)) {
@@ -270,11 +392,131 @@ export class JSXGraph3DRenderer {
       const p1: Coords3D = { x: pt.x - dir.x * len, y: pt.y - dir.y * len, z: pt.z - dir.z * len };
       const p2: Coords3D = { x: pt.x + dir.x * len, y: pt.y + dir.y * len, z: pt.z + dir.z * len };
       const line = this.view.create('line3d', [[p1.x, p1.y, p1.z], [p2.x, p2.y, p2.z]], {
-        strokeColor: '#6366f1',
-        strokeWidth: 2,
+        strokeColor: (obj.style?.color as string) || '#6366f1',
+        strokeWidth: (obj.style?.strokeWidth as number) || 2,
         dash: 2
       });
       created.push(line);
+    }
+    // 3b. Line (2D) -> map to z=0
+    else if (obj instanceof Line || obj.type === 'line') {
+      let pt = (obj.definition as any)?.point || (obj as any).point;
+      let dir = (obj.definition as any)?.direction || (obj as any).direction;
+      if ((!pt || !dir) && obj.parents && obj.parents.length >= 2 && objectsMap) {
+        const p1 = this.resolveCoords2D(obj.parents[0], objectsMap);
+        const p2 = this.resolveCoords2D(obj.parents[1], objectsMap);
+        if (p1 && p2) {
+          pt = p1;
+          const dx = p2.x - p1.x;
+          const dy = p2.y - p1.y;
+          const len = Math.hypot(dx, dy) || 1;
+          dir = { x: dx / len, y: dy / len };
+        }
+      }
+      if (pt && dir) {
+        const len = this.boxSize * 1.5;
+        const p1 = [pt.x - dir.x * len, pt.y - dir.y * len, 0];
+        const p2 = [pt.x + dir.x * len, pt.y + dir.y * len, 0];
+        const line = this.view.create('line3d', [p1, p2], {
+          strokeColor: (obj.style?.color as string) || '#6366f1',
+          strokeWidth: (obj.style?.strokeWidth as number) || 2,
+          dash: 2
+        });
+        created.push(line);
+      }
+    }
+    // 3c. Ray (2D) -> map to z=0
+    else if (obj instanceof Ray || obj.type === 'ray') {
+      let orig = (obj.definition as any)?.origin || (obj as any).origin;
+      let dir = (obj.definition as any)?.direction || (obj as any).direction;
+      if ((!orig || !dir) && obj.parents && obj.parents.length >= 2 && objectsMap) {
+        const p1 = this.resolveCoords2D(obj.parents[0], objectsMap);
+        const p2 = this.resolveCoords2D(obj.parents[1], objectsMap);
+        if (p1 && p2) {
+          orig = p1;
+          const dx = p2.x - p1.x;
+          const dy = p2.y - p1.y;
+          const len = Math.hypot(dx, dy) || 1;
+          dir = { x: dx / len, y: dy / len };
+        }
+      }
+      if (orig && dir) {
+        const len = this.boxSize * 1.5;
+        const p1 = [orig.x, orig.y, 0];
+        const p2 = [orig.x + dir.x * len, orig.y + dir.y * len, 0];
+        const ray = this.view.create('line3d', [p1, p2], {
+          strokeColor: (obj.style?.color as string) || '#8b5cf6',
+          strokeWidth: (obj.style?.strokeWidth as number) || 2
+        });
+        created.push(ray);
+      }
+    }
+    // 3d. Circle (2D) -> map to z=0
+    else if (obj instanceof Circle || obj.type === 'circle') {
+      let center = (obj.definition as any)?.center || (obj as any).center;
+      let radius = (obj.definition as any)?.radius ?? (obj as any).radius;
+      if ((!center || radius === undefined) && obj.parents && obj.parents.length >= 2 && objectsMap) {
+        const p1 = this.resolveCoords2D(obj.parents[0], objectsMap);
+        const p2 = this.resolveCoords2D(obj.parents[1], objectsMap);
+        if (p1 && p2) {
+          center = p1;
+          radius = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+        }
+      }
+      if (center && typeof radius === 'number') {
+        const numSteps = 48;
+        const pts: [number, number, number][] = [];
+        for (let i = 0; i <= numSteps; i++) {
+          const theta = (i / numSteps) * 2 * Math.PI;
+          pts.push([center.x + radius * Math.cos(theta), center.y + radius * Math.sin(theta), 0]);
+        }
+        for (let i = 0; i < pts.length - 1; i++) {
+          const seg = this.view.create('line3d', [pts[i], pts[i + 1]], {
+            strokeColor: (obj.style?.color as string) || '#0ea5e9',
+            strokeWidth: 2
+          });
+          created.push(seg);
+        }
+      }
+    }
+    // 3e. Polygon (2D) -> map to z=0
+    else if (obj instanceof Polygon || obj.type === 'polygon' || obj.type === 'triangle') {
+      let points = (obj.definition as any)?.points || (obj as any).points;
+      if ((!points || points.length === 0) && obj.parents && obj.parents.length >= 3 && objectsMap) {
+        points = obj.parents
+          .map(pid => this.resolveCoords2D(pid, objectsMap))
+          .filter((p): p is Coords2D => p !== null);
+      }
+      if (Array.isArray(points) && points.length >= 3) {
+        const pts3d = points.map((p: Coords2D) => [p.x, p.y, 0]);
+        // Wireframe borders
+        for (let i = 0; i < pts3d.length; i++) {
+          const next = (i + 1) % pts3d.length;
+          const edge = this.view.create('line3d', [pts3d[i], pts3d[next]], {
+            strokeColor: (obj.style?.color as string) || '#0284c7',
+            strokeWidth: isWireframe ? 2.5 : 1.5
+          });
+          created.push(edge);
+        }
+        if (!isWireframe) {
+          const polyFace = this.view.create('polygon3d', pts3d, {
+            fillColor: (obj.style?.fillColor as string) || '#38bdf8',
+            fillOpacity: fillOp,
+            borders: { strokeColor: (obj.style?.color as string) || '#0284c7', strokeWidth: 1 }
+          });
+          created.push(polyFace);
+        }
+      }
+    }
+    // 3f. Vector (2D) -> map to z=0
+    else if (obj instanceof Vector || obj.type === 'vector') {
+      const vx = (obj.definition as any)?.x ?? (obj as any).x ?? 0;
+      const vy = (obj.definition as any)?.y ?? (obj as any).y ?? 0;
+      const arrow = this.view.create('line3d', [[0, 0, 0], [vx, vy, 0]], {
+        strokeColor: (obj.style?.color as string) || '#10b981',
+        strokeWidth: 2.5
+      });
+      created.push(arrow);
     }
     // 4. Plane
     else if (obj instanceof Plane || obj.type === 'plane') {

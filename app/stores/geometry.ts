@@ -41,6 +41,8 @@ export const useGeometryStore = defineStore('geometry', () => {
   const activeToolType = ref<string | null>(null);
   const cursorCoords = ref<{x: number, y: number}>({ x: 0, y: 0 });
   const settings = ref(engine.currentState.document.settings);
+  const viewMode = ref<'2d' | '3d'>(engine.currentState.document.settings.dimension === 3 ? '3d' : '2d');
+  const is3DMode = computed(() => viewMode.value === '3d');
   const snapSettings = ref<SnapSettings>({
     point: true,
     intersection: true,
@@ -89,6 +91,11 @@ export const useGeometryStore = defineStore('geometry', () => {
 
     // 4. Sync settings
     settings.value = state.document.settings;
+    if (state.document.settings.dimension === 3) {
+      viewMode.value = '3d';
+    } else {
+      viewMode.value = '2d';
+    }
 
     // 5. Sync history flags
     canUndo.value = engine.historyManager.undoStack.length > 0;
@@ -176,6 +183,17 @@ export const useGeometryStore = defineStore('geometry', () => {
     selectedIds.value = new Set(ids);
   };
 
+  const setViewMode = (mode: '2d' | '3d') => {
+    viewMode.value = mode;
+    settings.value.dimension = mode === '3d' ? 3 : 2;
+    engine.currentState.document.settings.dimension = settings.value.dimension;
+    lastModified.value++;
+  };
+
+  const toggleViewMode = () => {
+    setViewMode(viewMode.value === '2d' ? '3d' : '2d');
+  };
+
   return {
     // State
     objects,
@@ -187,8 +205,10 @@ export const useGeometryStore = defineStore('geometry', () => {
     zoomLevel: ref(100),
     settings,
     snapSettings,
+    viewMode,
     
     // Getters
+    is3DMode,
     selectedObjects,
     canUndo,
     canRedo,
@@ -204,6 +224,8 @@ export const useGeometryStore = defineStore('geometry', () => {
     loadDocument,
     beginBatch,
     endBatch,
+    setViewMode,
+    toggleViewMode,
     updateAnimationConfig: (config: Partial<AnimationConfig>) => {
       if (!settings.value.animation) {
         settings.value.animation = { ...DEFAULT_ANIMATION_CONFIG };

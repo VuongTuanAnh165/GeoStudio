@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { JSXGraph3DRenderer } from '../../../../core/renderer/JSXGraph3DRenderer';
 import { Point3D, Line3D, Segment3D, Plane } from '../../../../core/geometry/primitives/3d';
 import { Cube, Sphere, Cylinder, Cone } from '../../../../core/geometry/3d/Solids';
+import { Point, Segment, Line, Ray, Circle, Polygon, Vector } from '../../../../core/geometry/primitives/2d';
 
 // Mock JSXGraph following the project's testing pattern in JSXGraphRenderer.test.ts
 vi.mock('jsxgraph', () => {
@@ -152,5 +153,84 @@ describe('JSXGraph3DRenderer', () => {
     expect(net.faces.length).toBe(6);
 
     renderer.clearNet();
+  });
+
+  it('renders 2D primitives mapped to 3D plane (z=0)', () => {
+    const pt2d = new Point(3, 4, 'p2d_1');
+    renderer.renderObject(pt2d);
+
+    const seg2d = new Segment({ x: 1, y: 2 }, { x: 5, y: 6 }, 'seg2d_1');
+    renderer.renderObject(seg2d);
+
+    const line2d = new Line({ x: 0, y: 0 }, { x: 1, y: 1 }, 'line2d_1');
+    renderer.renderObject(line2d);
+
+    const ray2d = new Ray({ x: 0, y: 0 }, { x: 1, y: 0 }, 'ray2d_1');
+    renderer.renderObject(ray2d);
+
+    const circle2d = new Circle({ x: 0, y: 0 }, 3, 'circle2d_1');
+    renderer.renderObject(circle2d);
+
+    const poly2d = new Polygon([{ x: 0, y: 0 }, { x: 2, y: 0 }, { x: 1, y: 2 }], 'poly2d_1');
+    renderer.renderObject(poly2d);
+
+    const vec2d = new Vector(3, 4, 'vec2d_1');
+    renderer.renderObject(vec2d);
+
+    // Verify all rendered elements are registered
+    expect(renderer.view.create).toHaveBeenCalled();
+  });
+
+  it('resolves and renders constructed 2D objects from objectsMap', () => {
+    const map = new Map<string, any>();
+    map.set('p_a', {
+      id: 'p_a',
+      type: 'point',
+      dimension: 2,
+      definition: { kind: 'point', coords: { x: 0, y: 0 } }
+    });
+    map.set('p_b', {
+      id: 'p_b',
+      type: 'point',
+      dimension: 2,
+      definition: { kind: 'point', coords: { x: 4, y: 4 } }
+    });
+
+    const midObj: any = {
+      id: 'p_mid',
+      type: 'point',
+      dimension: 2,
+      parents: ['p_a', 'p_b'],
+      definition: { kind: 'midpoint' }
+    };
+    renderer.renderObject(midObj, map);
+
+    const segObj: any = {
+      id: 'seg_ab',
+      type: 'segment',
+      dimension: 2,
+      parents: ['p_a', 'p_b'],
+      definition: { kind: 'segment' }
+    };
+    renderer.renderObject(segObj, map);
+
+    expect(renderer.view.create).toHaveBeenCalled();
+  });
+
+  it('animates camera smoothly with duration', () => {
+    const onComplete = vi.fn();
+    renderer.animateCamera(0, 1.5, 0, onComplete);
+
+    expect(renderer.azimuth).toBeCloseTo(0);
+    expect(renderer.elevation).toBeCloseTo(1.5);
+    expect(onComplete).toHaveBeenCalled();
+  });
+
+  it('batch renders multiple objects via renderObjects', () => {
+    const p1 = new Point(1, 1, 'bp1');
+    const p2 = new Point(2, 2, 'bp2');
+    renderer.renderObjects([p1.toJSON(), p2.toJSON()]);
+
+    expect(renderer.view.create).toHaveBeenCalled();
   });
 });
