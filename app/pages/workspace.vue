@@ -97,6 +97,14 @@
           <span class="hidden md:inline">{{ $t('lesson.player_btn', 'Phát bài') }}</span>
         </button>
         <button 
+          @click="templateStore.openBrowser()" 
+          class="px-2.5 py-1.5 text-xs font-medium rounded-md transition-all flex items-center gap-1.5 text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700"
+          :title="$t('template.browser_title', 'Thư viện mẫu dựng hình học')"
+        >
+          <Icon name="lucide:layout-template" class="w-4 h-4 text-purple-500" />
+          <span class="hidden md:inline">{{ $t('template.btn', 'Mẫu dựng') }}</span>
+        </button>
+        <button 
           @click="gestureStore.toggleCamera()" 
           class="w-8 h-8 flex items-center justify-center shrink-0 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md"
           :class="gestureStore.showCamera ? 'text-green-600 dark:text-green-400 border-green-300 dark:border-green-600 bg-green-50 dark:bg-green-900/30' : 'text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'"
@@ -208,6 +216,9 @@
     <!-- Lesson Builder & Player -->
     <LessonBuilder />
     <LessonPlayer />
+
+    <!-- Template Library -->
+    <TemplateBrowser />
   </div>
 </template>
 
@@ -237,6 +248,8 @@ import { useCurriculumStore } from '../stores/curriculum';
 import LessonBuilder from '../components/LessonBuilder.vue';
 import LessonPlayer from '../components/LessonPlayer.vue';
 import { useLessonStore } from '../stores/lesson';
+import TemplateBrowser from '../components/TemplateBrowser.vue';
+import { useTemplateStore } from '../stores/template';
 
 import { useGestureEngine } from '../composables/useGestureEngine';
 
@@ -246,6 +259,7 @@ const gestureStore = useGestureStore();
 const replayStore = useReplayStore();
 const curriculumStore = useCurriculumStore();
 const lessonStore = useLessonStore();
+const templateStore = useTemplateStore();
 const { isSaving, lastSaved } = useDocument();
 const { locale, setLocale } = useI18n();
 useKeyboard();

@@ -2,9 +2,10 @@ import { openDB, type IDBPDatabase } from 'idb';
 import type { Lesson } from '../types/lesson';
 
 export const DB_NAME = 'GeoStudioDB';
-export const DB_VERSION = 2;
+export const DB_VERSION = 3;
 export const LESSONS_STORE_NAME = 'lessons';
 export const DOCUMENTS_STORE_NAME = 'documents';
+export const TEMPLATES_STORE_NAME = 'templates';
 
 export class LessonStorage {
   private dbPromise: Promise<IDBPDatabase> | null = null;
@@ -21,6 +22,11 @@ export class LessonStorage {
             const lessonStore = db.createObjectStore(LESSONS_STORE_NAME, { keyPath: 'id' });
             lessonStore.createIndex('updatedAt', 'updatedAt');
             lessonStore.createIndex('grade', 'grade');
+          }
+          if (!db.objectStoreNames.contains(TEMPLATES_STORE_NAME)) {
+            const templateStore = db.createObjectStore(TEMPLATES_STORE_NAME, { keyPath: 'id' });
+            templateStore.createIndex('updatedAt', 'updatedAt');
+            templateStore.createIndex('category', 'category');
           }
         },
       });

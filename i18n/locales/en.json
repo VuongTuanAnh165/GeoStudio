@@ -288,5 +288,25 @@
     "fullscreen": "Fullscreen",
     "exit_fullscreen": "Exit Fullscreen",
     "exit_player": "Close Player"
+  },
+  "template": {
+    "btn": "Templates",
+    "browser_title": "Geometry Template Library",
+    "browser_subtitle": "Mathematical templates: Basic shapes, triangle constructions, circle theorems, and 3D solids",
+    "search_placeholder": "Search templates (triangle, orthocenter, tangent, cube...)",
+    "save_current_btn": "Save Current as Template",
+    "save_modal_title": "Save Canvas as Template",
+    "name_label": "Template Name",
+    "desc_label": "Description",
+    "category_label": "Category",
+    "grade_label": "Grade Level",
+    "tags_label": "Tags (comma separated)",
+    "save_confirm_btn": "Save Template",
+    "apply_btn": "Use",
+    "apply_replace_title": "Open this template (replaces current canvas)",
+    "insert_btn": "Insert",
+    "insert_btn_title": "Insert this template into current canvas",
+    "delete_btn": "Delete custom template",
+    "no_templates_found": "No templates found"
   }
 }

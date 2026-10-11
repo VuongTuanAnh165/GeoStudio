@@ -827,13 +827,13 @@ Mỗi construction:
 - [x] Fullscreen presentation
 
 #### 9.4 — Template Library
-- [ ] Pre-built templates:
-  - [ ] Basic shapes (tam giác, tứ giác, đường tròn)
-  - [ ] Triangle constructions (đường cao, trung tuyến, phân giác)
-  - [ ] Circle theorems
-  - [ ] 3D solids
-- [ ] User-created templates
-- [ ] Template browser UI
+- [x] Pre-built templates:
+  - [x] Basic shapes (tam giác, tứ giác, đường tròn)
+  - [x] Triangle constructions (đường cao, trung tuyến, phân giác)
+  - [x] Circle theorems
+  - [x] 3D solids
+- [x] User-created templates
+- [x] Template browser UI
 
 #### 9.5 — Annotation System
 - [ ] Text annotations (free text trên canvas)

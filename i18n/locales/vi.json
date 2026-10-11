@@ -288,5 +288,25 @@
     "fullscreen": "Toàn màn hình",
     "exit_fullscreen": "Thu nhỏ",
     "exit_player": "Đóng trình chiếu"
+  },
+  "template": {
+    "btn": "Mẫu dựng",
+    "browser_title": "Thư viện mẫu dựng hình học",
+    "browser_subtitle": "Mẫu dựng chuẩn toán học: Hình cơ bản, dựng tam giác, định lý đường tròn và không gian 3D",
+    "search_placeholder": "Tìm kiếm mẫu dựng (tam giác, trực tâm, tiếp tuyến, lập phương...)",
+    "save_current_btn": "Lưu hình hiện tại thành mẫu",
+    "save_modal_title": "Lưu bảng vẽ thành mẫu dựng",
+    "name_label": "Tên mẫu dựng",
+    "desc_label": "Mô tả tóm tắt",
+    "category_label": "Danh mục",
+    "grade_label": "Khối lớp",
+    "tags_label": "Thẻ phân loại (cách nhau bởi dấu phẩy)",
+    "save_confirm_btn": "Lưu mẫu",
+    "apply_btn": "Sử dụng",
+    "apply_replace_title": "Mở mẫu này (thay thế bảng vẽ hiện tại)",
+    "insert_btn": "Chèn",
+    "insert_btn_title": "Chèn thêm mẫu này vào bảng vẽ hiện tại",
+    "delete_btn": "Xóa mẫu cá nhân",
+    "no_templates_found": "Không tìm thấy mẫu dựng phù hợp"
   }
 }
