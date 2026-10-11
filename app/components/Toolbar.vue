@@ -261,6 +261,48 @@
         </div>
       </template>
 
+      <!-- Annotations (Phase 9.5) -->
+      <template v-if="hasVisibleTools(['annotate_text', 'annotate_formula', 'annotate_arrow', 'annotate_step_label', 'annotate_highlight'])">
+        <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
+        <div class="flex flex-col gap-1 w-full items-center">
+          <ToolButton 
+            v-if="curriculumStore.isToolVisible('annotate_text')"
+            icon="lucide:type" 
+            :label="$t('tools.annotate_text', 'Chú thích chữ')" 
+            :active="annotationStore.isModalOpen && annotationStore.editingAnnotation?.type === 'text'"
+            @click="handleAnnotationTool('text')" 
+          />
+          <ToolButton 
+            v-if="curriculumStore.isToolVisible('annotate_formula')"
+            icon="lucide:function-square" 
+            :label="$t('tools.annotate_formula', 'Công thức KaTeX')" 
+            :active="annotationStore.isModalOpen && annotationStore.editingAnnotation?.type === 'formula'"
+            @click="handleAnnotationTool('formula')" 
+          />
+          <ToolButton 
+            v-if="curriculumStore.isToolVisible('annotate_arrow')"
+            icon="lucide:move-up-right" 
+            :label="$t('tools.annotate_arrow', 'Mũi tên')" 
+            :active="annotationStore.isModalOpen && annotationStore.editingAnnotation?.type === 'arrow'"
+            @click="handleAnnotationTool('arrow')" 
+          />
+          <ToolButton 
+            v-if="curriculumStore.isToolVisible('annotate_step_label')"
+            icon="lucide:list-ordered" 
+            :label="$t('tools.annotate_step_label', 'Số bước')" 
+            :active="annotationStore.isModalOpen && annotationStore.editingAnnotation?.type === 'step_label'"
+            @click="handleAnnotationTool('step_label')" 
+          />
+          <ToolButton 
+            v-if="curriculumStore.isToolVisible('annotate_highlight')"
+            icon="lucide:sparkles" 
+            :label="$t('tools.annotate_highlight', 'Điểm nhấn')" 
+            :active="annotationStore.isModalOpen && annotationStore.editingAnnotation?.type === 'highlight'"
+            @click="handleAnnotationTool('highlight')" 
+          />
+        </div>
+      </template>
+
       <!-- View Mode Toggle (2D / 3D) -->
       <template v-if="curriculumStore.isToolVisible('view_3d')">
         <div class="w-8 h-px bg-slate-200 dark:bg-slate-700" />
@@ -281,10 +323,13 @@
 <script setup lang="ts">
 import { useGeometryStore } from '../stores/geometry';
 import { useCurriculumStore } from '../stores/curriculum';
+import { useAnnotationStore } from '../stores/annotation';
+import type { AnnotationType } from '../../core/types/annotation';
 import ToolButton from './ToolButton.vue';
 
 const store = useGeometryStore();
 const curriculumStore = useCurriculumStore();
+const annotationStore = useAnnotationStore();
 
 const hasVisibleTools = (tools: string[]) => {
   return tools.some(tool => curriculumStore.isToolVisible(tool));
@@ -292,6 +337,14 @@ const hasVisibleTools = (tools: string[]) => {
 
 const selectTool = (tool: string) => {
   store.activeToolType = tool;
+};
+
+const handleAnnotationTool = (type: AnnotationType) => {
+  store.activeToolType = 'select';
+  annotationStore.openCreateModal(type, {
+    x: Number((store.cursorCoords?.x || 0).toFixed(2)),
+    y: Number((store.cursorCoords?.y || 0).toFixed(2))
+  });
 };
 </script>
 

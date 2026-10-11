@@ -145,8 +145,8 @@ export class CurriculumEngine {
 
     const normalized = this.normalizeToolId(toolId);
 
-    // Công cụ cơ bản luôn được phép
-    if (normalized === 'select' || normalized === 'delete') {
+    // Công cụ cơ bản và chú thích luôn được phép
+    if (normalized === 'select' || normalized === 'delete' || normalized.startsWith('annotate_')) {
       return true;
     }
 

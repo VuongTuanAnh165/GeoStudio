@@ -12,6 +12,9 @@
     <!-- Interactive Slider Overlay on Canvas -->
     <SliderOverlay />
 
+    <!-- Pedagogical Annotation Overlay -->
+    <AnnotationOverlay :renderer="renderer" />
+
     <!-- View Controls Overlay (Bottom Right) -->
     <div class="absolute bottom-6 right-6 flex gap-1 bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl shadow-lg shadow-black/5 rounded-2xl p-1.5 border border-slate-200/50 dark:border-slate-700/50 transition-colors">
       <button 
@@ -68,6 +71,15 @@
       >
         <Icon name="lucide:box" class="w-5 h-5 text-indigo-500" />
       </button>
+      <div class="w-px bg-slate-200 dark:bg-slate-700 my-1 mx-1" />
+      <button 
+        class="p-2 rounded transition-colors tooltip-trigger"
+        :title="annotationStore.isVisible ? $t('annotation.hide_annotations', 'Ẩn chú thích') : $t('annotation.show_annotations', 'Hiện chú thích')"
+        :class="annotationStore.isVisible ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/50 dark:text-amber-400' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'"
+        @click="annotationStore.toggleAllVisibility"
+      >
+        <Icon name="lucide:message-square-quote" class="w-5 h-5" />
+      </button>
     </div>
 
     <ContextMenu v-if="!gestureStore.isGestureActive" />
@@ -81,14 +93,17 @@ import { onMounted, watch } from 'vue';
 import { useCanvas } from '../composables/useCanvas';
 import { useGeometryStore } from '../stores/geometry';
 import { useGestureStore } from '../stores/gesture';
+import { useAnnotationStore } from '../stores/annotation';
 import { useContextMenu } from '../composables/useContextMenu';
 import ContextMenu from './ContextMenu.vue';
 import SpatialRadialMenu from './SpatialRadialMenu.vue';
 import CanvasOverlay from './CanvasOverlay.vue';
 import SliderOverlay from './SliderOverlay.vue';
+import AnnotationOverlay from './AnnotationOverlay.vue';
 
 const store = useGeometryStore();
 const gestureStore = useGestureStore();
+const annotationStore = useAnnotationStore();
 const { init, renderer, currentSnapResult, clearTraces } = useCanvas();
 const { showMenu } = useContextMenu();
 

@@ -44,7 +44,12 @@
     "reflect": "Reflection",
     "reflect_desc": "Reflect object across line or center point",
     "homothety": "Homothety",
-    "homothety_desc": "Scale object from center point with ratio"
+    "homothety_desc": "Scale object from center point with ratio",
+    "annotate_text": "Text Note",
+    "annotate_formula": "KaTeX Formula",
+    "annotate_arrow": "Arrow Pointer",
+    "annotate_step_label": "Step Badge",
+    "annotate_highlight": "Highlight Marker"
   },
   "context": {
     "properties": "Properties",
@@ -308,5 +313,29 @@
     "insert_btn_title": "Insert this template into current canvas",
     "delete_btn": "Delete custom template",
     "no_templates_found": "No templates found"
+  },
+  "annotation": {
+    "btn": "Annotations",
+    "toggle": "Toggle Annotations",
+    "show_annotations": "Show Pedagogical Annotations",
+    "hide_annotations": "Hide Pedagogical Annotations",
+    "add_title": "Add New Annotation",
+    "edit_title": "Edit Annotation",
+    "type": "Annotation Type",
+    "type_text": "Text",
+    "type_formula": "KaTeX Formula",
+    "type_arrow": "Arrow",
+    "type_step_label": "Step Badge",
+    "type_highlight": "Highlight",
+    "step_number": "Step Number",
+    "content": "Annotation Content",
+    "katex_formula": "KaTeX Formula",
+    "preview_katex": "KaTeX Preview:",
+    "color": "Color",
+    "save": "Save Annotation",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "step_prefix": "Step"
   }
 }

@@ -44,7 +44,12 @@
     "reflect": "Phép đối xứng",
     "reflect_desc": "Đối xứng đối tượng qua trục hoặc tâm",
     "homothety": "Phép vị tự",
-    "homothety_desc": "Vị tự đối tượng từ tâm theo tỉ số k"
+    "homothety_desc": "Vị tự đối tượng từ tâm theo tỉ số k",
+    "annotate_text": "Chú thích chữ",
+    "annotate_formula": "Công thức KaTeX",
+    "annotate_arrow": "Mũi tên chỉ dẫn",
+    "annotate_step_label": "Nhãn bước dựng",
+    "annotate_highlight": "Điểm nhấn nổi bật"
   },
   "context": {
     "properties": "Thuộc tính",
@@ -308,5 +313,29 @@
     "insert_btn_title": "Chèn thêm mẫu này vào bảng vẽ hiện tại",
     "delete_btn": "Xóa mẫu cá nhân",
     "no_templates_found": "Không tìm thấy mẫu dựng phù hợp"
+  },
+  "annotation": {
+    "btn": "Chú thích",
+    "toggle": "Ẩn / Hiện chú thích",
+    "show_annotations": "Hiện chú thích sư phạm",
+    "hide_annotations": "Ẩn chú thích sư phạm",
+    "add_title": "Thêm chú thích mới",
+    "edit_title": "Chỉnh sửa chú thích",
+    "type": "Loại chú thích",
+    "type_text": "Văn bản",
+    "type_formula": "Công thức KaTeX",
+    "type_arrow": "Mũi tên",
+    "type_step_label": "Số bước",
+    "type_highlight": "Điểm nhấn",
+    "step_number": "Số thứ tự bước",
+    "content": "Nội dung chú thích",
+    "katex_formula": "Công thức KaTeX",
+    "preview_katex": "Xem trước KaTeX:",
+    "color": "Màu sắc",
+    "save": "Lưu chú thích",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "step_prefix": "Bước"
   }
 }

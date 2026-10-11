@@ -69,8 +69,8 @@ export type GeoDocumentSettings = z.infer<typeof GeoDocumentSettingsSchema>;
 export type GeoDocumentViewport = z.infer<typeof GeoDocumentViewportSchema>;
 export type { AnimationConfig, AnimationEasing } from './animation';
 
-// Full interface mapping to the schema
 import type { GeometryConstraint } from './geometry';
+import type { Annotation } from './annotation';
 
 export interface GeoDocument {
   version: string;
@@ -81,6 +81,6 @@ export interface GeoDocument {
   objects: GeometryObject[];
   constraints?: GeometryConstraint[];
   sliders?: unknown[];
-  annotations?: unknown[];
+  annotations?: Annotation[];
   constructionSteps?: unknown[];
 }

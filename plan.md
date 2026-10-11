@@ -836,11 +836,11 @@ Mỗi construction:
 - [x] Template browser UI
 
 #### 9.5 — Annotation System
-- [ ] Text annotations (free text trên canvas)
-- [ ] Formula annotations (KaTeX)
-- [ ] Arrow / highlight annotations
-- [ ] Step labels ("Bước 1:", "Bước 2:")
-- [ ] Hide/show annotations
+- [x] Text annotations (free text trên canvas)
+- [x] Formula annotations (KaTeX)
+- [x] Arrow / highlight annotations
+- [x] Step labels ("Bước 1:", "Bước 2:")
+- [x] Hide/show annotations
 
 #### 9.6 — Coordinate Geometry
 - [ ] Cartesian plane toggle (hiện/ẩn trục tọa độ)
