@@ -7,15 +7,79 @@ import {
   Point3D, Line3D, Segment3D, Plane, Vector3D,
   type Point3DDef, type Line3DDef, type Segment3DDef, type PlaneDef, type Vector3DDef
 } from './3d';
+import {
+  Cube, Cuboid, Tetrahedron, Pyramid, Prism, PyramidalFrustum, Sphere, Cylinder, Cone, Frustum,
+  type CubeDef, type CuboidDef, type TetrahedronDef, type PyramidDef, type PrismDef, type PyramidalFrustumDef,
+  type SphereDef, type CylinderDef, type ConeDef, type FrustumDef
+} from '../3d/Solids';
 
 export type AnyPrimitive =
   | Point | Line | Segment | Ray | Circle | Arc | Angle | Vector | Polygon | Slider
-  | Point3D | Line3D | Segment3D | Plane | Vector3D;
+  | Point3D | Line3D | Segment3D | Plane | Vector3D
+  | Cube | Cuboid | Tetrahedron | Pyramid | Prism | PyramidalFrustum | Sphere | Cylinder | Cone | Frustum;
 
 export function createPrimitiveFromJSON(json: GeometryObject): AnyPrimitive {
   let instance: AnyPrimitive;
 
   switch (json.type) {
+    case 'solid': {
+      const def = json.definition as Record<string, unknown>;
+      switch (def.kind) {
+        case 'cube': {
+          const cDef = json.definition as CubeDef;
+          instance = new Cube(cDef.origin, cDef.size, json.id);
+          break;
+        }
+        case 'cuboid': {
+          const cDef = json.definition as CuboidDef;
+          instance = new Cuboid(cDef.origin, cDef.width, cDef.depth, cDef.height, json.id);
+          break;
+        }
+        case 'tetrahedron': {
+          const tDef = json.definition as TetrahedronDef;
+          instance = new Tetrahedron(tDef.a, tDef.b, tDef.c, tDef.d, json.id);
+          break;
+        }
+        case 'pyramid': {
+          const pDef = json.definition as PyramidDef;
+          instance = new Pyramid(pDef.apex, pDef.baseVertices, json.id);
+          break;
+        }
+        case 'prism': {
+          const pDef = json.definition as PrismDef;
+          instance = new Prism(pDef.baseVertices, pDef.topVertices, json.id);
+          break;
+        }
+        case 'pyramidal_frustum': {
+          const fDef = json.definition as PyramidalFrustumDef;
+          instance = new PyramidalFrustum(fDef.bottomVertices, fDef.topVertices, json.id);
+          break;
+        }
+        case 'sphere': {
+          const sDef = json.definition as SphereDef;
+          instance = new Sphere(sDef.center, sDef.radius, json.id);
+          break;
+        }
+        case 'cylinder': {
+          const cDef = json.definition as CylinderDef;
+          instance = new Cylinder(cDef.bottomCenter, cDef.topCenter, cDef.radius, json.id);
+          break;
+        }
+        case 'cone': {
+          const cDef = json.definition as ConeDef;
+          instance = new Cone(cDef.baseCenter, cDef.apex, cDef.radius, json.id);
+          break;
+        }
+        case 'frustum': {
+          const fDef = json.definition as FrustumDef;
+          instance = new Frustum(fDef.bottomCenter, fDef.topCenter, fDef.bottomRadius, fDef.topRadius, json.id);
+          break;
+        }
+        default:
+          throw new Error(`Unknown solid kind: ${String(def.kind)}`);
+      }
+      break;
+    }
     case 'point':
     case 'point3d': {
       const def = json.definition as Record<string, unknown>;

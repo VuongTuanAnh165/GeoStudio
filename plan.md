@@ -741,15 +741,16 @@ Mỗi construction:
 - [x] Unit tests
 
 #### 8.2 — 3D Solids
-- [ ] `Prism` — hình lăng trụ
-- [ ] `Cube` — hình lập phương
-- [ ] `Cuboid` — hình hộp chữ nhật
-- [ ] `Pyramid` — hình chóp
-- [ ] `Tetrahedron` — tứ diện
-- [ ] `Cylinder` — hình trụ
-- [ ] `Cone` — hình nón
-- [ ] `Sphere` — hình cầu
-- [ ] `Frustum` — hình cụt (nâng cao)
+- [x] `Prism` — hình lăng trụ
+- [x] `Cube` — hình lập phương
+- [x] `Cuboid` — hình hộp chữ nhật
+- [x] `Pyramid` — hình chóp
+- [x] `Tetrahedron` — tứ diện
+- [x] `Cylinder` — hình trụ
+- [x] `Cone` — hình nón
+- [x] `Sphere` — hình cầu
+- [x] `Frustum` — hình cụt (nâng cao)
+- [x] Unit tests
 
 #### 8.3 — 3D Measurements
 - [ ] Distance point-line (3D)
