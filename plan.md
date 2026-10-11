@@ -852,10 +852,10 @@ Mỗi construction:
 - [x] Geometry → equation display
 
 #### 9.7 — Export Enhancements
-- [ ] Export PDF (via jsPDF + SVG)
-- [ ] Lesson package (.geo JSON bundle)
-- [ ] Share link (URL encoded minimal state)
-- [ ] Import .geo files
+- [x] Export PDF (via jsPDF + SVG)
+- [x] Lesson package (.geo JSON bundle)
+- [x] Share link (URL encoded minimal state)
+- [x] Import .geo files
 
 ### Deliverables
 - ✅ Curriculum mapping cho 12 lớp

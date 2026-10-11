@@ -144,11 +144,31 @@
     "objects_count": "đối tượng"
   },
   "export": {
-    "title": "Xuất Tài Liệu",
+    "title": "Xuất & Chia sẻ",
     "png": "Lưu Ảnh PNG",
+    "png_desc": "Ảnh sắc nét 2x",
     "svg": "Lưu Vector SVG",
+    "svg_desc": "Vector không vỡ nét",
     "json": "Lưu File JSON",
-    "print": "In Tài Liệu"
+    "json_desc": "Tệp GeoDocument",
+    "pdf": "Xuất PDF",
+    "pdf_desc": "In ấn & Giáo án",
+    "geo_package": "Gói .geo",
+    "geo_desc": "Bản vẽ + Bài giảng",
+    "print": "In Tài Liệu",
+    "print_desc": "In ra giấy / Máy in",
+    "export_desc": "Chọn định dạng tài liệu bạn muốn tải xuống:",
+    "share_desc": "Tạo liên kết trực tiếp chứa toàn bộ hình vẽ, chú thích và bài giảng để gửi cho học sinh hoặc đồng nghiệp:",
+    "share_link_label": "Đường dẫn chia sẻ (URL)",
+    "copied": "Đã sao chép!",
+    "copy_btn": "Sao chép liên kết",
+    "objects_count": "Số đối tượng hình học:",
+    "lesson_steps_count": "Số bước bài giảng:",
+    "compression_status": "Tối ưu nén URL:",
+    "import_desc": "Tải tệp .geo hoặc .json từ máy tính của bạn để mở bảng vẽ hoặc bài giảng:",
+    "drop_or_browse": "Kéo thả tệp .geo vào đây hoặc nhấn để chọn",
+    "confirm_import": "Tiến hành nạp tệp",
+    "processing": "Đang xử lý xuất tệp..."
   },
   "gesture": {
     "camera": "Máy ảnh",

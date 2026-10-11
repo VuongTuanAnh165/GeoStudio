@@ -224,6 +224,8 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, computed, nextTick } from 'vue';
+import { useRoute } from 'vue-router';
+import { useExport } from '../composables/useExport';
 import { useTheme } from '../composables/useTheme';
 import { useKeyboard } from '../composables/useKeyboard';
 import { useGeometryStore } from '../stores/geometry';
@@ -355,6 +357,20 @@ const handleTogglePresentation = () => {
 };
 
 onMounted(() => {
+  try {
+    const route = useRoute();
+    const shareToken = (route.query.share as string) || (route.query.state as string);
+    if (shareToken) {
+      const { loadShareState } = useExport();
+      const success = loadShareState(shareToken);
+      if (success) {
+        console.log('Successfully loaded shared GeoStudio state from URL');
+      }
+    }
+  } catch (err) {
+    console.warn('Failed to parse share URL param:', err);
+  }
+
   window.addEventListener('geostudio:rename-object', handleRenameEvent);
   window.addEventListener('geostudio:open-settings', handleOpenSettingsEvent);
   window.addEventListener('geostudio:toggle-presentation', handleTogglePresentation);

@@ -125,6 +125,20 @@ export const useCoordinateStore = defineStore('coordinate', () => {
     axisConfig.value.showArrows = show;
   };
 
+  const setGridConfig = (config: Partial<GridConfig>) => {
+    gridConfig.value = { ...gridConfig.value, ...config };
+    if (config.visible !== undefined) {
+      geometryStore.settings.gridVisible = config.visible;
+    }
+  };
+
+  const setAxisConfig = (config: Partial<AxisConfig>) => {
+    axisConfig.value = { ...axisConfig.value, ...config };
+    if (config.visible !== undefined) {
+      geometryStore.settings.axisVisible = config.visible;
+    }
+  };
+
   const plotFromEquation = (customStr?: string): boolean => {
     const eqStr = customStr || inputEquation.value;
     inputError.value = null;
@@ -192,6 +206,8 @@ export const useCoordinateStore = defineStore('coordinate', () => {
     setGridStyle,
     setAxisLabels,
     setAxisArrows,
+    setGridConfig,
+    setAxisConfig,
     plotFromEquation
   };
 });

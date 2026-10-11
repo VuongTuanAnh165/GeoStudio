@@ -6,3 +6,4 @@ export * from './document';
 export * from './template';
 export * from './annotation';
 export * from './coordinate';
+export * from './export';

@@ -144,11 +144,31 @@
     "objects_count": "objects"
   },
   "export": {
-    "title": "Export Document",
+    "title": "Export & Share",
     "png": "Save as PNG",
+    "png_desc": "High-res 2x image",
     "svg": "Save as SVG",
+    "svg_desc": "Crisp vector graphic",
     "json": "Save as JSON",
-    "print": "Print Document"
+    "json_desc": "GeoDocument file",
+    "pdf": "Export PDF",
+    "pdf_desc": "Print & Lesson Booklet",
+    "geo_package": ".geo Package",
+    "geo_desc": "Drawing + Lesson Bundle",
+    "print": "Print Document",
+    "print_desc": "Paper / Printer dialog",
+    "export_desc": "Choose your desired file format for export:",
+    "share_desc": "Generate a direct link containing all drawings, annotations, and lesson steps:",
+    "share_link_label": "Share Link (URL)",
+    "copied": "Copied!",
+    "copy_btn": "Copy Link",
+    "objects_count": "Geometric objects:",
+    "lesson_steps_count": "Lesson steps:",
+    "compression_status": "URL compression:",
+    "import_desc": "Load a .geo or .json file from your computer to open a drawing or lesson:",
+    "drop_or_browse": "Drag & drop a .geo file here or click to browse",
+    "confirm_import": "Proceed with Import",
+    "processing": "Processing export file..."
   },
   "gesture": {
     "camera": "Camera",
