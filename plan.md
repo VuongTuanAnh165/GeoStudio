@@ -876,19 +876,35 @@ Mỗi construction:
 
 ### Tasks
 
-#### 10.1 — AI Layer
-- [ ] Natural language → Geometry Command
-  - [ ] "Vẽ tam giác ABC" → CREATE_TRIANGLE
-  - [ ] "Dựng đường cao từ A" → CREATE_ALTITUDE
-- [ ] LLM integration (API call, không ở client)
-- [ ] AI command panel (text input)
-- [ ] Safety: AI chỉ tạo commands, không trực tiếp modify state
+#### 10.1 — AI Layer & Multi-tier LLM Architecture
+- [ ] Multi-tier LLM Routing & Waterfall Fallback:
+  - [ ] **Tier 1 (Fast & Real-time): Groq API** (Llama 3.3 70B / 8B)
+    - Tốc độ siêu tốc (< 300ms), độ trễ cực thấp
+    - Chuyên trách: Lệnh nhanh từ thanh gõ lệnh và Voice-to-Command
+  - [ ] **Tier 2 (Reasoning & Vision): Google Gemini API** (Gemini 2.0 / 1.5 Flash)
+    - Hiểu sâu ngữ cảnh toán học phổ thông tiếng Việt (SGK 2018)
+    - Xử lý đề toán hình học phức tạp nhiều bước dựng
+    - **Multimodal Vision:** Quét ảnh đề bài trong sách/bài thi → tự động trích xuất giả thiết và dựng hình
+  - [ ] **Tier 3 (Safety Net & Fallback Hub): OpenRouter API**
+    - Circuit breaker tự động: Fallback khi Tier 1 hoặc Tier 2 gặp lỗi (Rate limit 429, downtime, hết quota)
+- [ ] Backend Server Route (Nuxt Nitro):
+  - [ ] `POST /api/ai/command` — xử lý server-side, bảo mật tuyệt đối API keys trong `.env`
+  - [ ] System prompt chuẩn hóa cho hệ thống hình học phẳng & không gian
+  - [ ] Strict JSON Schema / Structured Outputs (ép LLM chỉ trả về mảng `GeometryCommand[]`)
+- [ ] AI Command Panel UI:
+  - [ ] Thanh nhập lệnh ngôn ngữ tự nhiên (Quick Prompt Input)
+  - [ ] Hỗ trợ kéo thả/paste ảnh đề bài vào canvas hoặc panel
+  - [ ] Step preview: Hiển thị danh sách các bước dựng trước khi thực thi
+- [ ] Safety Architecture:
+  - [ ] AI chỉ sinh `GeometryCommand` chuyển vào Command Engine
+  - [ ] Tuyệt đối không can thiệp trực tiếp vào State hoặc Render Canvas
+  - [ ] Hỗ trợ Undo/Redo nguyên vẹn cho toàn bộ batch lệnh do AI tạo
 
-#### 10.2 — Voice Input (optional)
-- [ ] Web Speech API integration
-- [ ] Voice → text → AI → command
-- [ ] Voice feedback toggle
-- [ ] Language: Vietnamese
+#### 10.2 — Voice Input (Voice-to-Geometry)
+- [ ] Web Speech API integration (nhận diện giọng nói tiếng Việt chuẩn)
+- [ ] Pipeline thời gian thực: Voice → Text → Groq LPU (< 300ms) → Geometry Command → Render
+- [ ] Hold-to-Talk (phím tắt giữ để nói hoặc toggle mic trên toolbar)
+- [ ] Voice/Visual feedback states: Idle / Listening / Processing / Executed
 
 #### 10.3 — PWA
 - [ ] Service worker setup (Nuxt PWA module)
@@ -908,6 +924,7 @@ Mỗi construction:
 - [ ] `settings.vue` — comprehensive settings
   - [ ] Language (vi/en)
   - [ ] Theme (light/dark/high-contrast)
+  - [ ] AI Settings & BYOK (Tùy chọn nhập API Key cá nhân: Gemini / Groq / OpenRouter, chọn Model ưu tiên)
   - [ ] Snap settings
   - [ ] Animation settings
   - [ ] Keyboard shortcuts customization
@@ -936,7 +953,7 @@ Mỗi construction:
 - [ ] README.md update
 
 ### Deliverables
-- ✅ AI text-to-geometry hoạt động
+- ✅ AI text/voice/vision-to-geometry hoạt động với Multi-tier Fallback (Groq, Gemini, OpenRouter)
 - ✅ PWA installable + offline
 - ✅ Advanced constructions
 - ✅ Settings page
